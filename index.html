@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HR Management - Gestione Ferie e Permessi</title>
+    <title>HR Management - Portale Dipendenti</title>
     <style>
-        /* IMPORTAZIONE FONT GOTHAM ROUNDED BOLD PER MASSIMA LEGGIBILITÀ */
         @import url('https://fonts.cdnfonts.com/css/gotham-rounded');
 
         :root {
@@ -18,8 +17,6 @@
             --text: #111111;
             --border: #dddddd;
             --success: #28a745;
-            --warning: #ffc107;
-            --danger: #dc3545;
         }
 
         * {
@@ -30,7 +27,6 @@
         }
 
         body {
-            /* SFONDO GENERALE BLU E ARANCIONE */
             background: linear-gradient(135deg, #002b66 0%, #0047bb 50%, #ff6600 100%);
             background-attachment: fixed;
             color: var(--text);
@@ -39,7 +35,6 @@
             min-height: 100vh;
         }
 
-        /* HEADER BLU SCURO CON BORDO ARANCIONE */
         header {
             background-color: var(--unieuro-blue-dark);
             padding: 18px 30px;
@@ -50,7 +45,6 @@
             border-bottom: 5px solid var(--unieuro-orange);
         }
 
-        /* RIQUADRO ARANCIONE CON TITOLO IN BIANCO GRASSETTO NITIDO */
         header .title-card {
             background-color: var(--unieuro-orange);
             padding: 12px 24px;
@@ -67,61 +61,19 @@
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
         }
 
-        .nav-tabs {
-            display: flex;
-            gap: 15px;
-        }
-
-        /* PULSANTI TONDEGGIANTI IN GRASSETTO NITIDO */
-        .tab-btn {
-            background-color: var(--unieuro-orange);
-            border: 2px solid #000000;
-            color: #ffffff;
-            padding: 12px 22px;
-            border-radius: 14px;
-            cursor: pointer;
-            font-weight: 900;
-            font-size: 1.05rem;
-            transition: all 0.2s ease-in-out;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-        }
-
-        .tab-btn:hover {
-            background-color: var(--unieuro-orange-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
-        }
-
-        /* PULSANTE ATTIVO CON RIQUADRO BIANCO E TESTO BLU SCURO GRASSETTO */
-        .tab-btn.active {
-            background-color: #ffffff;
-            color: var(--unieuro-blue-dark);
-            text-shadow: none;
-        }
-
         .container {
-            max-width: 1100px;
-            margin: 30px auto;
+            max-width: 800px;
+            margin: 40px auto;
             padding: 0 20px;
             width: 100%;
             flex: 1;
         }
 
-        .section {
-            display: none;
-        }
-
-        .section.active {
-            display: block;
-        }
-
         .card {
             background: var(--card-bg);
             border-radius: 14px;
-            padding: 25px;
+            padding: 30px;
             box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-            margin-bottom: 25px;
             border-top: 5px solid var(--unieuro-orange);
         }
 
@@ -134,7 +86,7 @@
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
 
         .form-group label {
@@ -146,7 +98,7 @@
 
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
-            padding: 11px;
+            padding: 12px;
             border: 2px solid var(--border);
             border-radius: 8px;
             font-size: 1rem;
@@ -168,16 +120,16 @@
             flex: 1;
         }
 
-        /* PULSANTI AZIONE GRASSETTO */
         .btn {
             background-color: var(--unieuro-orange);
             color: #ffffff;
             border: 2px solid #000;
-            padding: 12px 24px;
+            padding: 14px 24px;
             border-radius: 12px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.05rem;
             font-weight: 900;
+            width: 100%;
             transition: all 0.2s;
             box-shadow: 0 3px 6px rgba(0,0,0,0.2);
         }
@@ -185,65 +137,6 @@
         .btn:hover {
             background-color: var(--unieuro-orange-hover);
             transform: translateY(-1px);
-        }
-
-        .btn-success { background-color: var(--success); }
-        .btn-success:hover { background-color: #218838; }
-
-        .btn-danger { background-color: var(--danger); }
-        .btn-danger:hover { background-color: #c82333; }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-
-        th {
-            background-color: var(--bg-light);
-            font-weight: 900;
-            color: var(--unieuro-blue-dark);
-        }
-
-        td {
-            font-weight: 700;
-        }
-
-        .badge {
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: 900;
-            color: white;
-            display: inline-block;
-        }
-
-        .badge-pending { background-color: var(--warning); color: #111; }
-        .badge-approved { background-color: var(--success); }
-        .badge-rejected { background-color: var(--danger); }
-
-        .login-box {
-            max-width: 400px;
-            margin: 50px auto;
-        }
-
-        .filters {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .filters select {
-            padding: 8px;
-            border-radius: 8px;
-            border: 2px solid var(--border);
-            font-weight: 700;
         }
     </style>
 </head>
@@ -253,90 +146,17 @@
         <div class="title-card">
             <h1>HR Management Portal</h1>
         </div>
-        <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('employee')">Area Dipendente</button>
-            <button class="tab-btn" onclick="switchTab('admin')">Area Amministratore</button>
-        </div>
     </header>
 
     <div class="container">
-
-        <!-- AREA DIPENDENTE (SOLO INVIO RICHIESTA) -->
-        <div id="employee-section" class="section active">
-            <div class="card">
-                <h2>Nuova Richiesta Ferie / Permesso</h2>
-                <form id="requestForm" onsubmit="submitRequest(event)">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="empName">Nome e Cognome Dipendente</label>
-                            <select id="empName" required>
-                                <option value="" disabled selected>Seleziona il tuo nome...</option>
-                                <option value="MORABITO GIUSEPPE">MORABITO GIUSEPPE</option>
-                                <option value="CAPONE DANIELE">CAPONE DANIELE</option>
-                                <option value="D'AGOSTINO DOMENICO">D'AGOSTINO DOMENICO</option>
-                                <option value="KEITA OUSMANE">KEITA OUSMANE</option>
-                                <option value="RODI GIORGIO">RODI GIORGIO</option>
-                                <option value="VIOLA PAOLO">VIOLA PAOLO</option>
-                                <option value="ROSATO DOMENICO">ROSATO DOMENICO</option>
-                                <option value="PLUTINO ANTONINO">PLUTINO ANTONINO</option>
-                                <option value="ZUMBO VITALIANO">ZUMBO VITALIANO</option>
-                                <option value="OPANASENKO POLINA">OPANASENKO POLINA</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="reqType">Tipologia</label>
-                            <select id="reqType" required>
-                                <option value="Ferie">Ferie</option>
-                                <option value="Permesso">Permesso Orario</option>
-                                <option value="Malattia">Malattia</option>
-                                <option value="Giorno Libero">Giorno Libero</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="startDate">Data Inizio</label>
-                            <input type="date" id="startDate" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="endDate">Data Fine</label>
-                            <input type="date" id="endDate" required>
-                        </div>
-                    </div>
+        <div class="card">
+            <h2>Nuova Richiesta Ferie / Permesso</h2>
+            <form id="requestForm" onsubmit="submitRequest(event)">
+                <div class="form-row">
                     <div class="form-group">
-                        <label for="notes">Note / Motivazione (opzionale)</label>
-                        <textarea id="notes" rows="3" placeholder="Aggiungi eventuali dettagli..."></textarea>
-                    </div>
-                    <button type="submit" class="btn" id="submitBtn">Invia Richiesta</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- AREA AMMINISTRATORE -->
-        <div id="admin-section" class="section">
-            <!-- LOGIN ADMIN -->
-            <div id="admin-login" class="card login-box">
-                <h2>Accesso Amministratore</h2>
-                <form onsubmit="loginAdmin(event)">
-                    <div class="form-group">
-                        <label for="adminPass">Password di Accesso</label>
-                        <input type="password" id="adminPass" required placeholder="Inserisci password (default: admin123)">
-                    </div>
-                    <button type="submit" class="btn" style="width: 100%;">Accedi</button>
-                </form>
-            </div>
-
-            <!-- DASHBOARD ADMIN -->
-            <div id="admin-dashboard" style="display: none;">
-                <div class="card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h2>Pannello di Controllo HR</h2>
-                        <button class="btn btn-danger" onclick="logoutAdmin()">Logout</button>
-                    </div>
-
-                    <div class="filters">
-                        <select id="filterEmployee" onchange="renderAdminRequests()">
-                            <option value="ALL">Tutti i dipendenti</option>
+                        <label for="empName">Nome e Cognome Dipendente</label>
+                        <select id="empName" required>
+                            <option value="" disabled selected>Seleziona il tuo nome...</option>
                             <option value="MORABITO GIUSEPPE">MORABITO GIUSEPPE</option>
                             <option value="CAPONE DANIELE">CAPONE DANIELE</option>
                             <option value="D'AGOSTINO DOMENICO">D'AGOSTINO DOMENICO</option>
@@ -348,57 +168,42 @@
                             <option value="ZUMBO VITALIANO">ZUMBO VITALIANO</option>
                             <option value="OPANASENKO POLINA">OPANASENKO POLINA</option>
                         </select>
-                        <select id="filterStatus" onchange="renderAdminRequests()">
-                            <option value="ALL">Tutti gli stati</option>
-                            <option value="In attesa">In attesa</option>
-                            <option value="Approvato">Approvato</option>
-                            <option value="Rifiutato">Rifiutato</option>
+                    </div>
+                    <div class="form-group">
+                        <label for="reqType">Tipologia</label>
+                        <select id="reqType" required>
+                            <option value="Ferie">Ferie</option>
+                            <option value="Permesso">Permesso Orario</option>
+                            <option value="Malattia">Malattia</option>
+                            <option value="Giorno Libero">Giorno Libero</option>
                         </select>
                     </div>
-
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Dipendente</th>
-                                <th>Tipo</th>
-                                <th>Periodo</th>
-                                <th>Note</th>
-                                <th>Stato</th>
-                                <th>Azioni</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminTableBody">
-                            <!-- Popolato via JS -->
-                        </tbody>
-                    </table>
                 </div>
-            </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="startDate">Data Inizio</label>
+                        <input type="date" id="startDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">Data Fine</label>
+                        <input type="date" id="endDate" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="notes">Note / Motivazione (opzionale)</label>
+                    <textarea id="notes" rows="3" placeholder="Aggiungi eventuali dettagli..."></textarea>
+                </div>
+                <button type="submit" class="btn" id="submitBtn">Invia Richiesta</button>
+            </form>
         </div>
-
     </div>
 
     <script>
-        const ADMIN_PASSWORD = "admin123";
-
-        // URL GOOGLE APPS SCRIPT CONFIGURATO
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbysaWQzp4R-InpqNIROaGyeMFiJ-JdS2J9P0ggZsSPs0IRbXi5hA1Qr2pQr0ufCwmr34g/exec";
+        // INCOLLA QUI IL TUO URL DI GOOGLE APPS SCRIPT
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyPA0qujtDR88Kg3cQH1VwIura7X5ojYWQ7GDxIuYtJwreM1nPTYvFGY9FjreUu2rSUYQ/exec";
 
         let requests = JSON.parse(localStorage.getItem('hr_requests')) || [];
 
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-
-            if (tab === 'employee') {
-                document.querySelectorAll('.tab-btn')[0].classList.add('active');
-                document.getElementById('employee-section').classList.add('active');
-            } else {
-                document.querySelectorAll('.tab-btn')[1].classList.add('active');
-                document.getElementById('admin-section').classList.add('active');
-            }
-        }
-
-        // --- INVIO RICHIESTA E SALVATAGGIO LOCALE + INVIO EMAIL ---
         function submitRequest(e) {
             e.preventDefault();
             
@@ -416,11 +221,9 @@
                 status: 'In attesa'
             };
 
-            // Salva in locale per l'amministratore
             requests.push(newRequest);
             localStorage.setItem('hr_requests', JSON.stringify(requests));
 
-            // Invia i dati a Google Apps Script per l'email a media@coseecasa.it
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors',
@@ -434,78 +237,6 @@
                 submitBtn.disabled = false;
                 submitBtn.textContent = "Invia Richiesta";
             }, 1000);
-        }
-
-        // --- GESTIONE AMMINISTRATORE ---
-        function loginAdmin(e) {
-            e.preventDefault();
-            const pass = document.getElementById('adminPass').value;
-            if (pass === ADMIN_PASSWORD) {
-                document.getElementById('admin-login').style.display = 'none';
-                document.getElementById('admin-dashboard').style.display = 'block';
-                renderAdminRequests();
-            } else {
-                alert('Password errata!');
-            }
-        }
-
-        function logoutAdmin() {
-            document.getElementById('admin-login').style.display = 'block';
-            document.getElementById('admin-dashboard').style.display = 'none';
-            document.getElementById('adminPass').value = '';
-        }
-
-        function renderAdminRequests() {
-            requests = JSON.parse(localStorage.getItem('hr_requests')) || [];
-            
-            const tbody = document.getElementById('adminTableBody');
-            const empFilter = document.getElementById('filterEmployee').value;
-            const statusFilter = document.getElementById('filterStatus').value;
-            tbody.innerHTML = '';
-
-            let filtered = requests.filter(r => 
-                (empFilter === 'ALL' || r.name === empFilter) &&
-                (statusFilter === 'ALL' || r.status === statusFilter)
-            );
-
-            if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nessuna richiesta da mostrare.</td></tr>';
-                return;
-            }
-
-            filtered.forEach(req => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${req.name}</strong></td>
-                    <td>${req.type}</td>
-                    <td>${req.startDate} al ${req.endDate}</td>
-                    <td>${req.notes || '-'}</td>
-                    <td><span class="badge ${getBadgeClass(req.status)}">${req.status}</span></td>
-                    <td>
-                        ${req.status === 'In attesa' ? `
-                            <button class="btn btn-success" style="padding: 6px 12px; font-size: 0.85rem;" onclick="updateStatus(${req.id}, 'Approvato')">Approva</button>
-                            <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.85rem;" onclick="updateStatus(${req.id}, 'Rifiutato')">Rifiuta</button>
-                        ` : '<small>Gestita</small>'}
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function updateStatus(id, newStatus) {
-            requests = JSON.parse(localStorage.getItem('hr_requests')) || [];
-            const req = requests.find(r => r.id === id);
-            if (req) {
-                req.status = newStatus;
-                localStorage.setItem('hr_requests', JSON.stringify(requests));
-                renderAdminRequests();
-            }
-        }
-
-        function getBadgeClass(status) {
-            if (status === 'Approvato') return 'badge-approved';
-            if (status === 'Rifiutato') return 'badge-rejected';
-            return 'badge-pending';
         }
     </script>
 </body>
