@@ -37,26 +37,31 @@
             min-height: 100vh;
         }
 
+        /* HEADER ALLINEATO E ARMONIOSO */
         header {
             background-color: var(--unieuro-blue-dark);
-            padding: 18px 30px;
+            padding: 22px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             border-bottom: 5px solid var(--unieuro-orange);
+            width: 100%;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         header .title-card {
             background-color: var(--unieuro-orange);
-            padding: 12px 24px;
+            padding: 12px 28px;
             border-radius: 14px;
             border: 2px solid #000000;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            text-align: center;
         }
 
         header h1 {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: 900;
             color: #ffffff;
             letter-spacing: 0.5px;
@@ -67,19 +72,25 @@
             background-color: var(--unieuro-orange);
             border: 2px solid #000000;
             color: #ffffff;
-            padding: 10px 20px;
+            padding: 12px 22px;
             border-radius: 14px;
             cursor: pointer;
             font-weight: 900;
             text-decoration: none;
             font-size: 0.95rem;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: all 0.2s ease-in-out;
+            text-align: center;
         }
-        .nav-home-btn:hover { background-color: var(--unieuro-orange-hover); }
+
+        .nav-home-btn:hover {
+            background-color: var(--unieuro-orange-hover);
+            transform: translateY(-2px);
+        }
 
         .container {
             max-width: 1100px;
-            margin: 30px auto;
+            margin: 40px auto;
             padding: 0 20px;
             width: 100%;
             flex: 1;
@@ -88,7 +99,7 @@
         .card {
             background: var(--card-bg);
             border-radius: 14px;
-            padding: 25px;
+            padding: 30px;
             box-shadow: 0 6px 20px rgba(0,0,0,0.2);
             margin-bottom: 25px;
             border-top: 5px solid var(--unieuro-orange);
@@ -100,10 +111,11 @@
             border-bottom: 2px solid var(--bg-light);
             padding-bottom: 10px;
             font-weight: 900;
+            font-size: 1.3rem;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
 
         .form-group label {
@@ -111,15 +123,17 @@
             margin-bottom: 6px;
             font-weight: 800;
             color: #222;
+            font-size: 0.95rem;
         }
 
         .form-group input, .form-group select {
             width: 100%;
-            padding: 11px;
+            padding: 12px;
             border: 2px solid var(--border);
             border-radius: 8px;
             font-size: 1rem;
             font-weight: 700;
+            background-color: #fff;
         }
 
         .btn {
@@ -132,15 +146,31 @@
             font-size: 1rem;
             font-weight: 900;
             box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+            transition: all 0.2s;
         }
-        .btn:hover { background-color: var(--unieuro-orange-hover); }
+
+        .btn:hover {
+            background-color: var(--unieuro-orange-hover);
+            transform: translateY(-1px);
+        }
+
         .btn-success { background-color: var(--success); }
+        .btn-success:hover { background-color: #218838; }
+
         .btn-danger { background-color: var(--danger); }
+        .btn-danger:hover { background-color: #c82333; }
+
+        /* GESTIONE TABELLA RESPONSIVE */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
+            min-width: 650px;
         }
 
         th, td {
@@ -153,9 +183,13 @@
             background-color: var(--bg-light);
             font-weight: 900;
             color: var(--unieuro-blue-dark);
+            font-size: 0.95rem;
         }
 
-        td { font-weight: 700; }
+        td {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
 
         .badge {
             padding: 6px 12px;
@@ -165,25 +199,65 @@
             color: white;
             display: inline-block;
         }
+
         .badge-pending { background-color: var(--warning); color: #111; }
         .badge-approved { background-color: var(--success); }
         .badge-rejected { background-color: var(--danger); }
 
         .login-box {
-            max-width: 400px;
-            margin: 50px auto;
+            max-width: 420px;
+            margin: 40px auto;
         }
 
         .filters {
             display: flex;
             gap: 15px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
+
         .filters select {
-            padding: 8px;
+            padding: 10px;
             border-radius: 8px;
             border: 2px solid var(--border);
             font-weight: 700;
+            flex: 1;
+            min-width: 200px;
+            background-color: #fff;
+        }
+
+        /* MEDIA QUERY PER DISPOSITIVI MOBILI */
+        @media (max-width: 768px) {
+            header {
+                justify-content: center;
+                padding: 15px;
+            }
+
+            header .title-card {
+                width: 100%;
+            }
+
+            .nav-home-btn {
+                width: 100%;
+            }
+
+            .container {
+                margin: 20px auto;
+                padding: 0 12px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .filters {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .filters select {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -212,7 +286,7 @@
         <!-- DASHBOARD ADMIN -->
         <div id="admin-dashboard" style="display: none;">
             <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
                     <h2>Pannello di Controllo HR</h2>
                     <button class="btn btn-danger" onclick="logoutAdmin()">Logout</button>
                 </div>
@@ -239,21 +313,23 @@
                     </select>
                 </div>
 
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Dipendente</th>
-                            <th>Tipo</th>
-                            <th>Periodo</th>
-                            <th>Note</th>
-                            <th>Stato</th>
-                            <th>Azioni</th>
-                        </tr>
-                    </thead>
-                    <tbody id="adminTableBody">
-                        <!-- Popolato via JS -->
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Dipendente</th>
+                                <th>Tipo</th>
+                                <th>Periodo</th>
+                                <th>Note</th>
+                                <th>Stato</th>
+                                <th>Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminTableBody">
+                            <!-- Popolato via JS -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -306,8 +382,10 @@
                     <td><span class="badge ${getBadgeClass(req.status)}">${req.status}</span></td>
                     <td>
                         ${req.status === 'In attesa' ? `
-                            <button class="btn btn-success" style="padding: 6px 12px; font-size: 0.85rem;" onclick="updateStatus(${req.id}, 'Approvato')">Approva</button>
-                            <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.85rem;" onclick="updateStatus(${req.id}, 'Rifiutato')">Rifiuta</button>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-success" style="padding: 6px 12px; font-size: 0.85rem;" onclick="updateStatus(${req.id}, 'Approvato')">Approva</button>
+                                <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.85rem;" onclick="updateStatus(${req.id}, 'Rifiutato')">Rifiuta</button>
+                            </div>
                         ` : '<small>Gestita</small>'}
                     </td>
                 `;
