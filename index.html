@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HR Management - Gestione Ferie e Permessi</title>
     <style>
-        /* IMPORTAZIONE FONT GOTHAM ROUNDED */
+        /* IMPORTAZIONE FONT GOTHAM ROUNDED BOLD PER MASSIMA LEGGIBILITÀ */
         @import url('https://fonts.cdnfonts.com/css/gotham-rounded');
 
         :root {
@@ -15,7 +15,7 @@
             --unieuro-orange-hover: #e55c00;
             --bg-light: #f4f6f9;
             --card-bg: #ffffff;
-            --text: #222222;
+            --text: #111111;
             --border: #dddddd;
             --success: #28a745;
             --warning: #ffc107;
@@ -26,12 +26,12 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Gotham Rounded', 'Segoe UI', Tahoma, sans-serif;
+            font-family: 'Gotham Rounded Bold', 'Gotham Rounded', 'Segoe UI', Arial, sans-serif;
         }
 
         body {
             /* SFONDO GENERALE BLU E ARANCIONE */
-            background: linear-gradient(135deg, #003366 0%, #0047bb 50%, #ff6600 100%);
+            background: linear-gradient(135deg, #002b66 0%, #0047bb 50%, #ff6600 100%);
             background-attachment: fixed;
             color: var(--text);
             display: flex;
@@ -42,30 +42,29 @@
         /* HEADER BLU SCURO CON BORDO ARANCIONE */
         header {
             background-color: var(--unieuro-blue-dark);
-            padding: 20px 30px;
+            padding: 18px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             border-bottom: 5px solid var(--unieuro-orange);
         }
 
-        /* RIQUADRO ARANCIONE TONDEGGIANTE PER IL TITOLO */
+        /* RIQUADRO ARANCIONE CON TITOLO IN BIANCO GRASSETTO NITIDO */
         header .title-card {
             background-color: var(--unieuro-orange);
-            padding: 12px 22px;
-            border-radius: 16px;
+            padding: 12px 24px;
+            border-radius: 14px;
             border: 2px solid #000000;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
         header h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
+            font-size: 1.6rem;
+            font-weight: 900;
             color: #ffffff;
-            -webkit-text-stroke: 0.6px #000000;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
             letter-spacing: 0.5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
         }
 
         .nav-tabs {
@@ -73,20 +72,19 @@
             gap: 15px;
         }
 
-        /* BOTTONI TONDEGGIANTI ARANCIONI / BIANCHI CON SCRITTA BIANCA IN GRASSETTO */
+        /* PULSANTI TONDEGGIANTI IN GRASSETTO NITIDO */
         .tab-btn {
             background-color: var(--unieuro-orange);
             border: 2px solid #000000;
             color: #ffffff;
             padding: 12px 22px;
-            border-radius: 16px;
+            border-radius: 14px;
             cursor: pointer;
-            font-weight: 700;
-            font-size: 0.95rem;
+            font-weight: 900;
+            font-size: 1.05rem;
             transition: all 0.2s ease-in-out;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            -webkit-text-stroke: 0.6px #000000;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
         }
 
         .tab-btn:hover {
@@ -95,10 +93,10 @@
             box-shadow: 0 6px 12px rgba(0,0,0,0.4);
         }
 
+        /* PULSANTE ATTIVO CON RIQUADRO BIANCO E TESTO BLU SCURO GRASSETTO */
         .tab-btn.active {
             background-color: #ffffff;
             color: var(--unieuro-blue-dark);
-            -webkit-text-stroke: 0.6px #000000;
             text-shadow: none;
         }
 
@@ -120,11 +118,11 @@
 
         .card {
             background: var(--card-bg);
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 25px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
             margin-bottom: 25px;
-            border-top: 4px solid var(--unieuro-orange);
+            border-top: 5px solid var(--unieuro-orange);
         }
 
         .card h2 {
@@ -132,7 +130,7 @@
             color: var(--unieuro-blue-dark);
             border-bottom: 2px solid var(--bg-light);
             padding-bottom: 10px;
-            font-weight: 700;
+            font-weight: 900;
         }
 
         .form-group {
@@ -141,18 +139,18 @@
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #333;
+            margin-bottom: 6px;
+            font-weight: 800;
+            color: #222;
         }
 
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border);
+            padding: 11px;
+            border: 2px solid var(--border);
             border-radius: 8px;
             font-size: 1rem;
-            font-family: 'Gotham Rounded', 'Segoe UI', Tahoma, sans-serif;
+            font-weight: 700;
             transition: border-color 0.2s;
         }
 
@@ -170,21 +168,18 @@
             flex: 1;
         }
 
-        /* PULSANTI GENERALI TONDEGGIANTI ARANCIONI */
+        /* PULSANTI AZIONE GRASSETTO */
         .btn {
             background-color: var(--unieuro-orange);
-            color: white;
+            color: #ffffff;
             border: 2px solid #000;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: 12px;
             cursor: pointer;
             font-size: 1rem;
-            font-weight: 700;
-            font-family: 'Gotham Rounded', 'Segoe UI', Tahoma, sans-serif;
+            font-weight: 900;
             transition: all 0.2s;
             box-shadow: 0 3px 6px rgba(0,0,0,0.2);
-            -webkit-text-stroke: 0.5px #000000;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
         }
 
         .btn:hover {
@@ -212,20 +207,24 @@
 
         th {
             background-color: var(--bg-light);
-            font-weight: 700;
+            font-weight: 900;
             color: var(--unieuro-blue-dark);
         }
 
+        td {
+            font-weight: 700;
+        }
+
         .badge {
-            padding: 5px 10px;
+            padding: 6px 12px;
             border-radius: 6px;
             font-size: 0.85rem;
-            font-weight: bold;
+            font-weight: 900;
             color: white;
             display: inline-block;
         }
 
-        .badge-pending { background-color: var(--warning); color: #333; }
+        .badge-pending { background-color: var(--warning); color: #111; }
         .badge-approved { background-color: var(--success); }
         .badge-rejected { background-color: var(--danger); }
 
@@ -243,7 +242,8 @@
         .filters select {
             padding: 8px;
             border-radius: 8px;
-            border: 1px solid var(--border);
+            border: 2px solid var(--border);
+            font-weight: 700;
         }
     </style>
 </head>
@@ -527,8 +527,8 @@
                     <td><span class="badge ${getBadgeClass(req.status)}">${req.status}</span></td>
                     <td>
                         ${req.status === 'In attesa' ? `
-                            <button class="btn btn-success" style="padding: 5px 10px; font-size: 0.8rem;" onclick="updateStatus(${req.id}, 'Approvato')">Approva</button>
-                            <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="updateStatus(${req.id}, 'Rifiutato')">Rifiuta</button>
+                            <button class="btn btn-success" style="padding: 6px 12px; font-size: 0.85rem;" onclick="updateStatus(${req.id}, 'Approvato')">Approva</button>
+                            <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.85rem;" onclick="updateStatus(${req.id}, 'Rifiutato')">Rifiuta</button>
                         ` : '<small>Gestita</small>'}
                     </td>
                 `;
