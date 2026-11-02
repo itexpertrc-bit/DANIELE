@@ -35,22 +35,25 @@
             min-height: 100vh;
         }
 
+        /* HEADER CENTRATO E ARMONICO */
         header {
             background-color: var(--unieuro-blue-dark);
-            padding: 18px 30px;
+            padding: 22px 20px;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             border-bottom: 5px solid var(--unieuro-orange);
+            width: 100%;
         }
 
         header .title-card {
             background-color: var(--unieuro-orange);
-            padding: 12px 24px;
+            padding: 12px 28px;
             border-radius: 14px;
             border: 2px solid #000000;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            text-align: center;
         }
 
         header h1 {
@@ -83,6 +86,7 @@
             border-bottom: 2px solid var(--bg-light);
             padding-bottom: 10px;
             font-weight: 900;
+            font-size: 1.3rem;
         }
 
         .form-group {
@@ -94,6 +98,7 @@
             margin-bottom: 6px;
             font-weight: 800;
             color: #222;
+            font-size: 0.95rem;
         }
 
         .form-group input, .form-group select, .form-group textarea {
@@ -104,6 +109,7 @@
             font-size: 1rem;
             font-weight: 700;
             transition: border-color 0.2s;
+            background-color: #fff;
         }
 
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
@@ -137,6 +143,31 @@
         .btn:hover {
             background-color: var(--unieuro-orange-hover);
             transform: translateY(-1px);
+        }
+
+        /* MEDIA QUERY RESPONSIVE PER SMARTPHONE E TABLET */
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .container {
+                margin: 20px auto;
+                padding: 0 12px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            header h1 {
+                font-size: 1.3rem;
+            }
+
+            header .title-card {
+                padding: 10px 18px;
+            }
         }
     </style>
 </head>
@@ -199,7 +230,6 @@
     </div>
 
     <script>
-        // INCOLLA QUI IL TUO URL DI GOOGLE APPS SCRIPT
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzfqyZgIl6y_8x4GE_zEXDEPpsCbXZbIZTOoX2Ljeq2C8ByBmdx-wwdRJ4b5TD9x_g-YQ/exec";
 
         let requests = JSON.parse(localStorage.getItem('hr_requests')) || [];
