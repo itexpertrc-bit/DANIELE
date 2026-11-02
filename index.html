@@ -215,8 +215,20 @@
                 <form id="requestForm" onsubmit="submitRequest(event)">
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="empName">Nome e Cognome</label>
-                            <input type="text" id="empName" required placeholder="Es. Mario Rossi">
+                            <label for="empName">Nome e Cognome Dipendente</label>
+                            <select id="empName" required>
+                                <option value="" disabled selected>Seleziona il tuo nome...</option>
+                                <option value="MORABITO GIUSEPPE">MORABITO GIUSEPPE</option>
+                                <option value="CAPONE DANIELE">CAPONE DANIELE</option>
+                                <option value="D'AGOSTINO DOMENICO">D'AGOSTINO DOMENICO</option>
+                                <option value="KEITA OUSMANE">KEITA OUSMANE</option>
+                                <option value="RODI GIORGIO">RODI GIORGIO</option>
+                                <option value="VIOLA PAOLO">VIOLA PAOLO</option>
+                                <option value="ROSATO DOMENICO">ROSATO DOMENICO</option>
+                                <option value="PLUTINO ANTONINO">PLUTINO ANTONINO</option>
+                                <option value="ZUMBO VITALIANO">ZUMBO VITALIANO</option>
+                                <option value="OPANASENKO POLINA">OPANASENKO POLINA</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="reqType">Tipologia</label>
@@ -249,8 +261,20 @@
             <div class="card">
                 <h2>Stato delle Tue Richieste</h2>
                 <div class="form-group">
-                    <label for="searchEmp">Filtra per il tuo nome:</label>
-                    <input type="text" id="searchEmp" oninput="renderEmployeeRequests()" placeholder="Inserisci il tuo nome per vedere le tue richieste...">
+                    <label for="searchEmp">Seleziona il tuo nome per vedere le tue richieste:</label>
+                    <select id="searchEmp" onchange="renderEmployeeRequests()">
+                        <option value="ALL">Mostra tutti i dipendenti</option>
+                        <option value="MORABITO GIUSEPPE">MORABITO GIUSEPPE</option>
+                        <option value="CAPONE DANIELE">CAPONE DANIELE</option>
+                        <option value="D'AGOSTINO DOMENICO">D'AGOSTINO DOMENICO</option>
+                        <option value="KEITA OUSMANE">KEITA OUSMANE</option>
+                        <option value="RODI GIORGIO">RODI GIORGIO</option>
+                        <option value="VIOLA PAOLO">VIOLA PAOLO</option>
+                        <option value="ROSATO DOMENICO">ROSATO DOMENICO</option>
+                        <option value="PLUTINO ANTONINO">PLUTINO ANTONINO</option>
+                        <option value="ZUMBO VITALIANO">ZUMBO VITALIANO</option>
+                        <option value="OPANASENKO POLINA">OPANASENKO POLINA</option>
+                    </select>
                 </div>
                 <table>
                     <thead>
@@ -295,6 +319,16 @@
                     <div class="filters">
                         <select id="filterEmployee" onchange="renderAdminRequests()">
                             <option value="ALL">Tutti i dipendenti</option>
+                            <option value="MORABITO GIUSEPPE">MORABITO GIUSEPPE</option>
+                            <option value="CAPONE DANIELE">CAPONE DANIELE</option>
+                            <option value="D'AGOSTINO DOMENICO">D'AGOSTINO DOMENICO</option>
+                            <option value="KEITA OUSMANE">KEITA OUSMANE</option>
+                            <option value="RODI GIORGIO">RODI GIORGIO</option>
+                            <option value="VIOLA PAOLO">VIOLA PAOLO</option>
+                            <option value="ROSATO DOMENICO">ROSATO DOMENICO</option>
+                            <option value="PLUTINO ANTONINO">PLUTINO ANTONINO</option>
+                            <option value="ZUMBO VITALIANO">ZUMBO VITALIANO</option>
+                            <option value="OPANASENKO POLINA">OPANASENKO POLINA</option>
                         </select>
                         <select id="filterStatus" onchange="renderAdminRequests()">
                             <option value="ALL">Tutti gli stati</option>
@@ -351,7 +385,7 @@
             e.preventDefault();
             const newRequest = {
                 id: Date.now(),
-                name: document.getElementById('empName').value.trim(),
+                name: document.getElementById('empName').value,
                 type: document.getElementById('reqType').value,
                 startDate: document.getElementById('startDate').value,
                 endDate: document.getElementById('endDate').value,
@@ -368,10 +402,13 @@
 
         function renderEmployeeRequests() {
             const tbody = document.getElementById('employeeTableBody');
-            const search = document.getElementById('searchEmp').value.toLowerCase();
+            const selectedEmp = document.getElementById('searchEmp').value;
             tbody.innerHTML = '';
 
-            const filtered = requests.filter(r => r.name.toLowerCase().includes(search));
+            let filtered = requests;
+            if (selectedEmp !== 'ALL') {
+                filtered = requests.filter(r => r.name === selectedEmp);
+            }
 
             if (filtered.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nessuna richiesta trovata.</td></tr>';
@@ -399,7 +436,6 @@
             if (pass === ADMIN_PASSWORD) {
                 document.getElementById('admin-login').style.display = 'none';
                 document.getElementById('admin-dashboard').style.display = 'block';
-                populateEmployeeFilter();
                 renderAdminRequests();
             } else {
                 alert('Password errata!');
@@ -412,35 +448,16 @@
             document.getElementById('adminPass').value = '';
         }
 
-        function populateEmployeeFilter() {
-            const select = document.getElementById('filterEmployee');
-            select.innerHTML = '<option value="ALL">Tutti i dipendenti</option>';
-            const names = [...new Set(requests.map(r => r.name))];
-            names.forEach(name => {
-                const opt = document.createElement('option');
-                opt.value = name;
-                opt.textContent = name;
-                select.appendChild(opt);
-            });
-        }
-
         function renderAdminRequests() {
             const tbody = document.getElementById('adminTableBody');
             const empFilter = document.getElementById('filterEmployee').value;
             const statusFilter = document.getElementById('filterStatus').value;
             tbody.innerHTML = '';
 
-            let filtered = requests;
-            if (empFilter !== 'ALL') {
-                filtered = filtered.filter(r => r.name === empFilter);
-            }
-            if (statusFilter !== 'ALL') {
-                filtered = filtered.filter(r => r.name === empFilter || r.status === statusFilter);
-                filtered = requests.filter(r => 
-                    (empFilter === 'ALL' || r.name === empFilter) &&
-                    (statusFilter === 'ALL' || r.status === statusFilter)
-                );
-            }
+            let filtered = requests.filter(r => 
+                (empFilter === 'ALL' || r.name === empFilter) &&
+                (statusFilter === 'ALL' || r.status === statusFilter)
+            );
 
             if (filtered.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nessuna richiesta da mostrare.</td></tr>';
@@ -471,7 +488,6 @@
             if (req) {
                 req.status = newStatus;
                 saveData();
-                populateEmployeeFilter();
                 renderAdminRequests();
             }
         }
