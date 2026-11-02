@@ -33,39 +33,65 @@
             min-height: 100vh;
         }
 
+        /* HEADER SFUMATO BLU E ARANCIONE */
         header {
-            background-color: var(--primary);
-            color: white;
-            padding: 15px 30px;
+            background: linear-gradient(135deg, #0052cc 0%, #ff6600 100%);
+            padding: 20px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border-bottom: 3px solid #000;
+        }
+
+        /* RIQUADRO BIANCO ARROTONDATO PER IL TITOLO */
+        header .title-card {
+            background-color: #ffffff;
+            padding: 10px 22px;
+            border-radius: 12px;
+            border: 2px solid #000000;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.25);
         }
 
         header h1 {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #0052cc;
+            /* Scritta in rilievo con traccia nera */
+            -webkit-text-stroke: 1px #000000;
+            text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.4);
+            letter-spacing: 0.5px;
         }
 
         .nav-tabs {
             display: flex;
-            gap: 10px;
+            gap: 15px;
         }
 
+        /* RIQUADRI BIANCHI ARROTONDATI PER I PULSANTI */
         .tab-btn {
-            background: transparent;
-            border: 2px solid white;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 4px;
+            background-color: #ffffff;
+            border: 2px solid #000000;
+            color: #0052cc;
+            padding: 10px 20px;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: bold;
-            transition: all 0.2s;
+            font-weight: 800;
+            font-size: 1rem;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            /* Scritta con contorno nero ed effetto rilievo */
+            -webkit-text-stroke: 0.6px #000000;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
         }
 
         .tab-btn.active, .tab-btn:hover {
-            background: white;
-            color: var(--primary);
+            background-color: #ff6600;
+            color: #ffffff;
+            border-color: #000000;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            -webkit-text-stroke: 0.8px #000000;
         }
 
         .container {
@@ -199,312 +225,9 @@
 <body>
 
     <header>
-        <h1>HR Management Portal</h1>
+        <div class="title-card">
+            <h1>HR Management Portal</h1>
+        </div>
         <div class="nav-tabs">
             <button class="tab-btn active" onclick="switchTab('employee')">Area Dipendente</button>
             <button class="tab-btn" onclick="switchTab('admin')">Area Amministratore</button>
-        </div>
-    </header>
-
-    <div class="container">
-
-        <!-- AREA DIPENDENTE -->
-        <div id="employee-section" class="section active">
-            <div class="card">
-                <h2>Nuova Richiesta Ferie / Permesso</h2>
-                <form id="requestForm" onsubmit="submitRequest(event)">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="empName">Nome e Cognome Dipendente</label>
-                            <select id="empName" required>
-                                <option value="" disabled selected>Seleziona il tuo nome...</option>
-                                <option value="MORABITO GIUSEPPE">MORABITO GIUSEPPE</option>
-                                <option value="CAPONE DANIELE">CAPONE DANIELE</option>
-                                <option value="D'AGOSTINO DOMENICO">D'AGOSTINO DOMENICO</option>
-                                <option value="KEITA OUSMANE">KEITA OUSMANE</option>
-                                <option value="RODI GIORGIO">RODI GIORGIO</option>
-                                <option value="VIOLA PAOLO">VIOLA PAOLO</option>
-                                <option value="ROSATO DOMENICO">ROSATO DOMENICO</option>
-                                <option value="PLUTINO ANTONINO">PLUTINO ANTONINO</option>
-                                <option value="ZUMBO VITALIANO">ZUMBO VITALIANO</option>
-                                <option value="OPANASENKO POLINA">OPANASENKO POLINA</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="reqType">Tipologia</label>
-                            <select id="reqType" required>
-                                <option value="Ferie">Ferie</option>
-                                <option value="Permesso">Permesso Orario</option>
-                                <option value="Malattia">Malattia</option>
-                                <option value="Giorno Libero">Giorno Libero</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="startDate">Data Inizio</label>
-                            <input type="date" id="startDate" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="endDate">Data Fine</label>
-                            <input type="date" id="endDate" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="notes">Note / Motivazione (opzionale)</label>
-                        <textarea id="notes" rows="3" placeholder="Aggiungi eventuali dettagli..."></textarea>
-                    </div>
-                    <button type="submit" class="btn">Invia Richiesta</button>
-                </form>
-            </div>
-
-            <div class="card">
-                <h2>Stato delle Tue Richieste</h2>
-                <div class="form-group">
-                    <label for="searchEmp">Seleziona il tuo nome per vedere le tue richieste:</label>
-                    <select id="searchEmp" onchange="renderEmployeeRequests()">
-                        <option value="ALL">Mostra tutti i dipendenti</option>
-                        <option value="MORABITO GIUSEPPE">MORABITO GIUSEPPE</option>
-                        <option value="CAPONE DANIELE">CAPONE DANIELE</option>
-                        <option value="D'AGOSTINO DOMENICO">D'AGOSTINO DOMENICO</option>
-                        <option value="KEITA OUSMANE">KEITA OUSMANE</option>
-                        <option value="RODI GIORGIO">RODI GIORGIO</option>
-                        <option value="VIOLA PAOLO">VIOLA PAOLO</option>
-                        <option value="ROSATO DOMENICO">ROSATO DOMENICO</option>
-                        <option value="PLUTINO ANTONINO">PLUTINO ANTONINO</option>
-                        <option value="ZUMBO VITALIANO">ZUMBO VITALIANO</option>
-                        <option value="OPANASENKO POLINA">OPANASENKO POLINA</option>
-                    </select>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Dipendente</th>
-                            <th>Tipo</th>
-                            <th>Dal</th>
-                            <th>Al</th>
-                            <th>Note</th>
-                            <th>Stato</th>
-                        </tr>
-                    </thead>
-                    <tbody id="employeeTableBody">
-                        <!-- Popolato via JS -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- AREA AMMINISTRATORE -->
-        <div id="admin-section" class="section">
-            <!-- LOGIN ADMIN -->
-            <div id="admin-login" class="card login-box">
-                <h2>Accesso Amministratore</h2>
-                <form onsubmit="loginAdmin(event)">
-                    <div class="form-group">
-                        <label for="adminPass">Password di Accesso</label>
-                        <input type="password" id="adminPass" required placeholder="Inserisci password (default: admin123)">
-                    </div>
-                    <button type="submit" class="btn" style="width: 100%;">Accedi</button>
-                </form>
-            </div>
-
-            <!-- DASHBOARD ADMIN (Nascosta inizialmente) -->
-            <div id="admin-dashboard" style="display: none;">
-                <div class="card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h2>Pannello di Controllo HR</h2>
-                        <button class="btn btn-danger" onclick="logoutAdmin()">Logout</button>
-                    </div>
-
-                    <div class="filters">
-                        <select id="filterEmployee" onchange="renderAdminRequests()">
-                            <option value="ALL">Tutti i dipendenti</option>
-                            <option value="MORABITO GIUSEPPE">MORABITO GIUSEPPE</option>
-                            <option value="CAPONE DANIELE">CAPONE DANIELE</option>
-                            <option value="D'AGOSTINO DOMENICO">D'AGOSTINO DOMENICO</option>
-                            <option value="KEITA OUSMANE">KEITA OUSMANE</option>
-                            <option value="RODI GIORGIO">RODI GIORGIO</option>
-                            <option value="VIOLA PAOLO">VIOLA PAOLO</option>
-                            <option value="ROSATO DOMENICO">ROSATO DOMENICO</option>
-                            <option value="PLUTINO ANTONINO">PLUTINO ANTONINO</option>
-                            <option value="ZUMBO VITALIANO">ZUMBO VITALIANO</option>
-                            <option value="OPANASENKO POLINA">OPANASENKO POLINA</option>
-                        </select>
-                        <select id="filterStatus" onchange="renderAdminRequests()">
-                            <option value="ALL">Tutti gli stati</option>
-                            <option value="In attesa">In attesa</option>
-                            <option value="Approvato">Approvato</option>
-                            <option value="Rifiutato">Rifiutato</option>
-                        </select>
-                    </div>
-
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Dipendente</th>
-                                <th>Tipo</th>
-                                <th>Periodo</th>
-                                <th>Note</th>
-                                <th>Stato</th>
-                                <th>Azioni</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminTableBody">
-                            <!-- Popolato via JS -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <script>
-        // Password Admin predefinita
-        const ADMIN_PASSWORD = "admin123";
-
-        // Inizializzazione dati da LocalStorage
-        let requests = JSON.parse(localStorage.getItem('hr_requests')) || [];
-
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-
-            if (tab === 'employee') {
-                document.querySelectorAll('.tab-btn')[0].classList.add('active');
-                document.getElementById('employee-section').classList.add('active');
-                renderEmployeeRequests();
-            } else {
-                document.querySelectorAll('.tab-btn')[1].classList.add('active');
-                document.getElementById('admin-section').classList.add('active');
-            }
-        }
-
-        // --- GESTIONE DIPENDENTI ---
-        function submitRequest(e) {
-            e.preventDefault();
-            const newRequest = {
-                id: Date.now(),
-                name: document.getElementById('empName').value,
-                type: document.getElementById('reqType').value,
-                startDate: document.getElementById('startDate').value,
-                endDate: document.getElementById('endDate').value,
-                notes: document.getElementById('notes').value.trim(),
-                status: 'In attesa'
-            };
-
-            requests.push(newRequest);
-            saveData();
-            document.getElementById('requestForm').reset();
-            alert('Richiesta inviata con successo!');
-            renderEmployeeRequests();
-        }
-
-        function renderEmployeeRequests() {
-            const tbody = document.getElementById('employeeTableBody');
-            const selectedEmp = document.getElementById('searchEmp').value;
-            tbody.innerHTML = '';
-
-            let filtered = requests;
-            if (selectedEmp !== 'ALL') {
-                filtered = requests.filter(r => r.name === selectedEmp);
-            }
-
-            if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nessuna richiesta trovata.</td></tr>';
-                return;
-            }
-
-            filtered.forEach(req => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${req.name}</strong></td>
-                    <td>${req.type}</td>
-                    <td>${req.startDate}</td>
-                    <td>${req.endDate}</td>
-                    <td>${req.notes || '-'}</td>
-                    <td><span class="badge ${getBadgeClass(req.status)}">${req.status}</span></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        // --- GESTIONE AMMINISTRATORE ---
-        function loginAdmin(e) {
-            e.preventDefault();
-            const pass = document.getElementById('adminPass').value;
-            if (pass === ADMIN_PASSWORD) {
-                document.getElementById('admin-login').style.display = 'none';
-                document.getElementById('admin-dashboard').style.display = 'block';
-                renderAdminRequests();
-            } else {
-                alert('Password errata!');
-            }
-        }
-
-        function logoutAdmin() {
-            document.getElementById('admin-login').style.display = 'block';
-            document.getElementById('admin-dashboard').style.display = 'none';
-            document.getElementById('adminPass').value = '';
-        }
-
-        function renderAdminRequests() {
-            const tbody = document.getElementById('adminTableBody');
-            const empFilter = document.getElementById('filterEmployee').value;
-            const statusFilter = document.getElementById('filterStatus').value;
-            tbody.innerHTML = '';
-
-            let filtered = requests.filter(r => 
-                (empFilter === 'ALL' || r.name === empFilter) &&
-                (statusFilter === 'ALL' || r.status === statusFilter)
-            );
-
-            if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nessuna richiesta da mostrare.</td></tr>';
-                return;
-            }
-
-            filtered.forEach(req => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${req.name}</strong></td>
-                    <td>${req.type}</td>
-                    <td>${req.startDate} al ${req.endDate}</td>
-                    <td>${req.notes || '-'}</td>
-                    <td><span class="badge ${getBadgeClass(req.status)}">${req.status}</span></td>
-                    <td>
-                        ${req.status === 'In attesa' ? `
-                            <button class="btn btn-success" style="padding: 5px 10px; font-size: 0.8rem;" onclick="updateStatus(${req.id}, 'Approvato')">Approva</button>
-                            <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="updateStatus(${req.id}, 'Rifiutato')">Rifiuta</button>
-                        ` : '<small>Gestita</small>'}
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function updateStatus(id, newStatus) {
-            const req = requests.find(r => r.id === id);
-            if (req) {
-                req.status = newStatus;
-                saveData();
-                renderAdminRequests();
-            }
-        }
-
-        // --- UTILS ---
-        function getBadgeClass(status) {
-            if (status === 'Approvato') return 'badge-approved';
-            if (status === 'Rifiutato') return 'badge-rejected';
-            return 'badge-pending';
-        }
-
-        function saveData() {
-            localStorage.setItem('hr_requests', JSON.stringify(requests));
-        }
-
-        // Caricamento iniziale
-        renderEmployeeRequests();
-    </script>
-</body>
-</html>
