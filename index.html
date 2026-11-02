@@ -399,9 +399,10 @@
         }
 
         // CONTROLlo ALL'APERTURA DELLA PAGINA (SE L'URL CONTIENE #admin)
-        window.addEventListener('DOMContentLoaded', () => {
+       window.addEventListener('DOMContentLoaded', () => {
             if (window.location.hash === '#admin') {
                 switchTab('admin');
+                logoutAdminid = logoutAdmin(); // Assicura che parta dalla schermata di login
             }
         });
 
