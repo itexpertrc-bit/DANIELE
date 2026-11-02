@@ -1,2 +1,0 @@
-# DANIELE
-APP HR
