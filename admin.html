@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Management - Pannello Amministratore</title>
+    <style>
+        @import url('https://fonts.cdnfonts.com/css/gotham-rounded');
+
+        :root {
+            --unieuro-blue-dark: #002b66;
+            --unieuro-blue: #0047bb;
+            --unieuro-orange: #ff6600;
+            --unieuro-orange-hover: #e55c00;
+            --bg-light: #f4f6f9;
+            --card-bg: #ffffff;
+            --text: #111111;
+            --border: #dddddd;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Gotham Rounded Bold', 'Gotham Rounded', 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #002b66 0%, #0047bb 50%, #ff6600 100%);
+            background-attachment: fixed;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--unieuro-blue-dark);
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            border-bottom: 5px solid var(--unieuro-orange);
+        }
+
+        header .title-card {
+            background-color: var(--unieuro-orange);
+            padding: 12px 24px;
+            border-radius: 14px;
+            border: 2px solid #000000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        header h1 {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-home-btn {
+            background-color: var(--unieuro-orange);
+            border: 2px solid #000000;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 900;
+            text-decoration: none;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .nav-home-btn:hover {
+            background-color: var(--unieuro-orange-hover);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+            width: 100%;
+            flex: 1;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 25px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            margin-bottom: 25px;
+            border-top: 5px solid var(--unieuro-orange);
+        }
+
+        .card h2 {
+            margin-bottom: 20px;
+            color: var(--unieuro-blue-dark);
+            border-bottom: 2px solid var(--bg-light);
+            padding-bottom: 10px;
+            font-weight: 900;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 800;
+            color: #222;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 11px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .btn {
+            background-color: var(--unieuro-orange);
+            color: #ffffff;
+            border: 2px solid #000;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 900;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        }
+        .btn:hover { background-color: var(--unieuro-orange-hover); }
+        .btn-success { background-color: var(--success); }
+        .btn-danger { background-color: var(--danger); }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: var(--bg-light);
+            font-weight: 900;
+            color: var(--unieuro-blue-dark);
+        }
+
+        td { font-weight: 700; }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 900;
+            color: white;
+            display: inline-block;
+        }
+        .badge-pending { background-color: var(--warning); color: #111; }
+        .badge-approved { background-color: var(--success); }
+        .badge-rejected { background-color: var(--danger); }
+
+        .login-box {
+            max-width: 400px;
+            margin: 50px auto;
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .filters select {
+            padding: 8px;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="title-card">
+            <h1>Admin Panel - HR</h1>
+        </div>
+        <a href="index.html" class="nav-home-btn">Torna al Portale Dipendenti</a>
+    </header>
+
+    <div class="container">
+        <!-- LOGIN ADMIN -->
+        <div id="admin-login" class="card login-box">
+            <h2>Accesso Amministratore</h2>
+            <form onsubmit="loginAdmin(event)">
+                <div class="form-group">
+                    <label for="adminPass">Password di Accesso</label>
+                    <input type="password" id="adminPass" required placeholder="Inserisci password (default: admin123)">
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Accedi</button>
+            </form>
+        </div>
+
+        <!-- DASHBOARD ADMIN -->
+        <div id="admin-dashboard" style="display: none;">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>Pannello di Controllo HR</h2>
+                    <button class="btn btn-danger" onclick="logoutAdmin()">Logout</button>
+                </div>
+
+                <div class="filters">
+                    <select id="filterEmployee" onchange="renderAdminRequests()">
+                        <option value="ALL">Tutti i dipendenti</option>
+                        <option value="MORABITO GIUSEPPE">MORABITO GIUSEPPE</option>
+                        <option value="CAPONE DANIELE">CAPONE DANIELE</option>
+                        <option value="D'AGOSTINO DOMENICO">D'AGOSTINO DOMENICO</option>
+                        <option value="KEITA OUSMANE">KEITA OUSMANE</option>
+                        <option value="RODI GIORGIO">RODI GIORGIO</option>
+                        <option value="VIOLA PAOLO">VIOLA PAOLO</option>
+                        <option value="ROSATO DOMENICO">ROSATO DOMENICO</option>
+                        <option value="PLUTINO ANTONINO">PLUTINO ANTONINO</option>
+                        <option value="ZUMBO VITALIANO">ZUMBO VITALIANO</option>
+                        <option value="OPANASENKO POLINA">OPANASENKO POLINA</option>
+                    </select>
+                    <select id="filterStatus" onchange="renderAdminRequests()">
+                        <option value="ALL">Tutti gli stati</option>
+                        <option value="In attesa">In attesa</option>
+                        <option value="Approvato">Approvato</option>
+                        <option value="Rifiutato">Rifiutato</option>
+                    </select>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Dipendente</th>
+                            <th>Tipo</th>
+                            <th>Periodo</th>
+                            <th>Note</th>
+                            <th>Stato</th>
+                            <th>Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTableBody">
+                        <!-- Popolato via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_PASSWORD = "admin123";
+
+        function loginAdmin(e) {
+            e.preventDefault();
+            const pass = document.getElementById('adminPass').value;
+            if (pass === ADMIN_PASSWORD) {
+                document.getElementById('admin-login').style.display = 'none';
+                document.getElementById('admin-dashboard').style.display = 'block';
+                renderAdminRequests();
+            } else {
+                alert('Password errata!');
+            }
+        }
+
+        function logoutAdmin() {
+            document.getElementById('admin-login').style.display = 'block';
+            document.getElementById('admin-dashboard').style.display = 'none';
+            document.getElementById('adminPass').value = '';
+        }
+
+        function renderAdminRequests() {
+            let requests = JSON.parse(localStorage.getItem('hr_requests')) || [];
+            const tbody = document.getElementById('adminTableBody');
+            const empFilter = document.getElementById('filterEmployee').value;
+            const statusFilter = document.getElementById('filterStatus').value;
+            tbody.innerHTML = '';
+
+            let filtered = requests.filter(r => 
+                (empFilter === 'ALL' || r.name === empFilter) &&
+                (statusFilter === 'ALL' || r.status === statusFilter)
+            );
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nessuna richiesta da mostrare.</td></tr>';
+                return;
+            }
+
+            filtered.forEach(req => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${req.name}</strong></td>
+                    <td>${req.type}</td>
+                    <td>${req.startDate} al ${req.endDate}</td>
+                    <td>${req.notes || '-'}</td>
+                    <td><span class="badge ${getBadgeClass(req.status)}">${req.status}</span></td>
+                    <td>
+                        ${req.status === 'In attesa' ? `
+                            <button class="btn btn-success" style="padding: 6px 12px; font-size: 0.85rem;" onclick="updateStatus(${req.id}, 'Approvato')">Approva</button>
+                            <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.85rem;" onclick="updateStatus(${req.id}, 'Rifiutato')">Rifiuta</button>
+                        ` : '<small>Gestita</small>'}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateStatus(id, newStatus) {
+            let requests = JSON.parse(localStorage.getItem('hr_requests')) || [];
+            const req = requests.find(r => r.id === id);
+            if (req) {
+                req.status = newStatus;
+                localStorage.setItem('hr_requests', JSON.stringify(requests));
+                renderAdminRequests();
+            }
+        }
+
+        function getBadgeClass(status) {
+            if (status === 'Approvato') return 'badge-approved';
+            if (status === 'Rifiutato') return 'badge-rejected';
+            return 'badge-pending';
+        }
+    </script>
+</body>
+</html>
