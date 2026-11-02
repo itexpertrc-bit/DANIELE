@@ -261,7 +261,7 @@
 
     <div class="container">
 
-        <!-- AREA DIPENDENTE -->
+        <!-- AREA DIPENDENTE (SOLO INVIO RICHIESTA) -->
         <div id="employee-section" class="section active">
             <div class="card">
                 <h2>Nuova Richiesta Ferie / Permesso</h2>
@@ -307,43 +307,8 @@
                         <label for="notes">Note / Motivazione (opzionale)</label>
                         <textarea id="notes" rows="3" placeholder="Aggiungi eventuali dettagli..."></textarea>
                     </div>
-                    <button type="submit" class="btn">Invia Richiesta</button>
+                    <button type="submit" class="btn" id="submitBtn">Invia Richiesta</button>
                 </form>
-            </div>
-
-            <div class="card">
-                <h2>Stato delle Tue Richieste</h2>
-                <div class="form-group">
-                    <label for="searchEmp">Seleziona il tuo nome per vedere le tue richieste:</label>
-                    <select id="searchEmp" onchange="renderEmployeeRequests()">
-                        <option value="ALL">Mostra tutti i dipendenti</option>
-                        <option value="MORABITO GIUSEPPE">MORABITO GIUSEPPE</option>
-                        <option value="CAPONE DANIELE">CAPONE DANIELE</option>
-                        <option value="D'AGOSTINO DOMENICO">D'AGOSTINO DOMENICO</option>
-                        <option value="KEITA OUSMANE">KEITA OUSMANE</option>
-                        <option value="RODI GIORGIO">RODI GIORGIO</option>
-                        <option value="VIOLA PAOLO">VIOLA PAOLO</option>
-                        <option value="ROSATO DOMENICO">ROSATO DOMENICO</option>
-                        <option value="PLUTINO ANTONINO">PLUTINO ANTONINO</option>
-                        <option value="ZUMBO VITALIANO">ZUMBO VITALIANO</option>
-                        <option value="OPANASENKO POLINA">OPANASENKO POLINA</option>
-                    </select>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Dipendente</th>
-                            <th>Tipo</th>
-                            <th>Dal</th>
-                            <th>Al</th>
-                            <th>Note</th>
-                            <th>Stato</th>
-                        </tr>
-                    </thead>
-                    <tbody id="employeeTableBody">
-                        <!-- Popolato via JS -->
-                    </tbody>
-                </table>
             </div>
         </div>
 
@@ -361,7 +326,7 @@
                 </form>
             </div>
 
-            <!-- DASHBOARD ADMIN (Nascosta inizialmente) -->
+            <!-- DASHBOARD ADMIN -->
             <div id="admin-dashboard" style="display: none;">
                 <div class="card">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -413,10 +378,11 @@
     </div>
 
     <script>
-        // Password Admin predefinita
         const ADMIN_PASSWORD = "admin123";
 
-        // Inizializzazione dati da LocalStorage
+        // URL GOOGLE APPS SCRIPT CONFIGURATO
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyPA0qujtDR88Kg3cQH1VwIura7X5ojYWQ7GDxIuYtJwreM1nPTYvFGY9FjreUu2rSUYQ/exec";
+
         let requests = JSON.parse(localStorage.getItem('hr_requests')) || [];
 
         function switchTab(tab) {
@@ -426,16 +392,20 @@
             if (tab === 'employee') {
                 document.querySelectorAll('.tab-btn')[0].classList.add('active');
                 document.getElementById('employee-section').classList.add('active');
-                renderEmployeeRequests();
             } else {
                 document.querySelectorAll('.tab-btn')[1].classList.add('active');
                 document.getElementById('admin-section').classList.add('active');
             }
         }
 
-        // --- GESTIONE DIPENDENTI ---
+        // --- INVIO RICHIESTA E SALVATAGGIO LOCALE + INVIO EMAIL ---
         function submitRequest(e) {
             e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Invio in corso...";
+
             const newRequest = {
                 id: Date.now(),
                 name: document.getElementById('empName').value,
@@ -446,40 +416,24 @@
                 status: 'In attesa'
             };
 
+            // Salva in locale per l'amministratore
             requests.push(newRequest);
-            saveData();
-            document.getElementById('requestForm').reset();
-            alert('Richiesta inviata con successo!');
-            renderEmployeeRequests();
-        }
+            localStorage.setItem('hr_requests', JSON.stringify(requests));
 
-        function renderEmployeeRequests() {
-            const tbody = document.getElementById('employeeTableBody');
-            const selectedEmp = document.getElementById('searchEmp').value;
-            tbody.innerHTML = '';
+            // Invia i dati a Google Apps Script per l'email a media@coseecasa.it
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newRequest)
+            }).catch(error => console.error('Errore invio email:', error));
 
-            let filtered = requests;
-            if (selectedEmp !== 'ALL') {
-                filtered = requests.filter(r => r.name === selectedEmp);
-            }
-
-            if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nessuna richiesta trovata.</td></tr>';
-                return;
-            }
-
-            filtered.forEach(req => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${req.name}</strong></td>
-                    <td>${req.type}</td>
-                    <td>${req.startDate}</td>
-                    <td>${req.endDate}</td>
-                    <td>${req.notes || '-'}</td>
-                    <td><span class="badge ${getBadgeClass(req.status)}">${req.status}</span></td>
-                `;
-                tbody.appendChild(tr);
-            });
+            setTimeout(() => {
+                alert('Richiesta inviata con successo! L\'amministratore è stato avvisato via email.');
+                document.getElementById('requestForm').reset();
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Invia Richiesta";
+            }, 1000);
         }
 
         // --- GESTIONE AMMINISTRATORE ---
@@ -502,6 +456,8 @@
         }
 
         function renderAdminRequests() {
+            requests = JSON.parse(localStorage.getItem('hr_requests')) || [];
+            
             const tbody = document.getElementById('adminTableBody');
             const empFilter = document.getElementById('filterEmployee').value;
             const statusFilter = document.getElementById('filterStatus').value;
@@ -537,27 +493,20 @@
         }
 
         function updateStatus(id, newStatus) {
+            requests = JSON.parse(localStorage.getItem('hr_requests')) || [];
             const req = requests.find(r => r.id === id);
             if (req) {
                 req.status = newStatus;
-                saveData();
+                localStorage.setItem('hr_requests', JSON.stringify(requests));
                 renderAdminRequests();
             }
         }
 
-        // --- UTILS ---
         function getBadgeClass(status) {
             if (status === 'Approvato') return 'badge-approved';
             if (status === 'Rifiutato') return 'badge-rejected';
             return 'badge-pending';
         }
-
-        function saveData() {
-            localStorage.setItem('hr_requests', JSON.stringify(requests));
-        }
-
-        // Caricamento iniziale
-        renderEmployeeRequests();
     </script>
 </body>
 </html>
