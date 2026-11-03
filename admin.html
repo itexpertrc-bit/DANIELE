@@ -348,7 +348,6 @@
             document.getElementById('adminPass').value = '';
         }
 
-        // SCARICA I DATI DAL CLOUD (GOOGLE SHEETS)
         function renderAdminRequests() {
             const tbody = document.getElementById('adminTableBody');
             tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Caricamento dati dal cloud...</td></tr>';
@@ -360,7 +359,7 @@
                         requests = data;
                         displayTable();
                     } else {
-                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Errore nel caricamento dei dati.</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nessuna richiesta trovata.</td></tr>';
                     }
                 })
                 .catch(error => {
@@ -406,7 +405,6 @@
             });
         }
 
-        // AGGIORNA LO STATO NEL CLOUD E SINCRONIZZA SU TUTTI I DISPOSITIVI
         function updateStatus(id, newStatus) {
             const req = requests.find(r => r.id === id);
             if (req) {
@@ -416,9 +414,9 @@
                 fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({ action: "update", id: id, status: newStatus })
-                }).catch(error => console.error('Errore aggiornamento stato:', error));
+                }).catch(error => console.error('Errore aggiornamento:', error));
             }
         }
 
