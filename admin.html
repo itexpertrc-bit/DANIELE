@@ -267,7 +267,7 @@
             <form onsubmit="loginAdmin(event)">
                 <div class="form-group">
                     <label for="adminPass">Password di Accesso</label>
-                    <input type="password" id="adminPass" required placeholder="Inserisci password (default: 0rionMDC17)">
+                    <input type="password" id="adminPass" required placeholder="Inserisci password">
                 </div>
                 <button type="submit" class="btn" style="width: 100%;">Accedi</button>
             </form>
@@ -326,13 +326,13 @@
 
     <script>
         const ADMIN_PASSWORD = "0rionMDC17";
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyM-jaQP55R73YBWRJFCcWl5WTpRqXNi8Wnv8zFUPWfr2qKmH8HrB6DSMrAdOoeG1O45w/exec"; // Sostituisci con il tuo URL se diverso
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyM-jaQP55R73YBWRJFCcWl5WTpRqXNi8Wnv8zFUPWfr2qKmH8HrB6DSMrAdOoeG1O45w/exec";
 
         let requests = [];
 
         function loginAdmin(e) {
             e.preventDefault();
-            const pass = document.getElementById('adminPass'].value;
+            const pass = document.getElementById('adminPass').value;
             if (pass === ADMIN_PASSWORD) {
                 document.getElementById('admin-login').style.display = 'none';
                 document.getElementById('admin-dashboard').style.display = 'block';
