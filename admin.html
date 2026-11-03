@@ -37,7 +37,6 @@
             min-height: 100vh;
         }
 
-        /* HEADER PERFETTAMENTE CENTRATO E BILANCIATO */
         header {
             background-color: var(--unieuro-blue-dark);
             padding: 22px 30px;
@@ -50,9 +49,7 @@
             gap: 15px;
         }
 
-        header .header-left {
-            /* Spazio vuoto bilanciato a sinistra */
-        }
+        header .header-left {}
 
         header .title-card {
             background-color: var(--unieuro-orange);
@@ -234,7 +231,6 @@
             background-color: #fff;
         }
 
-        /* MEDIA QUERY DISPOSITIVI MOBILI */
         @media (max-width: 768px) {
             header {
                 grid-template-columns: 1fr;
@@ -242,37 +238,13 @@
                 text-align: center;
                 padding: 18px;
             }
-
-            header .header-left {
-                display: none;
-            }
-
-            .nav-home-container {
-                justify-self: center;
-                width: 100%;
-            }
-
-            .nav-home-btn {
-                width: 100%;
-            }
-
-            .container {
-                margin: 20px auto;
-                padding: 0 12px;
-            }
-
-            .card {
-                padding: 20px;
-            }
-
-            .filters {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .filters select {
-                width: 100%;
-            }
+            header .header-left { display: none; }
+            .nav-home-container { justify-self: center; width: 100%; }
+            .nav-home-btn { width: 100%; }
+            .container { margin: 20px auto; padding: 0 12px; }
+            .card { padding: 20px; }
+            .filters { flex-direction: column; gap: 10px; }
+            .filters select { width: 100%; }
         }
     </style>
 </head>
@@ -354,10 +326,13 @@
 
     <script>
         const ADMIN_PASSWORD = "admin123";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyM-jaQP55R73YBWRJFCcWl5WTpRqXNi8Wnv8zFUPWfr2qKmH8HrB6DSMrAdOoeG1O45w/exec"; // Sostituisci con il tuo URL se diverso
+
+        let requests = [];
 
         function loginAdmin(e) {
             e.preventDefault();
-            const pass = document.getElementById('adminPass').value;
+            const pass = document.getElementById('adminPass'].value;
             if (pass === ADMIN_PASSWORD) {
                 document.getElementById('admin-login').style.display = 'none';
                 document.getElementById('admin-dashboard').style.display = 'block';
@@ -373,8 +348,28 @@
             document.getElementById('adminPass').value = '';
         }
 
+        // SCARICA I DATI DAL CLOUD (GOOGLE SHEETS)
         function renderAdminRequests() {
-            let requests = JSON.parse(localStorage.getItem('hr_requests')) || [];
+            const tbody = document.getElementById('adminTableBody');
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Caricamento dati dal cloud...</td></tr>';
+
+            fetch(SCRIPT_URL)
+                .then(response => response.json())
+                .then(data => {
+                    if (Array.isArray(data)) {
+                        requests = data;
+                        displayTable();
+                    } else {
+                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Errore nel caricamento dei dati.</td></tr>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Errore:', error);
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Impossibile connettersi al server.</td></tr>';
+                });
+        }
+
+        function displayTable() {
             const tbody = document.getElementById('adminTableBody');
             const empFilter = document.getElementById('filterEmployee').value;
             const statusFilter = document.getElementById('filterStatus').value;
@@ -411,13 +406,19 @@
             });
         }
 
+        // AGGIORNA LO STATO NEL CLOUD E SINCRONIZZA SU TUTTI I DISPOSITIVI
         function updateStatus(id, newStatus) {
-            let requests = JSON.parse(localStorage.getItem('hr_requests')) || [];
             const req = requests.find(r => r.id === id);
             if (req) {
                 req.status = newStatus;
-                localStorage.setItem('hr_requests', JSON.stringify(requests));
-                renderAdminRequests();
+                displayTable();
+
+                fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: "update", id: id, status: newStatus })
+                }).catch(error => console.error('Errore aggiornamento stato:', error));
             }
         }
 
