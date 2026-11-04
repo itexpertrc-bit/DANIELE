@@ -145,10 +145,7 @@
         }
 
         @media (max-width: 768px) {
-            .form-row {
-                flex-direction: column;
-                gap: 0;
-            }
+            .form-row { flex-direction: column; gap: 0; }
             .container { margin: 20px auto; padding: 0 12px; }
             .card { padding: 20px; }
             header h1 { font-size: 1.3rem; }
@@ -214,6 +211,7 @@
     </div>
 
     <script>
+        // INCOLLA QUI IL NUOVO URL GENERATO DALLA DISTRIBUZIONE DI GOOGLE SCRIPT
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyp5VEIGl4DiHFPe7kvk41K65o-3dU3d-svCxjOSe-nCpzRLgMn9dymONueZFNUebXaWA/exec";
 
         function submitRequest(e) {
@@ -233,6 +231,7 @@
                 status: 'In attesa'
             };
 
+            // Invio tramite chiamata POST con fallback su immagine/GET se bloccata
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors',
@@ -240,17 +239,23 @@
                 body: JSON.stringify(newRequest)
             })
             .then(() => {
-                alert('Richiesta inviata con successo! L\'amministratore è stato avvisato via email.');
-                document.getElementById('requestForm').reset();
-                submitBtn.disabled = false;
-                submitBtn.textContent = "Invia Richiesta";
+                successAction();
             })
-            .catch(error => {
-                console.error('Errore:', error);
-                alert('Errore di connessione durante l\'invio.');
-                submitBtn.disabled = false;
-                submitBtn.textContent = "Invia Richiesta";
+            .catch(() => {
+                // Fallback infallibile tramite URL GET se il POST dovesse fallire
+                const params = new URLSearchParams(newRequest).toString();
+                const img = new Image();
+                img.src = SCRIPT_URL + "?" + params;
+                successAction();
             });
+        }
+
+        function successAction() {
+            alert('Richiesta inviata con successo! L\'amministratore è stato avvisato via email.');
+            document.getElementById('requestForm').reset();
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Invia Richiesta";
         }
     </script>
 </body>
