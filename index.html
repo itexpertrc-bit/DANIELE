@@ -163,11 +163,17 @@
     <div class="container">
         <div class="card">
             <h2>Nuova Richiesta Ferie / Permesso</h2>
-            <form id="requestForm" onsubmit="submitRequest(event)">
+            <!-- Usiamo un iframe nascosto per evitare cambi di pagina e problemi di CORS -->
+            <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted) { alertSuccess(); }"></iframe>
+            
+            <form id="requestForm" action="INCOLLA_QUI_IL_TUO_URL_GOOGLE_SCRIPT" method="POST" target="hidden_iframe" onsubmit="prepareSubmit(event)">
+                <input type="hidden" name="id" id="reqId">
+                <input type="hidden" name="status" value="In attesa">
+                
                 <div class="form-row">
                     <div class="form-group">
                         <label for="empName">Nome e Cognome Dipendente</label>
-                        <select id="empName" required>
+                        <select name="name" id="empName" required>
                             <option value="" disabled selected>Seleziona il tuo nome...</option>
                             <option value="MORABITO GIUSEPPE">MORABITO GIUSEPPE</option>
                             <option value="CAPONE DANIELE">CAPONE DANIELE</option>
@@ -183,7 +189,7 @@
                     </div>
                     <div class="form-group">
                         <label for="reqType">Tipologia</label>
-                        <select id="reqType" required>
+                        <select name="type" id="reqType" required>
                             <option value="Ferie">Ferie</option>
                             <option value="Permesso">Permesso Orario</option>
                             <option value="Malattia">Malattia</option>
@@ -194,16 +200,16 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="startDate">Data Inizio</label>
-                        <input type="date" id="startDate" required>
+                        <input type="date" name="startDate" id="startDate" required>
                     </div>
                     <div class="form-group">
                         <label for="endDate">Data Fine</label>
-                        <input type="date" id="endDate" required>
+                        <input type="date" name="endDate" id="endDate" required>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="notes">Note / Motivazione (opzionale)</label>
-                    <textarea id="notes" rows="3" placeholder="Aggiungi eventuali dettagli..."></textarea>
+                    <textarea name="notes" id="notes" rows="3" placeholder="Aggiungi eventuali dettagli..."></textarea>
                 </div>
                 <button type="submit" class="btn" id="submitBtn">Invia Richiesta</button>
             </form>
@@ -211,51 +217,29 @@
     </div>
 
     <script>
-        // INCOLLA QUI IL NUOVO URL GENERATO DALLA DISTRIBUZIONE DI GOOGLE SCRIPT
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzY6527JqW9rD895wA_2N080lNorHjzS28pndlyhbthDenESCvE6dE-fFdSaXIlAw4FMw/exec";
+        // Sostituisci l'action del form e questa costante con il tuo URL esatto di Google Apps Script
+        const SCRIPT_URL = "INCOLLA_QUI_IL_TUO_URL_GOOGLE_SCRIPT";
+        document.getElementById('requestForm').action = SCRIPT_URL;
 
-        function submitRequest(e) {
-            e.preventDefault();
-            
+        let submitted = false;
+
+        function prepareSubmit(e) {
+            document.getElementById('reqId').value = Date.now();
+            submitted = true;
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
             submitBtn.textContent = "Invio in corso...";
-
-            const newRequest = {
-                id: Date.now(),
-                name: document.getElementById('empName').value,
-                type: document.getElementById('reqType').value,
-                startDate: document.getElementById('startDate').value,
-                endDate: document.getElementById('endDate').value,
-                notes: document.getElementById('notes').value.trim(),
-                status: 'In attesa'
-            };
-
-            // Invio tramite chiamata POST con fallback su immagine/GET se bloccata
-            fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify(newRequest)
-            })
-            .then(() => {
-                successAction();
-            })
-            .catch(() => {
-                // Fallback infallibile tramite URL GET se il POST dovesse fallire
-                const params = new URLSearchParams(newRequest).toString();
-                const img = new Image();
-                img.src = SCRIPT_URL + "?" + params;
-                successAction();
-            });
         }
 
-        function successAction() {
-            alert('Richiesta inviata con successo! L\'amministratore è stato avvisato via email.');
-            document.getElementById('requestForm').reset();
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = false;
-            submitBtn.textContent = "Invia Richiesta";
+        function alertSuccess() {
+            if (submitted) {
+                alert('Richiesta inviata con successo! L\'amministratore è stato avvisato via email.');
+                document.getElementById('requestForm').reset();
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Invia Richiesta";
+                submitted = false;
+            }
         }
     </script>
 </body>
