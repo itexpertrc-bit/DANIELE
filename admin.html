@@ -251,6 +251,24 @@
         .msg.ok  { display: block; background: #e8f7ec; color: #14692b; border-color: #28a745; }
         .msg.err { display: block; background: #fdeaec; color: #9b1c2a; border-color: #dc3545; }
         .msg.info{ display: block; background: #eaf1ff; color: #002b66; border-color: #0047bb; }
+
+        .container { max-width: 1400px; }
+        .dash-grid { display: grid; grid-template-columns: 370px 1fr; gap: 25px; align-items: start; }
+        .archive-col { display: flex; flex-direction: column; gap: 25px; }
+        .archive-col .card { margin-bottom: 0; padding: 22px; }
+        .archive-ok { border-top-color: var(--success) !important; }
+        .archive-ko { border-top-color: var(--danger) !important; }
+        .count { background: var(--bg-light); border-radius: 12px; padding: 2px 10px; font-size: 0.85rem; margin-left: 8px; color: #333; }
+        .archive-list { display: flex; flex-direction: column; gap: 10px; max-height: 360px; overflow-y: auto; padding-right: 4px; }
+        .archive-item { border: 2px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 0.9rem; }
+        .archive-item .a-name { font-weight: 900; color: var(--unieuro-blue-dark); }
+        .archive-item .a-meta { margin-top: 2px; color: #444; font-size: 0.85rem; }
+        .archive-item .a-note { margin-top: 4px; color: #555; font-size: 0.85rem; font-style: italic; }
+        .archive-item .a-foot { margin-top: 8px; display: flex; justify-content: flex-end; }
+        .btn-del { background-color: #6c757d; }
+        .btn-del:hover { background-color: #565e64; }
+        .empty { text-align: center; color: #666; padding: 8px; font-weight: 700; }
+        @media (max-width: 1000px) { .dash-grid { grid-template-columns: 1fr; } .main-col { order: -1; } }
     </style>
 </head>
 <body>
@@ -281,18 +299,34 @@
 
         <!-- DASHBOARD ADMIN -->
         <div id="admin-dashboard" style="display: none;">
-            <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
-                    <h2>Pannello di Controllo HR</h2>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="btn" style="width:auto; padding: 10px 18px;" onclick="loadRequests()">Aggiorna</button>
-                        <button class="btn btn-danger" onclick="logoutAdmin()">Logout</button>
-                    </div>
-                </div>
+            <div class="dash-grid">
 
-                <div class="filters">
-                    <select id="filterEmployee" onchange="displayTable()">
-                        <option value="ALL">Tutti i dipendenti</option>
+                <!-- SINISTRA: ARCHIVIO -->
+                <aside class="archive-col">
+                    <div class="card archive-ok">
+                        <h2>Archivio Approvate <span class="count" id="countApproved">0</span></h2>
+                        <div id="archiveApproved" class="archive-list"></div>
+                    </div>
+                    <div class="card archive-ko">
+                        <h2>Archivio Rifiutate <span class="count" id="countRejected">0</span></h2>
+                        <div id="archiveRejected" class="archive-list"></div>
+                    </div>
+                </aside>
+
+                <!-- DESTRA: PANNELLO DI CONTROLLO -->
+                <main class="main-col">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+                            <h2>Pannello di Controllo HR</h2>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn" style="width:auto; padding: 10px 18px;" onclick="loadRequests()">Aggiorna</button>
+                                <button class="btn btn-danger" onclick="logoutAdmin()">Logout</button>
+                            </div>
+                        </div>
+
+                        <div class="filters">
+                            <select id="filterEmployee" onchange="displayTable()">
+                                <option value="ALL">Tutti i dipendenti</option>
                         <option value="MORABITO GIUSEPPE">MORABITO GIUSEPPE</option>
                         <option value="CAPONE DANIELE">CAPONE DANIELE</option>
                         <option value="D'AGOSTINO DOMENICO">D'AGOSTINO DOMENICO</option>
@@ -303,36 +337,33 @@
                         <option value="PLUTINO ANTONINO">PLUTINO ANTONINO</option>
                         <option value="ZUMBO VITALIANO">ZUMBO VITALIANO</option>
                         <option value="OPANASENKO POLINA">OPANASENKO POLINA</option>
-                    </select>
-                    <select id="filterStatus" onchange="displayTable()">
-                        <option value="ALL">Tutti gli stati</option>
-                        <option value="In attesa">In attesa</option>
-                        <option value="Approvato">Approvato</option>
-                        <option value="Rifiutato">Rifiutato</option>
-                    </select>
-                </div>
+                            </select>
+                        </div>
 
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Dipendente</th>
-                                <th>Tipo</th>
-                                <th>Periodo</th>
-                                <th>Note</th>
-                                <th>Stato</th>
-                                <th>Azioni</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminTableBody"></tbody>
-                    </table>
-                </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Dipendente</th>
+                                        <th>Tipo</th>
+                                        <th>Periodo</th>
+                                        <th>Note</th>
+                                        <th>Stato</th>
+                                        <th>Azioni</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </main>
+
             </div>
         </div>
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyPtbfa4P_RL3zShlWLaKpARpOBKX2DoyWyCxT0egQb7lOgVXYK7E7b26O61zmkzRi9_Q/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyp5VEIGl4DiHFPe7kvk41K65o-3dU3d-svCxjOSe-nCpzRLgMn9dymONueZFNUebXaWA/exec";
 
         // Chiamata verso Google Script via JSONP (nessun problema di CORS)
         function jsonp(params, timeoutMs) {
@@ -418,42 +449,90 @@
             return 'badge-pending';
         }
 
-        function displayTable() {
-            const tbody = document.getElementById('adminTableBody');
-            const empFilter = document.getElementById('filterEmployee').value;
-            const statusFilter = document.getElementById('filterStatus').value;
-
-            const filtered = requests
-                .filter(r => (empFilter === 'ALL' || r.name === empFilter) &&
-                             (statusFilter === 'ALL' || r.status === statusFilter))
-                .sort((a, b) => String(b.id).localeCompare(String(a.id), undefined, { numeric: true }));
-
-            if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nessuna richiesta da mostrare.</td></tr>';
-                return;
-            }
-            tbody.innerHTML = '';
-            filtered.forEach(req => {
-                const tr = document.createElement('tr');
-                const pending = req.status === 'In attesa';
-                tr.innerHTML = `
-                    <td><strong>${esc(req.name)}</strong></td>
-                    <td>${esc(req.type)}</td>
-                    <td>${fmtDate(req.startDate)} al ${fmtDate(req.endDate)}</td>
-                    <td>${esc(req.notes) || '-'}</td>
-                    <td><span class="badge ${getBadgeClass(req.status)}">${esc(req.status)}</span></td>
-                    <td>${pending ? `
-                        <div style="display:flex; gap:8px;">
-                            <button class="btn btn-success" style="padding:6px 12px; font-size:0.85rem;" data-id="${esc(req.id)}" data-status="Approvato">Approva</button>
-                            <button class="btn btn-danger" style="padding:6px 12px; font-size:0.85rem;" data-id="${esc(req.id)}" data-status="Rifiutato">Rifiuta</button>
-                        </div>` : '<small>Gestita</small>'}</td>`;
-                tbody.appendChild(tr);
-            });
+        function sortById(list) {
+            return list.sort((a, b) => String(b.id).localeCompare(String(a.id), undefined, { numeric: true }));
         }
 
-        document.getElementById('adminTableBody').addEventListener('click', async function (e) {
-            const b = e.target.closest('button[data-id]');
+        function archiveItem(r) {
+            return `
+                <div class="archive-item">
+                    <div class="a-name">${esc(r.name)}</div>
+                    <div class="a-meta">${esc(r.type)} &middot; ${fmtDate(r.startDate)} al ${fmtDate(r.endDate)}</div>
+                    ${r.notes ? `<div class="a-note">${esc(r.notes)}</div>` : ''}
+                    <div class="a-foot">
+                        <button class="btn btn-del" style="width:auto; padding:5px 12px; font-size:0.8rem;" data-del="${esc(r.id)}">Cancella</button>
+                    </div>
+                </div>`;
+        }
+
+        function displayTable() {
+            const empFilter = document.getElementById('filterEmployee').value;
+            const all = requests.filter(r => empFilter === 'ALL' || r.name === empFilter);
+
+            const pending  = sortById(all.filter(r => r.status === 'In attesa'));
+            const approved = sortById(all.filter(r => r.status === 'Approvato'));
+            const rejected = sortById(all.filter(r => r.status === 'Rifiutato'));
+
+            // Pannello di controllo (richieste in attesa)
+            const tbody = document.getElementById('adminTableBody');
+            if (pending.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nessuna richiesta in attesa.</td></tr>';
+            } else {
+                tbody.innerHTML = '';
+                pending.forEach(req => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${esc(req.name)}</strong></td>
+                        <td>${esc(req.type)}</td>
+                        <td>${fmtDate(req.startDate)} al ${fmtDate(req.endDate)}</td>
+                        <td>${esc(req.notes) || '-'}</td>
+                        <td><span class="badge ${getBadgeClass(req.status)}">${esc(req.status)}</span></td>
+                        <td>
+                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                <button class="btn btn-success" style="width:auto; padding:6px 12px; font-size:0.85rem;" data-id="${esc(req.id)}" data-status="Approvato">Approva</button>
+                                <button class="btn btn-danger" style="width:auto; padding:6px 12px; font-size:0.85rem;" data-id="${esc(req.id)}" data-status="Rifiutato">Rifiuta</button>
+                                <button class="btn btn-del" style="width:auto; padding:6px 12px; font-size:0.85rem;" data-del="${esc(req.id)}">Cancella</button>
+                            </div>
+                        </td>`;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            // Archivi a sinistra: approvate sopra, rifiutate sotto
+            document.getElementById('countApproved').textContent = approved.length;
+            document.getElementById('countRejected').textContent = rejected.length;
+            document.getElementById('archiveApproved').innerHTML =
+                approved.length ? approved.map(archiveItem).join('') : '<div class="empty">Nessuna richiesta approvata</div>';
+            document.getElementById('archiveRejected').innerHTML =
+                rejected.length ? rejected.map(archiveItem).join('') : '<div class="empty">Nessuna richiesta rifiutata</div>';
+        }
+
+        document.getElementById('admin-dashboard').addEventListener('click', async function (e) {
+            const b = e.target.closest('button[data-id], button[data-del]');
             if (!b) return;
+
+            // Cancellazione
+            if (b.dataset.del) {
+                const id = b.dataset.del;
+                const r = requests.find(x => String(x.id) === String(id));
+                const label = r ? r.name + ' (' + fmtDate(r.startDate) + ' - ' + fmtDate(r.endDate) + ')' : 'questa richiesta';
+                if (!confirm('Vuoi cancellare definitivamente la richiesta di ' + label + '?')) return;
+                b.disabled = true;
+                try {
+                    const d = await jsonp({ action: 'delete', id: id, password: adminPassword }, 20000);
+                    if (d && d.ok) {
+                        requests = requests.filter(x => String(x.id) !== String(id));
+                    } else {
+                        alert('Cancellazione non riuscita: ' + ((d && d.error) || 'errore sconosciuto'));
+                    }
+                } catch (err) {
+                    alert('Cancellazione non riuscita: connessione al server assente.');
+                }
+                displayTable();
+                return;
+            }
+
+            // Approva / Rifiuta
             const id = b.dataset.id, status = b.dataset.status;
             b.parentElement.querySelectorAll('button').forEach(x => x.disabled = true);
             try {
