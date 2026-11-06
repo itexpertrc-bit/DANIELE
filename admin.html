@@ -251,6 +251,13 @@
         .msg.ok  { display: block; background: #e8f7ec; color: #14692b; border-color: #28a745; }
         .msg.err { display: block; background: #fdeaec; color: #9b1c2a; border-color: #dc3545; }
         .msg.info{ display: block; background: #eaf1ff; color: #002b66; border-color: #0047bb; }
+        .logo { display: block; height: 76px; width: 76px; object-fit: cover; background: #000; border-radius: 16px; border: 2px solid #000; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        header { flex-wrap: wrap; gap: 18px; }
+        header .header-left { justify-self: start; display: flex; align-items: center; }
+        @media (max-width: 768px) {
+            .logo { height: 64px; width: 64px; }
+            header .header-left { display: flex !important; justify-content: center; justify-self: center; }
+        }
 
         .container { max-width: 1400px; }
         .dash-grid { display: grid; grid-template-columns: 370px 1fr; gap: 25px; align-items: start; }
@@ -299,11 +306,13 @@
             body.printing .print-only { display: block !important; margin: 4px 0 14px; color: #333; font-size: 0.9rem; }
         }
     </style>
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
+    <link rel="apple-touch-icon" href="logo.jpg">
 </head>
 <body>
 
     <header>
-        <div class="header-left"></div>
+        <div class="header-left"><img class="logo" src="logo.jpg" alt="Orion HR Management"></div>
         <div class="title-card">
             <h1>Admin Panel - HR</h1>
         </div>
