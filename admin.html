@@ -269,6 +269,28 @@
         .btn-del:hover { background-color: #565e64; }
         .empty { text-align: center; color: #666; padding: 8px; font-weight: 700; }
         @media (max-width: 1000px) { .dash-grid { grid-template-columns: 1fr; } .main-col { order: -1; } }
+        .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px; }
+        .toolbar .selall { display: flex; align-items: center; gap: 6px; font-weight: 800; font-size: 0.85rem; cursor: pointer; margin: 0; }
+        .toolbar input[type=checkbox], .archive-item input[type=checkbox] { width: 18px; height: 18px; padding: 0; margin: 0; flex: none; cursor: pointer; accent-color: #0047bb; }
+        .toolbar .btn { width: auto; padding: 6px 12px; font-size: 0.8rem; }
+        .btn-tool { background-color: #0047bb; }
+        .btn-tool:hover { background-color: #002b66; }
+        .archive-item { display: flex; gap: 10px; align-items: flex-start; }
+        .archive-item .a-check { padding-top: 2px; display: flex; margin: 0; cursor: pointer; }
+        .archive-item .a-body { flex: 1; min-width: 0; }
+        .print-only { display: none; }
+        @media print {
+            body.printing { background: #fff !important; display: block; min-height: 0; }
+            body.printing header, body.printing .main-col, body.printing #admin-login,
+            body.printing .toolbar, body.printing .archive-item .a-check, body.printing .archive-item .a-foot,
+            body.printing .archive-col .card:not(.print-target) { display: none !important; }
+            body.printing .container { max-width: none; margin: 0; padding: 0; }
+            body.printing .dash-grid { display: block; }
+            body.printing .archive-col .card { box-shadow: none; border: none; padding: 0; }
+            body.printing .archive-list { max-height: none !important; overflow: visible !important; }
+            body.printing .archive-item { break-inside: avoid; border: 0; border-bottom: 1px solid #999; border-radius: 0; padding: 8px 0; }
+            body.printing .print-only { display: block !important; margin: 4px 0 14px; color: #333; font-size: 0.9rem; }
+        }
     </style>
 </head>
 <body>
@@ -303,12 +325,24 @@
 
                 <!-- SINISTRA: ARCHIVIO -->
                 <aside class="archive-col">
-                    <div class="card archive-ok">
+                    <div class="card archive-ok" id="cardApproved">
                         <h2>Archivio Approvate <span class="count" id="countApproved">0</span></h2>
+                        <div class="print-only" id="printSubApproved"></div>
+                        <div class="toolbar">
+                            <label class="selall"><input type="checkbox" data-selall="approved"> Seleziona tutto</label>
+                            <button class="btn btn-tool" data-print="approved">Stampa</button>
+                            <button class="btn btn-del" data-delmany="approved" disabled>Cancella selezionate (0)</button>
+                        </div>
                         <div id="archiveApproved" class="archive-list"></div>
                     </div>
-                    <div class="card archive-ko">
+                    <div class="card archive-ko" id="cardRejected">
                         <h2>Archivio Rifiutate <span class="count" id="countRejected">0</span></h2>
+                        <div class="print-only" id="printSubRejected"></div>
+                        <div class="toolbar">
+                            <label class="selall"><input type="checkbox" data-selall="rejected"> Seleziona tutto</label>
+                            <button class="btn btn-tool" data-print="rejected">Stampa</button>
+                            <button class="btn btn-del" data-delmany="rejected" disabled>Cancella selezionate (0)</button>
+                        </div>
                         <div id="archiveRejected" class="archive-list"></div>
                     </div>
                 </aside>
@@ -363,7 +397,7 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmOD99B5Ai2dwsDddkC0oQ1pGNYS4htp8Sy8yxJmntogjjjwMsrsm8NZPDTMmJla9TzA/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyp5VEIGl4DiHFPe7kvk41K65o-3dU3d-svCxjOSe-nCpzRLgMn9dymONueZFNUebXaWA/exec";
 
         // Chiamata verso Google Script via JSONP (nessun problema di CORS)
         function jsonp(params, timeoutMs) {
@@ -449,20 +483,45 @@
             return 'badge-pending';
         }
 
+        let selected = new Set();                       // id selezionati negli archivi
+        let currentVisible = { approved: [], rejected: [] };
+        const ARCH = {
+            approved: { card: 'cardApproved', list: 'archiveApproved', count: 'countApproved', sub: 'printSubApproved' },
+            rejected: { card: 'cardRejected', list: 'archiveRejected', count: 'countRejected', sub: 'printSubRejected' }
+        };
+
         function sortById(list) {
             return list.sort((a, b) => String(b.id).localeCompare(String(a.id), undefined, { numeric: true }));
         }
 
         function archiveItem(r) {
+            const id = String(r.id);
             return `
                 <div class="archive-item">
-                    <div class="a-name">${esc(r.name)}</div>
-                    <div class="a-meta">${esc(r.type)} &middot; ${fmtDate(r.startDate)} al ${fmtDate(r.endDate)}</div>
-                    ${r.notes ? `<div class="a-note">${esc(r.notes)}</div>` : ''}
-                    <div class="a-foot">
-                        <button class="btn btn-del" style="width:auto; padding:5px 12px; font-size:0.8rem;" data-del="${esc(r.id)}">Cancella</button>
+                    <label class="a-check"><input type="checkbox" data-sel="${esc(id)}" ${selected.has(id) ? 'checked' : ''}></label>
+                    <div class="a-body">
+                        <div class="a-name">${esc(r.name)}</div>
+                        <div class="a-meta">${esc(r.type)} &middot; ${fmtDate(r.startDate)} al ${fmtDate(r.endDate)}</div>
+                        ${r.notes ? `<div class="a-note">${esc(r.notes)}</div>` : ''}
+                        <div class="a-foot">
+                            <button class="btn btn-del" style="width:auto; padding:5px 12px; font-size:0.8rem;" data-del="${esc(id)}">Cancella</button>
+                        </div>
                     </div>
                 </div>`;
+        }
+
+        function updateToolbar(key) {
+            const ids = currentVisible[key];
+            const card = document.getElementById(ARCH[key].card);
+            const n = ids.filter(id => selected.has(id)).length;
+            const all = card.querySelector('[data-selall]');
+            all.checked = ids.length > 0 && n === ids.length;
+            all.indeterminate = n > 0 && n < ids.length;
+            all.disabled = ids.length === 0;
+            const del = card.querySelector('[data-delmany]');
+            del.disabled = n === 0;
+            del.textContent = 'Cancella selezionate (' + n + ')';
+            card.querySelector('[data-print]').disabled = ids.length === 0;
         }
 
         function displayTable() {
@@ -499,19 +558,89 @@
             }
 
             // Archivi a sinistra: approvate sopra, rifiutate sotto
+            currentVisible = { approved: approved.map(r => String(r.id)), rejected: rejected.map(r => String(r.id)) };
+            const visible = new Set(currentVisible.approved.concat(currentVisible.rejected));
+            selected = new Set([...selected].filter(id => visible.has(id)));   // niente selezioni "nascoste" dal filtro
+
             document.getElementById('countApproved').textContent = approved.length;
             document.getElementById('countRejected').textContent = rejected.length;
             document.getElementById('archiveApproved').innerHTML =
                 approved.length ? approved.map(archiveItem).join('') : '<div class="empty">Nessuna richiesta approvata</div>';
             document.getElementById('archiveRejected').innerHTML =
                 rejected.length ? rejected.map(archiveItem).join('') : '<div class="empty">Nessuna richiesta rifiutata</div>';
+            updateToolbar('approved');
+            updateToolbar('rejected');
         }
 
-        document.getElementById('admin-dashboard').addEventListener('click', async function (e) {
+        // Cancellazione di più richieste insieme
+        async function deleteMany(key) {
+            const ids = currentVisible[key].filter(id => selected.has(id));
+            if (!ids.length) return;
+            if (!confirm('Vuoi cancellare definitivamente ' + ids.length + (ids.length === 1 ? ' richiesta selezionata?' : ' richieste selezionate?') + '\n\nL\'operazione non si può annullare.')) return;
+
+            const btn = document.getElementById(ARCH[key].card).querySelector('[data-delmany]');
+            btn.disabled = true; btn.textContent = 'Cancellazione...';
+            const deleted = [];
+            for (let i = 0; i < ids.length; i += 40) {
+                const chunk = ids.slice(i, i + 40);
+                try {
+                    const d = await jsonp({ action: 'deleteMany', ids: chunk.join(','), password: adminPassword }, 30000);
+                    if (d && d.ok) { chunk.forEach(id => deleted.push(id)); }
+                    else { alert('Cancellazione non riuscita: ' + ((d && d.error) || 'errore sconosciuto')); break; }
+                } catch (err) {
+                    alert('Cancellazione non riuscita: connessione al server assente.');
+                    break;
+                }
+            }
+            requests = requests.filter(r => !deleted.includes(String(r.id)));
+            deleted.forEach(id => selected.delete(id));
+            displayTable();
+        }
+
+        // Stampa / salvataggio PDF di un archivio
+        function printArchive(key) {
+            const info = ARCH[key];
+            const emp = document.getElementById('filterEmployee').value;
+            const n = currentVisible[key].length;
+            const now = new Date();
+            const when = now.toLocaleDateString('it-IT') + ' ' + now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById(info.sub).textContent =
+                'Stampato il ' + when + (emp !== 'ALL' ? ' - Dipendente: ' + emp : '') + ' - Richieste: ' + n;
+            Object.keys(ARCH).forEach(k => document.getElementById(ARCH[k].card).classList.remove('print-target'));
+            document.getElementById(info.card).classList.add('print-target');
+            document.body.classList.add('printing');
+            window.addEventListener('afterprint', function () {
+                document.body.classList.remove('printing');
+            }, { once: true });
+            window.print();
+        }
+
+        const dash = document.getElementById('admin-dashboard');
+
+        // Spunte (singole e "Seleziona tutto")
+        dash.addEventListener('change', function (e) {
+            const t = e.target;
+            if (t.dataset.sel !== undefined) {
+                if (t.checked) selected.add(t.dataset.sel); else selected.delete(t.dataset.sel);
+                updateToolbar('approved'); updateToolbar('rejected');
+            } else if (t.dataset.selall) {
+                const key = t.dataset.selall;
+                currentVisible[key].forEach(id => { if (t.checked) selected.add(id); else selected.delete(id); });
+                document.getElementById(ARCH[key].card).querySelectorAll('[data-sel]').forEach(cb => { cb.checked = t.checked; });
+                updateToolbar(key);
+            }
+        });
+
+        dash.addEventListener('click', async function (e) {
+            const pb = e.target.closest('button[data-print]');
+            if (pb) { printArchive(pb.dataset.print); return; }
+            const mb = e.target.closest('button[data-delmany]');
+            if (mb) { deleteMany(mb.dataset.delmany); return; }
+
             const b = e.target.closest('button[data-id], button[data-del]');
             if (!b) return;
 
-            // Cancellazione
+            // Cancellazione singola
             if (b.dataset.del) {
                 const id = b.dataset.del;
                 const r = requests.find(x => String(x.id) === String(id));
