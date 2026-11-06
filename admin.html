@@ -271,23 +271,30 @@
         @media (max-width: 1000px) { .dash-grid { grid-template-columns: 1fr; } .main-col { order: -1; } }
         .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px; }
         .toolbar .selall { display: flex; align-items: center; gap: 6px; font-weight: 800; font-size: 0.85rem; cursor: pointer; margin: 0; }
-        .toolbar input[type=checkbox], .archive-item input[type=checkbox] { width: 18px; height: 18px; padding: 0; margin: 0; flex: none; cursor: pointer; accent-color: #0047bb; }
+        .toolbar input[type=checkbox], .archive-item input[type=checkbox], .col-sel input[type=checkbox] { width: 18px; height: 18px; padding: 0; margin: 0; flex: none; cursor: pointer; accent-color: #0047bb; }
         .toolbar .btn { width: auto; padding: 6px 12px; font-size: 0.8rem; }
         .btn-tool { background-color: #0047bb; }
         .btn-tool:hover { background-color: #002b66; }
         .archive-item { display: flex; gap: 10px; align-items: flex-start; }
         .archive-item .a-check { padding-top: 2px; display: flex; margin: 0; cursor: pointer; }
         .archive-item .a-body { flex: 1; min-width: 0; }
+        .col-sel { width: 36px; }
         .print-only { display: none; }
         @media print {
             body.printing { background: #fff !important; display: block; min-height: 0; }
-            body.printing header, body.printing .main-col, body.printing #admin-login,
+            body.printing header, body.printing .main-col:not(.print-target), body.printing #admin-login,
+            body.printing .no-print, body.printing .col-sel, body.printing .col-act, body.printing .print-hide,
             body.printing .toolbar, body.printing .archive-item .a-check, body.printing .archive-item .a-foot,
             body.printing .archive-col .card:not(.print-target) { display: none !important; }
             body.printing .container { max-width: none; margin: 0; padding: 0; }
             body.printing .dash-grid { display: block; }
             body.printing .archive-col .card { box-shadow: none; border: none; padding: 0; }
             body.printing .archive-list { max-height: none !important; overflow: visible !important; }
+            body.printing .main-col .card { box-shadow: none; border: none; padding: 0; }
+            body.printing .table-responsive { overflow: visible; }
+            body.printing table { width: 100%; border-collapse: collapse; }
+            body.printing th, body.printing td { border-bottom: 1px solid #999; padding: 6px 8px; text-align: left; background: #fff !important; }
+            body.printing tr { break-inside: avoid; }
             body.printing .archive-item { break-inside: avoid; border: 0; border-bottom: 1px solid #999; border-radius: 0; padding: 8px 0; }
             body.printing .print-only { display: block !important; margin: 4px 0 14px; color: #333; font-size: 0.9rem; }
         }
@@ -330,7 +337,7 @@
                         <div class="print-only" id="printSubApproved"></div>
                         <div class="toolbar">
                             <label class="selall"><input type="checkbox" data-selall="approved"> Seleziona tutto</label>
-                            <button class="btn btn-tool" data-print="approved">Stampa</button>
+                            <button class="btn btn-tool" data-print="approved" disabled>Stampa selezionate (0)</button>
                             <button class="btn btn-del" data-delmany="approved" disabled>Cancella selezionate (0)</button>
                         </div>
                         <div id="archiveApproved" class="archive-list"></div>
@@ -340,7 +347,7 @@
                         <div class="print-only" id="printSubRejected"></div>
                         <div class="toolbar">
                             <label class="selall"><input type="checkbox" data-selall="rejected"> Seleziona tutto</label>
-                            <button class="btn btn-tool" data-print="rejected">Stampa</button>
+                            <button class="btn btn-tool" data-print="rejected" disabled>Stampa selezionate (0)</button>
                             <button class="btn btn-del" data-delmany="rejected" disabled>Cancella selezionate (0)</button>
                         </div>
                         <div id="archiveRejected" class="archive-list"></div>
@@ -348,17 +355,18 @@
                 </aside>
 
                 <!-- DESTRA: PANNELLO DI CONTROLLO -->
-                <main class="main-col">
+                <main class="main-col" id="mainPanel">
                     <div class="card">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
                             <h2>Pannello di Controllo HR</h2>
-                            <div style="display: flex; gap: 10px;">
+                            <div class="no-print" style="display: flex; gap: 10px;">
                                 <button class="btn" style="width:auto; padding: 10px 18px;" onclick="loadRequests()">Aggiorna</button>
                                 <button class="btn btn-danger" onclick="logoutAdmin()">Logout</button>
                             </div>
                         </div>
 
-                        <div class="filters">
+                        <div class="print-only" id="printSubPending"></div>
+                        <div class="filters no-print">
                             <select id="filterEmployee" onchange="displayTable()">
                                 <option value="ALL">Tutti i dipendenti</option>
                         <option value="MORABITO GIUSEPPE">MORABITO GIUSEPPE</option>
@@ -374,16 +382,22 @@
                             </select>
                         </div>
 
+                        <div class="toolbar" id="toolbarPending">
+                            <label class="selall"><input type="checkbox" data-selall="pending"> Seleziona tutto</label>
+                            <button class="btn btn-tool" data-print="pending" disabled>Stampa selezionate (0)</button>
+                        </div>
+
                         <div class="table-responsive">
                             <table>
                                 <thead>
                                     <tr>
+                                        <th class="col-sel"></th>
                                         <th>Dipendente</th>
                                         <th>Tipo</th>
                                         <th>Periodo</th>
                                         <th>Note</th>
                                         <th>Stato</th>
-                                        <th>Azioni</th>
+                                        <th class="col-act">Azioni</th>
                                     </tr>
                                 </thead>
                                 <tbody id="adminTableBody"></tbody>
@@ -397,7 +411,7 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgXwgBmCrcX7JtpKvjdP8RRXxKScZCkK0F1br9fpLW_lpfrLQnxiTzbnpr9vL66UEhCQ/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyp5VEIGl4DiHFPe7kvk41K65o-3dU3d-svCxjOSe-nCpzRLgMn9dymONueZFNUebXaWA/exec";
 
         // Chiamata verso Google Script via JSONP (nessun problema di CORS)
         function jsonp(params, timeoutMs) {
@@ -483,11 +497,12 @@
             return 'badge-pending';
         }
 
-        let selected = new Set();                       // id selezionati negli archivi
-        let currentVisible = { approved: [], rejected: [] };
+        let selected = new Set();                       // id selezionati (pannello + archivi)
+        let currentVisible = { pending: [], approved: [], rejected: [] };
         const ARCH = {
-            approved: { card: 'cardApproved', list: 'archiveApproved', count: 'countApproved', sub: 'printSubApproved' },
-            rejected: { card: 'cardRejected', list: 'archiveRejected', count: 'countRejected', sub: 'printSubRejected' }
+            pending:  { bar: 'toolbarPending', list: 'adminTableBody', target: 'mainPanel',    sub: 'printSubPending',  rows: 'tr' },
+            approved: { bar: 'cardApproved',   list: 'archiveApproved', target: 'cardApproved', sub: 'printSubApproved', rows: '.archive-item' },
+            rejected: { bar: 'cardRejected',   list: 'archiveRejected', target: 'cardRejected', sub: 'printSubRejected', rows: '.archive-item' }
         };
 
         function sortById(list) {
@@ -512,17 +527,19 @@
 
         function updateToolbar(key) {
             const ids = currentVisible[key];
-            const card = document.getElementById(ARCH[key].card);
+            const bar = document.getElementById(ARCH[key].bar);
             const n = ids.filter(id => selected.has(id)).length;
-            const all = card.querySelector('[data-selall]');
+            const all = bar.querySelector('[data-selall]');
             all.checked = ids.length > 0 && n === ids.length;
             all.indeterminate = n > 0 && n < ids.length;
             all.disabled = ids.length === 0;
-            const del = card.querySelector('[data-delmany]');
-            del.disabled = n === 0;
-            del.textContent = 'Cancella selezionate (' + n + ')';
-            card.querySelector('[data-print]').disabled = ids.length === 0;
+            const del = bar.querySelector('[data-delmany]');
+            if (del) { del.disabled = n === 0; del.textContent = 'Cancella selezionate (' + n + ')'; }
+            const pr = bar.querySelector('[data-print]');
+            pr.disabled = n === 0;
+            pr.textContent = 'Stampa selezionate (' + n + ')';
         }
+        function updateAllToolbars() { ['pending', 'approved', 'rejected'].forEach(updateToolbar); }
 
         function displayTable() {
             const empFilter = document.getElementById('filterEmployee').value;
@@ -532,25 +549,35 @@
             const approved = sortById(all.filter(r => r.status === 'Approvato'));
             const rejected = sortById(all.filter(r => r.status === 'Rifiutato'));
 
+            currentVisible = {
+                pending: pending.map(r => String(r.id)),
+                approved: approved.map(r => String(r.id)),
+                rejected: rejected.map(r => String(r.id))
+            };
+            const visible = new Set(currentVisible.pending.concat(currentVisible.approved, currentVisible.rejected));
+            selected = new Set([...selected].filter(id => visible.has(id)));   // niente selezioni "nascoste" dal filtro
+
             // Pannello di controllo (richieste in attesa)
             const tbody = document.getElementById('adminTableBody');
             if (pending.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nessuna richiesta in attesa.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Nessuna richiesta in attesa.</td></tr>';
             } else {
                 tbody.innerHTML = '';
                 pending.forEach(req => {
+                    const id = String(req.id);
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
+                        <td class="col-sel"><input type="checkbox" data-sel="${esc(id)}" ${selected.has(id) ? 'checked' : ''}></td>
                         <td><strong>${esc(req.name)}</strong></td>
                         <td>${esc(req.type)}</td>
                         <td>${fmtDate(req.startDate)} al ${fmtDate(req.endDate)}</td>
                         <td>${esc(req.notes) || '-'}</td>
                         <td><span class="badge ${getBadgeClass(req.status)}">${esc(req.status)}</span></td>
-                        <td>
+                        <td class="col-act">
                             <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                                <button class="btn btn-success" style="width:auto; padding:6px 12px; font-size:0.85rem;" data-id="${esc(req.id)}" data-status="Approvato">Approva</button>
-                                <button class="btn btn-danger" style="width:auto; padding:6px 12px; font-size:0.85rem;" data-id="${esc(req.id)}" data-status="Rifiutato">Rifiuta</button>
-                                <button class="btn btn-del" style="width:auto; padding:6px 12px; font-size:0.85rem;" data-del="${esc(req.id)}">Cancella</button>
+                                <button class="btn btn-success" style="width:auto; padding:6px 12px; font-size:0.85rem;" data-id="${esc(id)}" data-status="Approvato">Approva</button>
+                                <button class="btn btn-danger" style="width:auto; padding:6px 12px; font-size:0.85rem;" data-id="${esc(id)}" data-status="Rifiutato">Rifiuta</button>
+                                <button class="btn btn-del" style="width:auto; padding:6px 12px; font-size:0.85rem;" data-del="${esc(id)}">Cancella</button>
                             </div>
                         </td>`;
                     tbody.appendChild(tr);
@@ -558,27 +585,22 @@
             }
 
             // Archivi a sinistra: approvate sopra, rifiutate sotto
-            currentVisible = { approved: approved.map(r => String(r.id)), rejected: rejected.map(r => String(r.id)) };
-            const visible = new Set(currentVisible.approved.concat(currentVisible.rejected));
-            selected = new Set([...selected].filter(id => visible.has(id)));   // niente selezioni "nascoste" dal filtro
-
             document.getElementById('countApproved').textContent = approved.length;
             document.getElementById('countRejected').textContent = rejected.length;
             document.getElementById('archiveApproved').innerHTML =
                 approved.length ? approved.map(archiveItem).join('') : '<div class="empty">Nessuna richiesta approvata</div>';
             document.getElementById('archiveRejected').innerHTML =
                 rejected.length ? rejected.map(archiveItem).join('') : '<div class="empty">Nessuna richiesta rifiutata</div>';
-            updateToolbar('approved');
-            updateToolbar('rejected');
+            updateAllToolbars();
         }
 
-        // Cancellazione di più richieste insieme
+        // Cancellazione di più richieste insieme (archivi)
         async function deleteMany(key) {
             const ids = currentVisible[key].filter(id => selected.has(id));
             if (!ids.length) return;
             if (!confirm('Vuoi cancellare definitivamente ' + ids.length + (ids.length === 1 ? ' richiesta selezionata?' : ' richieste selezionate?') + '\n\nL\'operazione non si può annullare.')) return;
 
-            const btn = document.getElementById(ARCH[key].card).querySelector('[data-delmany]');
+            const btn = document.getElementById(ARCH[key].bar).querySelector('[data-delmany]');
             btn.disabled = true; btn.textContent = 'Cancellazione...';
             const deleted = [];
             for (let i = 0; i < ids.length; i += 40) {
@@ -597,21 +619,34 @@
             displayTable();
         }
 
-        // Stampa / salvataggio PDF di un archivio
-        function printArchive(key) {
+        // Stampa / salvataggio PDF: solo le richieste selezionate
+        function clearPrintMarks() {
+            document.body.classList.remove('printing');
+            document.querySelectorAll('.print-hide').forEach(el => el.classList.remove('print-hide'));
+            document.querySelectorAll('.print-target').forEach(el => el.classList.remove('print-target'));
+        }
+
+        function printSelection(key) {
             const info = ARCH[key];
+            const chosen = currentVisible[key].filter(id => selected.has(id));
+            if (!chosen.length) return;
+            clearPrintMarks();
+
+            // nasconde in stampa le righe NON spuntate
+            document.getElementById(info.list).querySelectorAll(info.rows).forEach(row => {
+                const cb = row.querySelector('[data-sel]');
+                if (!cb || !cb.checked) row.classList.add('print-hide');
+            });
+
             const emp = document.getElementById('filterEmployee').value;
-            const n = currentVisible[key].length;
             const now = new Date();
             const when = now.toLocaleDateString('it-IT') + ' ' + now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
             document.getElementById(info.sub).textContent =
-                'Stampato il ' + when + (emp !== 'ALL' ? ' - Dipendente: ' + emp : '') + ' - Richieste: ' + n;
-            Object.keys(ARCH).forEach(k => document.getElementById(ARCH[k].card).classList.remove('print-target'));
-            document.getElementById(info.card).classList.add('print-target');
+                'Stampato il ' + when + (emp !== 'ALL' ? ' - Dipendente: ' + emp : '') + ' - Richieste selezionate: ' + chosen.length;
+
+            document.getElementById(info.target).classList.add('print-target');
             document.body.classList.add('printing');
-            window.addEventListener('afterprint', function () {
-                document.body.classList.remove('printing');
-            }, { once: true });
+            window.addEventListener('afterprint', clearPrintMarks, { once: true });
             window.print();
         }
 
@@ -622,18 +657,18 @@
             const t = e.target;
             if (t.dataset.sel !== undefined) {
                 if (t.checked) selected.add(t.dataset.sel); else selected.delete(t.dataset.sel);
-                updateToolbar('approved'); updateToolbar('rejected');
+                updateAllToolbars();
             } else if (t.dataset.selall) {
                 const key = t.dataset.selall;
                 currentVisible[key].forEach(id => { if (t.checked) selected.add(id); else selected.delete(id); });
-                document.getElementById(ARCH[key].card).querySelectorAll('[data-sel]').forEach(cb => { cb.checked = t.checked; });
-                updateToolbar(key);
+                document.getElementById(ARCH[key].list).querySelectorAll('[data-sel]').forEach(cb => { cb.checked = t.checked; });
+                updateAllToolbars();
             }
         });
 
         dash.addEventListener('click', async function (e) {
             const pb = e.target.closest('button[data-print]');
-            if (pb) { printArchive(pb.dataset.print); return; }
+            if (pb) { printSelection(pb.dataset.print); return; }
             const mb = e.target.closest('button[data-delmany]');
             if (mb) { deleteMany(mb.dataset.delmany); return; }
 
@@ -669,6 +704,7 @@
                 if (d && d.ok) {
                     const r = requests.find(x => String(x.id) === String(id));
                     if (r) r.status = status;
+                    selected.delete(String(id));   // la richiesta passa in archivio: parte deselezionata
                 } else {
                     alert('Aggiornamento non riuscito: ' + ((d && d.error) || 'errore sconosciuto'));
                 }
