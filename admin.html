@@ -739,6 +739,7 @@
                     </div>
                     <div class="toolbar">
                         <button type="button" class="btn btn-small btn-del" data-sch="download">Scarica immagine</button>
+                        <button type="button" class="btn btn-small btn-del" data-sch="pdf">Scarica PDF</button>
                         <button type="button" class="btn btn-small" data-sch="publish">&#10003; Pubblica ai dipendenti</button>
                         <button type="button" class="btn btn-small btn-danger" data-sch="unpublish" id="schUnpub" hidden>Ritira orario</button>
                     </div>
@@ -782,7 +783,7 @@
     <div id="toast" class="toast" hidden></div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPwgO0ZYLEBhlSHfN1raZgKSzznC1xMJsz6AZsK5_Fa79MUCnpbY1KKcnRwvhQ_Erqbw/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwU_ekCf3gl43kcO-N5DAVOYDYxRRRLOaiEgIiGjglOcki_MhrsM3IvcchNGSk-M7xFnw/exec";
 
         // Chiamata verso Google Script: prima via JSONP (tag script), se non va via fetch (piano B)
         function jsonpOnce(params, timeoutMs) {
@@ -1907,6 +1908,7 @@
                 }, 'image/png');
                 return;
             }
+            if (a === 'pdf') { saveBlob(makePdfFromCanvas(schRender({ coverage: false, permits: false })), 'orario_' + schStart + '.pdf'); return; }
             if (a === 'publish') return schPublish();
             if (a === 'unpublish') {
                 if (!confirm('Ritirare l\'orario? I dipendenti non lo vedranno più.')) return;
@@ -2118,6 +2120,38 @@
             c.fillText('Orario aggiornato il ' + schDmy(n) + ' alle ' + pad2(n.getHours()) + ':' + pad2(n.getMinutes()), W - M, H - M - 8);
             c.textAlign = 'left'; c.fillText('HR Orion', M, H - M - 8);
             return cv;
+        }
+
+
+        /* ---------- PDF (senza librerie): una pagina A4 orizzontale con l'immagine ---------- */
+        function makePdfFromCanvas(cv) {
+            const jpg = atob(cv.toDataURL('image/jpeg', 0.95).split(',')[1]);
+            const jb = new Uint8Array(jpg.length); for (let i = 0; i < jpg.length; i++) jb[i] = jpg.charCodeAt(i);
+            const pw = 842, ph = 595, m = 24, sc = Math.min((pw - 2 * m) / cv.width, (ph - 2 * m) / cv.height);
+            const w = cv.width * sc, h = cv.height * sc, x = (pw - w) / 2, y = (ph - h) / 2;
+            const enc = new TextEncoder(), parts = [], offs = []; let len = 0;
+            const add = u => { parts.push(u); len += u.length; };
+            const addS = s => add(enc.encode(s));
+            const obj = (n, body) => { offs[n] = len; addS(n + ' 0 obj\n' + body + '\nendobj\n'); };
+            addS('%PDF-1.4\n');
+            obj(1, '<< /Type /Catalog /Pages 2 0 R >>');
+            obj(2, '<< /Type /Pages /Kids [3 0 R] /Count 1 >>');
+            obj(3, '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + pw + ' ' + ph + '] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>');
+            offs[4] = len;
+            addS('4 0 obj\n<< /Type /XObject /Subtype /Image /Width ' + cv.width + ' /Height ' + cv.height + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + jb.length + ' >>\nstream\n');
+            add(jb); addS('\nendstream\nendobj\n');
+            const cs = 'q ' + w.toFixed(2) + ' 0 0 ' + h.toFixed(2) + ' ' + x.toFixed(2) + ' ' + y.toFixed(2) + ' cm /Im0 Do Q';
+            obj(5, '<< /Length ' + cs.length + ' >>\nstream\n' + cs + '\nendstream');
+            const xr = len;
+            let t = 'xref\n0 6\n0000000000 65535 f \n';
+            for (let i = 1; i <= 5; i++) t += String(offs[i]).padStart(10, '0') + ' 00000 n \n';
+            addS(t + 'trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n' + xr + '\n%%EOF');
+            return new Blob(parts, { type: 'application/pdf' });
+        }
+        function saveBlob(bl, name) {
+            const u = URL.createObjectURL(bl), l = document.createElement('a');
+            l.href = u; l.download = name; document.body.appendChild(l); l.click(); l.remove();
+            setTimeout(() => URL.revokeObjectURL(u), 4000);
         }
 
         /* ---------- pubblicazione ---------- */
