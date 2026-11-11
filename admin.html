@@ -358,6 +358,121 @@
             tbody td.col-sel { width: 100%; }
             tbody td.col-act > div { justify-content: flex-end; }
         }
+            /* ===== Novità: elementi comuni ===== */
+        :root { --warning: #ffc107; --danger: #dc3545; }
+        .badge { padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 900; color: #fff; display: inline-block; }
+        .badge-pending { background-color: var(--warning); color: #111; }
+        .badge-approved { background-color: var(--success); }
+        .badge-rejected { background-color: var(--danger); }
+        .btn-success { background-color: var(--success); }
+        .btn-success:hover { background-color: #218838; }
+        .btn-danger { background-color: var(--danger); }
+        .btn-danger:hover { background-color: #c82333; }
+        .btn-del { background-color: #6c757d; }
+        .btn-del:hover { background-color: #565e64; }
+        .btn-tool { background-color: #0047bb; }
+        .btn-tool:hover { background-color: #002b66; }
+        .btn-small { width: auto; padding: 8px 14px; font-size: 0.9rem; }
+        .form-group textarea { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem; font-weight: 700; background: #fff; resize: vertical; font-family: inherit; }
+        .empty { text-align: center; color: #666; padding: 8px; font-weight: 700; }
+        .muted { color: #888; font-weight: 700; }
+        .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+        .tab { flex: 1 1 auto; background: #fff; color: var(--unieuro-blue-dark); border: 2px solid #000; border-radius: 12px; padding: 12px 16px;
+               font-weight: 900; font-size: 1rem; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.2); position: relative; font-family: inherit; }
+        .tab:hover { transform: translateY(-1px); }
+        .tab.active { background: var(--unieuro-orange); color: #fff; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+        .dot { background: #dc3545; color: #fff; border-radius: 10px; padding: 1px 8px; font-size: 0.78rem; margin-left: 6px; display: inline-block; }
+        .dot[hidden] { display: none; }
+        .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(24px + env(safe-area-inset-bottom)); background: #111; color: #fff;
+                 padding: 12px 18px; border-radius: 12px; font-weight: 800; z-index: 2000; max-width: 92vw; border: 2px solid var(--unieuro-orange);
+                 box-shadow: 0 6px 20px rgba(0,0,0,0.45); text-align: center; }
+        .toast[hidden] { display: none; }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 1500; }
+        .modal[hidden] { display: none; }
+        .modal-box { background: #fff; border-radius: 14px; border-top: 5px solid var(--unieuro-orange); padding: 22px; width: 100%; max-width: 480px; max-height: 92vh; overflow: auto; }
+        .modal-box h3 { color: var(--unieuro-blue-dark); margin-bottom: 12px; font-size: 1.2rem; }
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 14px; flex-wrap: wrap; }
+        .modal-actions .btn { width: auto; }
+        .ov-list { padding-left: 20px; font-weight: 700; }
+        .ov-list li { margin: 4px 0; }
+        .remember { display: flex; align-items: center; gap: 8px; margin: 4px 0 16px; font-weight: 800; cursor: pointer; }
+        .remember input { width: 20px; height: 20px; accent-color: #0047bb; flex: none; }
+        @media print { .toast, .modal, .tabs { display: none !important; } }
+        /* ===== Pannello admin: schede, filtri, calendario, statistiche ===== */
+        .admin-tabs-wrap { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+        .admin-tabs-wrap .tabs { margin: 0; flex: 1 1 520px; }
+        .dash-actions { display: flex; gap: 8px; }
+        .dash-actions .btn { width: auto; padding: 10px 16px; }
+        .filters-grid { display: grid; grid-template-columns: 1.2fr 1.5fr 0.9fr 0.9fr auto; gap: 10px; margin-bottom: 16px; align-items: end; }
+        .filters-grid.export-filters { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+        .filters-grid.stats-controls { grid-template-columns: 160px minmax(0, 320px); }
+        .filters-grid label { display: block; font-size: 0.8rem; font-weight: 800; color: #333; margin-bottom: 4px; }
+        .filters-grid select, .filters-grid input { padding: 10px; border: 2px solid var(--border); border-radius: 8px; font-weight: 700; background: #fff; width: 100%; min-width: 0; font-family: inherit; font-size: 0.95rem; }
+        .hint-left { color: #555; font-weight: 700; font-size: 0.9rem; margin-bottom: 12px; }
+        .overlap { margin-top: 5px; color: #7a4a00; background: #fff3cd; border: 1px solid #ffc107; border-radius: 6px; padding: 3px 7px; font-size: 0.78rem; font-weight: 800; }
+        .archive-item .a-reason { margin-top: 4px; color: #9b1c2a; font-size: 0.85rem; font-weight: 800; }
+        h3.sub { color: var(--unieuro-blue-dark); margin: 22px 0 8px; font-size: 1.05rem; font-weight: 900; }
+        /* calendario */
+        .cal-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+        .cal-bar .title { font-size: 1.25rem; font-weight: 900; color: var(--unieuro-blue-dark); min-width: 170px; text-align: center; }
+        .cal-bar .btn { width: auto; }
+        .cal-emp { padding: 9px; border: 2px solid var(--border); border-radius: 8px; font-weight: 700; background: #fff; font-family: inherit; max-width: 100%; }
+        .legend { display: flex; gap: 14px; align-items: center; margin-left: auto; font-size: 0.85rem; font-weight: 800; }
+        .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+        .cal-dow { text-align: center; font-weight: 900; color: var(--unieuro-blue-dark); font-size: 0.85rem; padding: 6px 0; }
+        .cal-day { min-height: 96px; border: 2px solid var(--border); border-radius: 8px; padding: 4px; background: #fff; cursor: pointer; text-align: left;
+                   display: flex; flex-direction: column; gap: 3px; overflow: hidden; font-family: inherit; color: var(--text); }
+        .cal-day.out { background: #f4f6f9; opacity: 0.5; }
+        .cal-day.we { background: #f4f6f9; }
+        .cal-day.hol { background: #fff0f0; border-color: #f3c0c4; }
+        .cal-day.today { border-color: var(--unieuro-orange); box-shadow: inset 0 0 0 2px var(--unieuro-orange); }
+        .cal-day.sel { outline: 3px solid var(--unieuro-blue); }
+        .cal-num { font-weight: 900; font-size: 0.85rem; }
+        .cal-chips { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .chip { font-size: 0.72rem; font-weight: 800; padding: 1px 5px; border-radius: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; line-height: 1.4; }
+        .chip.ok { background: var(--success); }
+        .chip.pend { background: var(--warning); color: #111; }
+        .chip.more { background: #6c757d; }
+        .cal-detail { margin-top: 16px; }
+        .cal-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; border: 2px solid var(--border); border-radius: 10px; padding: 8px 12px; margin-bottom: 8px; font-weight: 700; }
+        .cal-row b { flex: 1 1 200px; color: var(--unieuro-blue-dark); }
+        /* statistiche */
+        .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 8px; }
+        .kpi { border: 2px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; }
+        .kpi b { display: block; font-size: 1.8rem; color: var(--unieuro-blue-dark); }
+        .kpi span { font-size: 0.8rem; font-weight: 800; color: #555; }
+        .bar-row { display: grid; grid-template-columns: 120px minmax(0, 1fr) 44px; gap: 10px; align-items: center; margin: 6px 0; font-weight: 800; font-size: 0.9rem; }
+        .bar-row b { text-align: right; }
+        .bar { background: #eef1f6; border-radius: 6px; height: 18px; overflow: hidden; }
+        .bar > i { display: block; height: 100%; background: var(--unieuro-blue); border-radius: 6px; }
+        .bar-row.peak .bar > i { background: var(--unieuro-orange); }
+        .matrix th.num, .matrix td.num { text-align: center; }
+        /* dipendenti */
+        code.pin { font-size: 1.05rem; letter-spacing: 2px; background: #f4f6f9; padding: 3px 8px; border-radius: 6px; font-weight: 900; }
+        .row-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+        .row-actions .btn { width: auto; padding: 6px 12px; font-size: 0.82rem; }
+        @media (max-width: 1100px) { .filters-grid { grid-template-columns: 1fr 1fr; } .filters-grid.export-filters { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 520px) { .filters-grid, .filters-grid.export-filters, .filters-grid.stats-controls { grid-template-columns: 1fr; } }
+        @media (max-width: 700px) {
+            .tab { flex: 1 1 44%; padding: 10px 8px; font-size: 0.95rem; }
+            .dash-actions { width: 100%; } .dash-actions .btn { flex: 1; }
+            .cal-day { min-height: 58px; padding: 3px; }
+            .cal-chips { flex-direction: row; flex-wrap: wrap; gap: 3px; }
+            .chip { font-size: 0; width: 10px; height: 10px; padding: 0; border-radius: 50%; display: inline-block; }
+            .chip.more { font-size: 0.65rem; width: auto; height: auto; border-radius: 5px; padding: 0 4px; }
+            .legend { margin-left: 0; }
+            .bar-row { grid-template-columns: 90px minmax(0, 1fr) 36px; }
+            .cal-bar .title { min-width: 0; flex: 1; }
+        }
+        @media print {
+            body.printing .admin-tabs-wrap, body.printing .dash-actions { display: none !important; }
+            body.printing .print-target { box-shadow: none !important; border: none !important; padding: 0 !important; }
+            body.printing .overlap { display: none !important; }
+            body.printing .archive-item .a-reason { color: #333; }
+        }
     </style>
     <meta name="theme-color" content="#002b66">
     <meta name="mobile-web-app-capable" content="yes">
@@ -396,90 +511,205 @@
 
         <!-- DASHBOARD ADMIN -->
         <div id="admin-dashboard" style="display: none;">
-            <div class="dash-grid">
 
-                <!-- SINISTRA: ARCHIVIO -->
-                <aside class="archive-col">
-                    <div class="card archive-ok" id="cardApproved">
-                        <h2>Archivio Approvate <span class="count" id="countApproved">0</span></h2>
-                        <div class="print-only" id="printSubApproved"></div>
-                        <div class="toolbar">
-                            <label class="selall"><input type="checkbox" data-selall="approved"> Seleziona tutto</label>
-                            <button class="btn btn-tool" data-print="approved" disabled>Stampa selezionate (0)</button>
-                            <button class="btn btn-del" data-delmany="approved" disabled>Cancella selezionate (0)</button>
-                        </div>
-                        <div id="archiveApproved" class="archive-list"></div>
-                    </div>
-                    <div class="card archive-ko" id="cardRejected">
-                        <h2>Archivio Rifiutate <span class="count" id="countRejected">0</span></h2>
-                        <div class="print-only" id="printSubRejected"></div>
-                        <div class="toolbar">
-                            <label class="selall"><input type="checkbox" data-selall="rejected"> Seleziona tutto</label>
-                            <button class="btn btn-tool" data-print="rejected" disabled>Stampa selezionate (0)</button>
-                            <button class="btn btn-del" data-delmany="rejected" disabled>Cancella selezionate (0)</button>
-                        </div>
-                        <div id="archiveRejected" class="archive-list"></div>
-                    </div>
-                </aside>
+            <div class="admin-tabs-wrap no-print">
+                <div class="tabs" role="tablist">
+                    <button type="button" class="tab active" data-tab="requests">Richieste <span class="dot" id="pendingBadge" hidden>0</span></button>
+                    <button type="button" class="tab" data-tab="calendar">Calendario</button>
+                    <button type="button" class="tab" data-tab="stats">Statistiche</button>
+                    <button type="button" class="tab" data-tab="export">Esporta</button>
+                    <button type="button" class="tab" data-tab="employees">Dipendenti</button>
+                </div>
+                <div class="dash-actions">
+                    <button type="button" class="btn" id="reloadBtn">Aggiorna</button>
+                    <button type="button" class="btn btn-danger" onclick="logoutAdmin()">Logout</button>
+                </div>
+            </div>
 
-                <!-- DESTRA: PANNELLO DI CONTROLLO -->
-                <main class="main-col" id="mainPanel">
-                    <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+            <!-- ============ RICHIESTE ============ -->
+            <section class="tab-panel active" id="tab-requests">
+                <div class="dash-grid">
+
+                    <!-- SINISTRA: ARCHIVIO -->
+                    <aside class="archive-col">
+                        <div class="card archive-ok" id="cardApproved">
+                            <h2>Archivio Approvate <span class="count" id="countApproved">0</span></h2>
+                            <div class="print-only" id="printSubApproved"></div>
+                            <div class="toolbar">
+                                <label class="selall"><input type="checkbox" data-selall="approved"> Seleziona tutto</label>
+                                <button class="btn btn-tool" data-print="approved" disabled>Stampa selezionate (0)</button>
+                                <button class="btn btn-del" data-delmany="approved" disabled>Cancella selezionate (0)</button>
+                            </div>
+                            <div id="archiveApproved" class="archive-list"></div>
+                        </div>
+                        <div class="card archive-ko" id="cardRejected">
+                            <h2>Archivio Rifiutate <span class="count" id="countRejected">0</span></h2>
+                            <div class="print-only" id="printSubRejected"></div>
+                            <div class="toolbar">
+                                <label class="selall"><input type="checkbox" data-selall="rejected"> Seleziona tutto</label>
+                                <button class="btn btn-tool" data-print="rejected" disabled>Stampa selezionate (0)</button>
+                                <button class="btn btn-del" data-delmany="rejected" disabled>Cancella selezionate (0)</button>
+                            </div>
+                            <div id="archiveRejected" class="archive-list"></div>
+                        </div>
+                    </aside>
+
+                    <!-- DESTRA: PANNELLO DI CONTROLLO -->
+                    <main class="main-col" id="mainPanel">
+                        <div class="card">
                             <h2>Pannello di Controllo HR</h2>
-                            <div class="no-print" style="display: flex; gap: 10px;">
-                                <button class="btn" style="width:auto; padding: 10px 18px;" onclick="loadRequests()">Aggiorna</button>
-                                <button class="btn btn-danger" onclick="logoutAdmin()">Logout</button>
+                            <div class="print-only" id="printSubPending"></div>
+
+                            <div class="filters-grid no-print">
+                                <div><label for="filterEmployee">Dipendente</label>
+                                    <select id="filterEmployee"><option value="ALL">Tutti i dipendenti</option></select></div>
+                                <div><label for="filterSearch">Cerca</label>
+                                    <input type="search" id="filterSearch" placeholder="Nome, tipo, note..."></div>
+                                <div><label for="filterFrom">Dal</label><input type="date" id="filterFrom"></div>
+                                <div><label for="filterTo">Al</label><input type="date" id="filterTo"></div>
+                                <div><button type="button" class="btn btn-small btn-del" id="filterReset">Azzera</button></div>
+                            </div>
+
+                            <div class="toolbar" id="toolbarPending">
+                                <label class="selall"><input type="checkbox" data-selall="pending"> Seleziona tutto</label>
+                                <button class="btn btn-tool" data-print="pending" disabled>Stampa selezionate (0)</button>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="col-sel"></th>
+                                            <th>Dipendente</th>
+                                            <th>Tipo</th>
+                                            <th>Periodo</th>
+                                            <th>Note</th>
+                                            <th>Stato</th>
+                                            <th class="col-act">Azioni</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adminTableBody"></tbody>
+                                </table>
                             </div>
                         </div>
+                    </main>
+                </div>
+            </section>
 
-                        <div class="print-only" id="printSubPending"></div>
-                        <div class="filters no-print">
-                            <select id="filterEmployee" onchange="displayTable()">
-                                <option value="ALL">Tutti i dipendenti</option>
-                        <option value="MORABITO GIUSEPPE">MORABITO GIUSEPPE</option>
-                        <option value="CAPONE DANIELE">CAPONE DANIELE</option>
-                        <option value="D'AGOSTINO DOMENICO">D'AGOSTINO DOMENICO</option>
-                        <option value="KEITA OUSMANE">KEITA OUSMANE</option>
-                        <option value="RODI GIORGIO">RODI GIORGIO</option>
-                        <option value="VIOLA PAOLO">VIOLA PAOLO</option>
-                        <option value="ROSATO DOMENICO">ROSATO DOMENICO</option>
-                        <option value="PLUTINO ANTONINO">PLUTINO ANTONINO</option>
-                        <option value="ZUMBO VITALIANO">ZUMBO VITALIANO</option>
-                        <option value="OPANASENKO POLINA">OPANASENKO POLINA</option>
-                            </select>
-                        </div>
-
-                        <div class="toolbar" id="toolbarPending">
-                            <label class="selall"><input type="checkbox" data-selall="pending"> Seleziona tutto</label>
-                            <button class="btn btn-tool" data-print="pending" disabled>Stampa selezionate (0)</button>
-                        </div>
-
-                        <div class="table-responsive">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th class="col-sel"></th>
-                                        <th>Dipendente</th>
-                                        <th>Tipo</th>
-                                        <th>Periodo</th>
-                                        <th>Note</th>
-                                        <th>Stato</th>
-                                        <th class="col-act">Azioni</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="adminTableBody"></tbody>
-                            </table>
-                        </div>
+            <!-- ============ CALENDARIO ============ -->
+            <section class="tab-panel" id="tab-calendar">
+                <div class="card">
+                    <h2>Calendario assenze</h2>
+                    <div class="cal-bar">
+                        <button type="button" class="btn btn-small btn-tool" id="calPrev" aria-label="Mese precedente">&#8249;</button>
+                        <div class="title" id="calTitle"></div>
+                        <button type="button" class="btn btn-small btn-tool" id="calNext" aria-label="Mese successivo">&#8250;</button>
+                        <button type="button" class="btn btn-small btn-del" id="calToday">Oggi</button>
+                        <select id="calEmp" class="cal-emp"><option value="ALL">Tutti i dipendenti</option></select>
+                        <div class="legend"><span><i style="background:var(--success)"></i>Approvata</span><span><i style="background:var(--warning)"></i>In attesa</span></div>
                     </div>
-                </main>
+                    <div class="cal-grid" id="calGrid"></div>
+                    <div class="cal-detail" id="calDetail"></div>
+                </div>
+            </section>
 
-            </div>
+            <!-- ============ STATISTICHE ============ -->
+            <section class="tab-panel" id="tab-stats">
+                <div class="card">
+                    <h2>Statistiche assenze</h2>
+                    <div class="filters-grid stats-controls">
+                        <div><label for="statsYear">Anno</label><select id="statsYear"></select></div>
+                        <div><label for="statsMode">Conteggio dei giorni</label>
+                            <select id="statsMode">
+                                <option value="cal">Di calendario (tutti i giorni)</option>
+                                <option value="ls">Lavorativi lun-sab (esclusi festivi)</option>
+                                <option value="lv">Lavorativi lun-ven (esclusi festivi)</option>
+                            </select></div>
+                    </div>
+                    <p class="hint-left">I giorni di assenza si riferiscono alle richieste <b>approvate</b>.</p>
+                    <div class="kpis" id="statsKpis"></div>
+
+                    <h3 class="sub">Giorni di assenza per persona e per tipo</h3>
+                    <div class="table-responsive"><table class="matrix"><thead id="statsHead"></thead><tbody id="statsBody"></tbody></table></div>
+                    <p class="hint-left" id="statsZero"></p>
+
+                    <h3 class="sub">Mesi più carichi</h3>
+                    <div class="bars" id="statsMonths"></div>
+
+                    <h3 class="sub">Per tipologia</h3>
+                    <div class="bars" id="statsTypes"></div>
+                </div>
+            </section>
+
+            <!-- ============ ESPORTA ============ -->
+            <section class="tab-panel" id="tab-export">
+                <div class="card" id="exportCard">
+                    <h2>Esporta richieste</h2>
+                    <div class="print-only" id="printSubExport"></div>
+                    <div class="filters-grid export-filters no-print">
+                        <div><label for="exEmp">Dipendente</label><select id="exEmp"><option value="ALL">Tutti i dipendenti</option></select></div>
+                        <div><label for="exStatus">Stato</label>
+                            <select id="exStatus"><option value="ALL">Tutti gli stati</option><option>In attesa</option><option>Approvato</option><option>Rifiutato</option></select></div>
+                        <div><label for="exType">Tipologia</label>
+                            <select id="exType"><option value="ALL">Tutte</option><option>Ferie</option><option>Permesso</option><option>Malattia</option><option>Giorno Libero</option></select></div>
+                        <div><label for="exFrom">Dal</label><input type="date" id="exFrom"></div>
+                        <div><label for="exTo">Al</label><input type="date" id="exTo"></div>
+                    </div>
+                    <div class="toolbar no-print">
+                        <button type="button" class="btn btn-small btn-del" data-range="month">Questo mese</button>
+                        <button type="button" class="btn btn-small btn-del" data-range="prev">Mese scorso</button>
+                        <button type="button" class="btn btn-small btn-del" data-range="year">Anno corrente</button>
+                        <button type="button" class="btn btn-small btn-del" data-range="all">Tutto</button>
+                        <span style="flex:1"></span>
+                        <button type="button" class="btn btn-small btn-success" id="exXlsx">Scarica Excel (.xlsx)</button>
+                        <button type="button" class="btn btn-small btn-tool" id="exPrint">Stampa / PDF</button>
+                    </div>
+                    <p class="hint-left no-print" id="exCount"></p>
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>Dipendente</th><th>Tipo</th><th>Dal</th><th>Al</th><th>Giorni</th><th>Stato</th><th>Note / Motivo</th></tr></thead>
+                            <tbody id="exBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ DIPENDENTI ============ -->
+            <section class="tab-panel" id="tab-employees">
+                <div class="card">
+                    <h2>Gestione dipendenti <span class="count" id="empCount">0</span></h2>
+                    <p class="hint-left">Ogni dipendente accede con il proprio <b>PIN</b>. L'<b>email</b> serve per avvisarlo quando approvi o rifiuti una richiesta.</p>
+                    <div class="toolbar">
+                        <button type="button" class="btn btn-small btn-success" id="empAdd">+ Aggiungi dipendente</button>
+                        <label class="selall"><input type="checkbox" id="showPins"> Mostra i PIN</label>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>Nome</th><th>Email</th><th>PIN</th><th>Stato</th><th>Azioni</th></tr></thead>
+                            <tbody id="empBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
 
+    <!-- Finestra di dialogo generica -->
+    <div class="modal" id="modal" hidden>
+        <div class="modal-box" role="dialog" aria-modal="true">
+            <h3 id="modalTitle"></h3>
+            <div id="modalBody"></div>
+            <div class="msg" id="modalMsg" role="alert"></div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-del" id="modalCancel">Annulla</button>
+                <button type="button" class="btn" id="modalOk">Conferma</button>
+            </div>
+        </div>
+    </div>
+    <div id="toast" class="toast" hidden></div>
+
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgXwgBmCrcX7JtpKvjdP8RRXxKScZCkK0F1br9fpLW_lpfrLQnxiTzbnpr9vL66UEhCQ/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyp5VEIGl4DiHFPe7kvk41K65o-3dU3d-svCxjOSe-nCpzRLgMn9dymONueZFNUebXaWA/exec";
 
         // Chiamata verso Google Script: prima via JSONP (tag script), se non va via fetch (piano B)
         function jsonpOnce(params, timeoutMs) {
@@ -517,34 +747,204 @@
             return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
         }
+        function fmtDate(s) {
+            const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s || '');
+            return m ? m[3] + '/' + m[2] + '/' + m[1] : esc(s);
+        }
+        function byIdDesc(a, b) {
+            return String(b.id).localeCompare(String(a.id), undefined, { numeric: true });
+        }
+        function badgeClass(status) {
+            if (status === 'Approvato') return 'badge-approved';
+            if (status === 'Rifiutato') return 'badge-rejected';
+            return 'badge-pending';
+        }
+        function typeLabel(t) { return t === 'Permesso' ? 'Permesso orario' : t; }
+        let toastTimer = null;
+        function toast(text, ms) {
+            const t = document.getElementById('toast');
+            if (!t) return;
+            t.textContent = text; t.hidden = false;
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => { t.hidden = true; }, ms || 4500);
+        }
 
-        let adminPassword = '';   // resta solo in memoria: la verifica avviene sul server
+        /* ---------- Date, festivi, conteggio giorni ---------- */
+        const MESI = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
+        function pad2(n) { return String(n).padStart(2, '0'); }
+        function isoOf(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
+        function parseISO(s) { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null; }
+        function addDays(d, n) { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate() + n); return x; }
+
+        function easterSunday(y) {            // algoritmo gregoriano
+            const a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4,
+                f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30,
+                i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451),
+                month = Math.floor((h + l - 7 * m + 114) / 31), day = ((h + l - 7 * m + 114) % 31) + 1;
+            return new Date(y, month - 1, day);
+        }
+        const holidayCache = {};
+        const HOLIDAY_NAMES = {};
+        function holidaysOf(y) {
+            if (holidayCache[y]) return holidayCache[y];
+            const set = new Set();
+            const add = (m, d, name) => { const k = y + '-' + pad2(m) + '-' + pad2(d); set.add(k); HOLIDAY_NAMES[k] = name; };
+            add(1, 1, 'Capodanno'); add(1, 6, 'Epifania'); add(4, 25, 'Liberazione'); add(5, 1, 'Festa del Lavoro');
+            add(6, 2, 'Festa della Repubblica'); add(8, 15, 'Ferragosto'); add(11, 1, 'Ognissanti');
+            add(12, 8, 'Immacolata'); add(12, 25, 'Natale'); add(12, 26, 'Santo Stefano');
+            const pasqua = easterSunday(y), pasquetta = addDays(pasqua, 1);
+            set.add(isoOf(pasqua)); HOLIDAY_NAMES[isoOf(pasqua)] = 'Pasqua';
+            set.add(isoOf(pasquetta)); HOLIDAY_NAMES[isoOf(pasquetta)] = 'Lunedì dell\'Angelo';
+            holidayCache[y] = set; return set;
+        }
+        function isHoliday(iso) { return holidaysOf(+iso.slice(0, 4)).has(iso); }
+
+        // mode: 'cal' = tutti i giorni | 'lv' = lun-ven senza festivi | 'ls' = lun-sab senza festivi
+        function dayCounts(iso, mode) {
+            if (mode === 'cal') return true;
+            if (isHoliday(iso)) return false;
+            const dow = parseISO(iso).getDay();       // 0 = domenica
+            return mode === 'lv' ? (dow >= 1 && dow <= 5) : (dow >= 1 && dow <= 6);
+        }
+        // conta i giorni tra start e end (inclusi), opzionalmente solo dentro [from, to]
+        function countDays(start, end, mode, from, to) {
+            let s = start, e = end;
+            if (from && s < from) s = from;
+            if (to && e > to) e = to;
+            if (e < s) return 0;
+            let n = 0, d = parseISO(s); const last = parseISO(e);
+            for (let guard = 0; d <= last && guard < 800; guard++, d = addDays(d, 1)) if (dayCounts(isoOf(d), mode)) n++;
+            return n;
+        }
+        function shortName(n) {
+            const p = String(n).trim().split(/\s+/);
+            if (p.length === 1) return p[0];
+            return p[0] + ' ' + p.slice(1).map(x => x[0] + '.').join(' ');
+        }
+
+        /* ---------- Creazione di un vero file .xlsx (senza librerie esterne) ---------- */
+        const CRC_TABLE = (function () {
+            const t = new Uint32Array(256);
+            for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1); t[n] = c >>> 0; }
+            return t;
+        })();
+        function crc32(bytes) {
+            let c = 0xFFFFFFFF;
+            for (let i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8);
+            return (c ^ 0xFFFFFFFF) >>> 0;
+        }
+        function zipStore(files) {          // files: [{ name, text }]
+            const enc = new TextEncoder();
+            const parts = [], central = [];
+            let offset = 0;
+            files.forEach(f => {
+                const nameB = enc.encode(f.name), data = enc.encode(f.text), crc = crc32(data), size = data.length;
+                const lh = new DataView(new ArrayBuffer(30));
+                lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true);
+                lh.setUint16(8, 0, true); lh.setUint16(10, 0, true); lh.setUint16(12, 0x21, true);
+                lh.setUint32(14, crc, true); lh.setUint32(18, size, true); lh.setUint32(22, size, true);
+                lh.setUint16(26, nameB.length, true); lh.setUint16(28, 0, true);
+                parts.push(new Uint8Array(lh.buffer), nameB, data);
+                const ch = new DataView(new ArrayBuffer(46));
+                ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true);
+                ch.setUint16(10, 0, true); ch.setUint16(12, 0, true); ch.setUint16(14, 0x21, true);
+                ch.setUint32(16, crc, true); ch.setUint32(20, size, true); ch.setUint32(24, size, true);
+                ch.setUint16(28, nameB.length, true); ch.setUint16(30, 0, true); ch.setUint16(32, 0, true);
+                ch.setUint16(34, 0, true); ch.setUint16(36, 0, true); ch.setUint32(38, 0, true); ch.setUint32(42, offset, true);
+                central.push(new Uint8Array(ch.buffer), nameB);
+                offset += 30 + nameB.length + size;
+            });
+            let cSize = 0; central.forEach(c => { cSize += c.length; });
+            const end = new DataView(new ArrayBuffer(22));
+            end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true);
+            end.setUint32(12, cSize, true); end.setUint32(16, offset, true);
+            return new Blob(parts.concat(central, [new Uint8Array(end.buffer)]),
+                { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        }
+        function xmlEsc(s) {
+            return String(s == null ? '' : s).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '')
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+        function colName(i) { let s = ''; i++; while (i > 0) { const m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); } return s; }
+        function excelSerial(iso) { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso || ''); return m ? (Date.UTC(+m[1], +m[2] - 1, +m[3]) - Date.UTC(1899, 11, 30)) / 86400000 : null; }
+
+        // header: ['A','B'...]; rows: array di array; celle: stringa | numero | {date:'2026-11-05'}; widths: larghezze colonne
+        function buildXlsx(sheetName, header, rows, widths) {
+            const cell = (v, r, c) => {
+                const ref = colName(c) + r;
+                if (v && typeof v === 'object' && v.date) { const n = excelSerial(v.date); if (n !== null) return '<c r="' + ref + '" s="2"><v>' + n + '</v></c>'; v = v.date; }
+                if (typeof v === 'number') return '<c r="' + ref + '"><v>' + v + '</v></c>';
+                return '<c r="' + ref + '" t="inlineStr"><is><t xml:space="preserve">' + xmlEsc(v) + '</t></is></c>';
+            };
+            let sd = '<row r="1">' + header.map((h, c) => '<c r="' + colName(c) + '1" s="1" t="inlineStr"><is><t>' + xmlEsc(h) + '</t></is></c>').join('') + '</row>';
+            rows.forEach((row, i) => { sd += '<row r="' + (i + 2) + '">' + row.map((v, c) => cell(v, i + 2, c)).join('') + '</row>'; });
+            const last = colName(header.length - 1) + (rows.length + 1);
+            const cols = '<cols>' + widths.map((w, i) => '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>').join('') + '</cols>';
+            const NS = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"';
+            const files = [
+                { name: '[Content_Types].xml', text: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>' },
+                { name: '_rels/.rels', text: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>' },
+                { name: 'xl/workbook.xml', text: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook ' + NS + ' xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="' + xmlEsc(sheetName) + '" sheetId="1" r:id="rId1"/></sheets></workbook>' },
+                { name: 'xl/_rels/workbook.xml.rels', text: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>' },
+                { name: 'xl/styles.xml', text: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet ' + NS + '><numFmts count="1"><numFmt numFmtId="164" formatCode="dd/mm/yyyy"/></numFmts><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF002B66"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/><xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>' },
+                { name: 'xl/worksheets/sheet1.xml', text: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet ' + NS + '><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>' + cols + '<sheetData>' + sd + '</sheetData><autoFilter ref="A1:' + last + '"/></worksheet>' }
+            ];
+            return zipStore(files);
+        }
+
+        const $ = id => document.getElementById(id);
+        let adminPassword = '';           // resta solo in memoria: la verifica avviene sul server
         let requests = [];
+        let employees = [];
+        let selected = new Set();         // id selezionati (pannello + archivi)
+        let currentVisible = { pending: [], approved: [], rejected: [] };
+        let activeTab = 'requests';
+        let lastLoad = 0;
+        const now0 = new Date();
+        let calY = now0.getFullYear(), calM = now0.getMonth(), calSel = null;
 
-        function setLoginMsg(kind, text) {
-            const m = document.getElementById('loginMsg');
-            m.className = text ? 'msg ' + kind : 'msg';
-            m.textContent = text || '';
+        const ARCH = {
+            pending:  { bar: 'toolbarPending', list: 'adminTableBody', target: 'mainPanel',    sub: 'printSubPending',  rows: 'tr' },
+            approved: { bar: 'cardApproved',   list: 'archiveApproved', target: 'cardApproved', sub: 'printSubApproved', rows: '.archive-item' },
+            rejected: { bar: 'cardRejected',   list: 'archiveRejected', target: 'cardRejected', sub: 'printSubRejected', rows: '.archive-item' }
+        };
+
+        function setMsg(el, kind, text) { el.className = text ? 'msg ' + kind : 'msg'; el.textContent = text || ''; }
+        function setLoginMsg(kind, text) { setMsg($('loginMsg'), kind, text); }
+        function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+        function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+        /* ================= Accesso e caricamento dati ================= */
+        async function fetchAll(pass) {
+            const [a, b] = await Promise.all([
+                jsonp({ action: 'list', password: pass }, 25000),
+                jsonp({ action: 'emplist', password: pass }, 25000)
+            ]);
+            return { a, b };
         }
 
         async function loginAdmin(e) {
             e.preventDefault();
-            const btn = document.getElementById('loginBtn');
-            const pass = document.getElementById('adminPass').value;
+            const btn = $('loginBtn');
+            const pass = $('adminPass').value;
             btn.disabled = true; btn.textContent = 'Verifica in corso...';
             setLoginMsg('', '');
             try {
-                const d = await jsonp({ action: 'list', password: pass }, 20000);
-                if (d && d.ok) {
+                const { a, b } = await fetchAll(pass);
+                if (a && a.ok && b && b.ok) {
                     adminPassword = pass;
-                    requests = d.requests || [];
-                    document.getElementById('admin-login').style.display = 'none';
-                    document.getElementById('admin-dashboard').style.display = 'block';
-                    displayTable();
-                } else if (d && d.error === 'password') {
+                    requests = a.requests || [];
+                    employees = b.employees || [];
+                    lastLoad = Date.now();
+                    $('admin-login').style.display = 'none';
+                    $('admin-dashboard').style.display = 'block';
+                    refreshEmployeeSelects();
+                    initStatsControls();
+                    showTab('requests');
+                } else if ((a && a.error === 'password') || (b && b.error === 'password')) {
                     setLoginMsg('err', 'Password errata.');
                 } else {
-                    setLoginMsg('err', 'Errore del server: ' + ((d && d.error) || 'sconosciuto'));
+                    setLoginMsg('err', 'Errore del server: ' + ((a && a.error) || (b && b.error) || 'sconosciuto'));
                 }
             } catch (err) {
                 setLoginMsg('err', 'Impossibile contattare Google Script. Controlla che l\'URL sia corretto e che la distribuzione sia impostata su "Chiunque". (Dettaglio: ' + (err && err.message) + ')');
@@ -553,46 +953,131 @@
         }
 
         function logoutAdmin() {
-            adminPassword = ''; requests = [];
-            document.getElementById('admin-login').style.display = 'block';
-            document.getElementById('admin-dashboard').style.display = 'none';
-            document.getElementById('adminPass').value = '';
+            adminPassword = ''; requests = []; employees = []; selected = new Set();
+            $('admin-login').style.display = 'block';
+            $('admin-dashboard').style.display = 'none';
+            $('adminPass').value = '';
             setLoginMsg('', '');
         }
 
-        async function loadRequests() {
-            const tbody = document.getElementById('adminTableBody');
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Caricamento dati dal cloud...</td></tr>';
+        async function loadAll(silent) {
+            if (!adminPassword) return;
+            const btn = $('reloadBtn');
+            if (!silent) { btn.disabled = true; btn.textContent = 'Aggiorno...'; }
             try {
-                const d = await jsonp({ action: 'list', password: adminPassword }, 20000);
-                if (d && d.ok) { requests = d.requests || []; displayTable(); }
-                else { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Errore: ' + esc(d && d.error) + '</td></tr>'; }
+                const { a, b } = await fetchAll(adminPassword);
+                if (a && a.ok && b && b.ok) {
+                    requests = a.requests || []; employees = b.employees || [];
+                    lastLoad = Date.now();
+                    refreshEmployeeSelects();
+                    renderActiveTab();
+                    if (!silent) toast('Dati aggiornati.');
+                } else if ((a && a.error === 'password')) { logoutAdmin(); }
+                else if (!silent) toast('Aggiornamento non riuscito: ' + ((a && a.error) || 'errore'));
             } catch (err) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Impossibile connettersi al server.</td></tr>';
+                if (!silent) toast('Impossibile connettersi al server.');
             }
+            btn.disabled = false; btn.textContent = 'Aggiorna';
+        }
+        $('reloadBtn').addEventListener('click', () => loadAll(false));
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && adminPassword && Date.now() - lastLoad > 60000) loadAll(true);
+        });
+
+        /* ================= Schede ================= */
+        function showTab(tab) {
+            activeTab = tab;
+            document.querySelectorAll('.admin-tabs-wrap .tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+            document.querySelectorAll('#admin-dashboard .tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + tab));
+            renderActiveTab();
+        }
+        document.querySelectorAll('.admin-tabs-wrap .tab').forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab)));
+
+        function renderActiveTab() {
+            const pend = requests.filter(r => r.status === 'In attesa').length;
+            const badge = $('pendingBadge'); badge.textContent = pend; badge.hidden = pend === 0;
+            if (activeTab === 'requests') renderRequests();
+            else if (activeTab === 'calendar') renderCalendar();
+            else if (activeTab === 'stats') renderStats();
+            else if (activeTab === 'export') renderExport();
+            else if (activeTab === 'employees') renderEmployees();
         }
 
-        function fmtDate(s) {
-            const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s || '');
-            return m ? m[3] + '/' + m[2] + '/' + m[1] : esc(s);
+        function allNames() {
+            const s = new Set(employees.map(e => e.name));
+            requests.forEach(r => s.add(r.name));
+            return [...s].sort();
+        }
+        function refreshEmployeeSelects() {
+            ['filterEmployee', 'calEmp', 'exEmp'].forEach(id => {
+                const sel = $(id), cur = sel.value;
+                sel.innerHTML = '<option value="ALL">Tutti i dipendenti</option>' +
+                    allNames().map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('');
+                sel.value = [...sel.options].some(o => o.value === cur) ? cur : 'ALL';
+            });
         }
 
-        function getBadgeClass(status) {
-            if (status === 'Approvato') return 'badge-approved';
-            if (status === 'Rifiutato') return 'badge-rejected';
-            return 'badge-pending';
+        /* ================= Finestra di dialogo ================= */
+        function showModal(opt) {
+            return new Promise(resolve => {
+                const modal = $('modal'), ok = $('modalOk'), cancel = $('modalCancel');
+                $('modalTitle').textContent = opt.title;
+                $('modalBody').innerHTML = opt.body;
+                setMsg($('modalMsg'), '', '');
+                ok.textContent = opt.okText || 'Conferma';
+                ok.className = 'btn ' + (opt.okClass || '');
+                modal.hidden = false;
+                const first = modal.querySelector('#modalBody input, #modalBody textarea, #modalBody select');
+                if (first) setTimeout(() => first.focus(), 50);
+                function close(val) {
+                    modal.hidden = true; ok.onclick = null; cancel.onclick = null; modal.onclick = null;
+                    document.removeEventListener('keydown', onKey); resolve(val);
+                }
+                function onKey(e) { if (e.key === 'Escape') close(null); }
+                document.addEventListener('keydown', onKey);
+                cancel.onclick = () => close(null);
+                modal.onclick = e => { if (e.target === modal) close(null); };
+                ok.onclick = () => {
+                    const data = opt.collect ? opt.collect() : {};
+                    if (opt.validate) { const err = opt.validate(data); if (err) { setMsg($('modalMsg'), 'err', err); return; } }
+                    close(data);
+                };
+            });
         }
 
-        let selected = new Set();                       // id selezionati (pannello + archivi)
-        let currentVisible = { pending: [], approved: [], rejected: [] };
-        const ARCH = {
-            pending:  { bar: 'toolbarPending', list: 'adminTableBody', target: 'mainPanel',    sub: 'printSubPending',  rows: 'tr' },
-            approved: { bar: 'cardApproved',   list: 'archiveApproved', target: 'cardApproved', sub: 'printSubApproved', rows: '.archive-item' },
-            rejected: { bar: 'cardRejected',   list: 'archiveRejected', target: 'cardRejected', sub: 'printSubRejected', rows: '.archive-item' }
-        };
+        /* ================= RICHIESTE ================= */
+        function sortById(list) { return list.sort(byIdDesc); }
 
-        function sortById(list) {
-            return list.sort((a, b) => String(b.id).localeCompare(String(a.id), undefined, { numeric: true }));
+        function passFilters(r) {
+            const emp = $('filterEmployee').value;
+            if (emp !== 'ALL' && r.name !== emp) return false;
+            const q = $('filterSearch').value.trim().toLowerCase();
+            if (q) {
+                const hay = [r.name, r.type, typeLabel(r.type), r.notes, r.status, r.reason, fmtDate(r.startDate), fmtDate(r.endDate)].join(' ').toLowerCase();
+                if (!q.split(/\s+/).every(w => hay.includes(w))) return false;
+            }
+            const from = $('filterFrom').value, to = $('filterTo').value;
+            if (from && r.endDate < from) return false;
+            if (to && r.startDate > to) return false;
+            return true;
+        }
+        ['filterEmployee', 'filterFrom', 'filterTo'].forEach(id => $(id).addEventListener('change', renderRequests));
+        $('filterSearch').addEventListener('input', renderRequests);
+        $('filterReset').addEventListener('click', () => {
+            $('filterEmployee').value = 'ALL'; $('filterSearch').value = ''; $('filterFrom').value = ''; $('filterTo').value = '';
+            renderRequests();
+        });
+
+        function overlapsWith(req) {
+            return requests.filter(o => o.status === 'Approvato' && o.id !== req.id && o.name !== req.name &&
+                o.startDate <= req.endDate && o.endDate >= req.startDate);
+        }
+        function shortRange(o) { return fmtDate(o.startDate).slice(0, 5) + '–' + fmtDate(o.endDate).slice(0, 5); }
+        function overlapNote(r) {
+            const ov = overlapsWith(r);
+            if (!ov.length) return '';
+            const items = ov.slice(0, 3).map(o => shortName(o.name) + ' (' + shortRange(o) + ')').join(', ');
+            return `<div class="overlap no-print">⚠ Già assenti: ${esc(items)}${ov.length > 3 ? ' +' + (ov.length - 3) : ''}</div>`;
         }
 
         function archiveItem(r) {
@@ -604,6 +1089,7 @@
                         <div class="a-name">${esc(r.name)}</div>
                         <div class="a-meta">${esc(r.type)} &middot; ${fmtDate(r.startDate)} al ${fmtDate(r.endDate)}</div>
                         ${r.notes ? `<div class="a-note">${esc(r.notes)}</div>` : ''}
+                        ${r.status === 'Rifiutato' && r.reason ? `<div class="a-reason">Motivo: ${esc(r.reason)}</div>` : ''}
                         <div class="a-foot">
                             <button class="btn btn-del" style="width:auto; padding:5px 12px; font-size:0.8rem;" data-del="${esc(id)}">Cancella</button>
                         </div>
@@ -613,7 +1099,7 @@
 
         function updateToolbar(key) {
             const ids = currentVisible[key];
-            const bar = document.getElementById(ARCH[key].bar);
+            const bar = $(ARCH[key].bar);
             const n = ids.filter(id => selected.has(id)).length;
             const all = bar.querySelector('[data-selall]');
             all.checked = ids.length > 0 && n === ids.length;
@@ -627,10 +1113,8 @@
         }
         function updateAllToolbars() { ['pending', 'approved', 'rejected'].forEach(updateToolbar); }
 
-        function displayTable() {
-            const empFilter = document.getElementById('filterEmployee').value;
-            const all = requests.filter(r => empFilter === 'ALL' || r.name === empFilter);
-
+        function renderRequests() {
+            const all = requests.filter(passFilters);
             const pending  = sortById(all.filter(r => r.status === 'In attesa'));
             const approved = sortById(all.filter(r => r.status === 'Approvato'));
             const rejected = sortById(all.filter(r => r.status === 'Rifiutato'));
@@ -641,10 +1125,9 @@
                 rejected: rejected.map(r => String(r.id))
             };
             const visible = new Set(currentVisible.pending.concat(currentVisible.approved, currentVisible.rejected));
-            selected = new Set([...selected].filter(id => visible.has(id)));   // niente selezioni "nascoste" dal filtro
+            selected = new Set([...selected].filter(id => visible.has(id)));   // niente selezioni "nascoste" dai filtri
 
-            // Pannello di controllo (richieste in attesa)
-            const tbody = document.getElementById('adminTableBody');
+            const tbody = $('adminTableBody');
             if (pending.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Nessuna richiesta in attesa.</td></tr>';
             } else {
@@ -656,9 +1139,9 @@
                         <td class="col-sel" data-label="Seleziona"><input type="checkbox" data-sel="${esc(id)}" ${selected.has(id) ? 'checked' : ''}></td>
                         <td data-label="Dipendente"><strong>${esc(req.name)}</strong></td>
                         <td data-label="Tipo">${esc(req.type)}</td>
-                        <td data-label="Periodo">${fmtDate(req.startDate)} al ${fmtDate(req.endDate)}</td>
+                        <td data-label="Periodo">${fmtDate(req.startDate)} al ${fmtDate(req.endDate)}${overlapNote(req)}</td>
                         <td data-label="Note">${esc(req.notes) || '-'}</td>
-                        <td data-label="Stato"><span class="badge ${getBadgeClass(req.status)}">${esc(req.status)}</span></td>
+                        <td data-label="Stato"><span class="badge ${badgeClass(req.status)}">${esc(req.status)}</span></td>
                         <td class="col-act" data-label="Azioni">
                             <div style="display:flex; gap:8px; flex-wrap:wrap;">
                                 <button class="btn btn-success" style="width:auto; padding:6px 12px; font-size:0.85rem;" data-id="${esc(id)}" data-status="Approvato">Approva</button>
@@ -669,24 +1152,103 @@
                     tbody.appendChild(tr);
                 });
             }
-
-            // Archivi a sinistra: approvate sopra, rifiutate sotto
-            document.getElementById('countApproved').textContent = approved.length;
-            document.getElementById('countRejected').textContent = rejected.length;
-            document.getElementById('archiveApproved').innerHTML =
-                approved.length ? approved.map(archiveItem).join('') : '<div class="empty">Nessuna richiesta approvata</div>';
-            document.getElementById('archiveRejected').innerHTML =
-                rejected.length ? rejected.map(archiveItem).join('') : '<div class="empty">Nessuna richiesta rifiutata</div>';
+            $('countApproved').textContent = approved.length;
+            $('countRejected').textContent = rejected.length;
+            $('archiveApproved').innerHTML = approved.length ? approved.map(archiveItem).join('') : '<div class="empty">Nessuna richiesta approvata</div>';
+            $('archiveRejected').innerHTML = rejected.length ? rejected.map(archiveItem).join('') : '<div class="empty">Nessuna richiesta rifiutata</div>';
             updateAllToolbars();
         }
 
-        // Cancellazione di più richieste insieme (archivi)
+        /* ---- esito: approva / rifiuta ---- */
+        function mailText(mail, status) {
+            const w = status === 'Approvato' ? 'approvata' : 'rifiutata';
+            if (mail === 'inviata') return 'Richiesta ' + w + '. Email di esito inviata al dipendente.';
+            if (mail === 'nessuna email') return 'Richiesta ' + w + '. Nessuna email salvata per questo dipendente: non è stato avvisato.';
+            return 'Richiesta ' + w + ', ma l\'email non è partita (' + mail + ').';
+        }
+        async function setStatus(id, status, reason) {
+            try {
+                const d = await jsonp({ action: 'update', id: id, status: status, reason: reason || '', password: adminPassword }, 30000);
+                if (d && d.ok) {
+                    const r = requests.find(x => String(x.id) === String(id));
+                    if (r) { r.status = status; r.reason = status === 'Rifiutato' ? (reason || '') : ''; }
+                    selected.delete(String(id));
+                    toast(mailText(d.mail, status), 6000);
+                } else {
+                    alert('Aggiornamento non riuscito: ' + ((d && d.error) || 'errore sconosciuto'));
+                }
+            } catch (err) {
+                alert('Aggiornamento non riuscito: connessione al server assente.');
+            }
+            renderActiveTab();
+        }
+        async function approve(id) {
+            const r = requests.find(x => String(x.id) === String(id));
+            if (!r) return;
+            const ov = overlapsWith(r);
+            if (ov.length) {
+                const ok = await showModal({
+                    title: 'Attenzione: sovrapposizione',
+                    body: `<p style="margin-bottom:10px;"><b>${esc(r.name)}</b> chiede dal ${fmtDate(r.startDate)} al ${fmtDate(r.endDate)}.<br>Nello stesso periodo sono già assenti:</p>
+                           <ul class="ov-list">${ov.map(o => `<li><b>${esc(o.name)}</b> &middot; ${esc(o.type)} &middot; ${fmtDate(o.startDate)} – ${fmtDate(o.endDate)}</li>`).join('')}</ul>
+                           <p style="margin-top:10px;">Vuoi approvare comunque?</p>`,
+                    okText: 'Approva comunque', okClass: 'btn-success'
+                });
+                if (!ok) { renderActiveTab(); return; }
+            }
+            await setStatus(id, 'Approvato', '');
+        }
+        async function reject(id) {
+            const r = requests.find(x => String(x.id) === String(id));
+            if (!r) return;
+            const res = await showModal({
+                title: 'Rifiuta la richiesta',
+                body: `<p style="margin-bottom:10px;"><b>${esc(r.name)}</b> &middot; ${esc(r.type)} &middot; ${fmtDate(r.startDate)} – ${fmtDate(r.endDate)}</p>
+                       <div class="form-group"><label for="rejReason">Motivo del rifiuto (lo vede il dipendente)</label>
+                       <textarea id="rejReason" rows="3" maxlength="300" placeholder="Facoltativo"></textarea></div>`,
+                okText: 'Rifiuta', okClass: 'btn-danger',
+                collect: () => ({ reason: $('rejReason').value.trim() })
+            });
+            if (!res) { renderActiveTab(); return; }
+            await setStatus(id, 'Rifiutato', res.reason);
+        }
+
+        /* ---- stampa: solo le richieste spuntate ---- */
+        function clearPrintMarks() {
+            document.body.classList.remove('printing');
+            document.querySelectorAll('.print-hide').forEach(el => el.classList.remove('print-hide'));
+            document.querySelectorAll('.print-target').forEach(el => el.classList.remove('print-target'));
+        }
+        function startPrint(targetId, subId, subText) {
+            document.getElementById(subId).textContent = subText;
+            document.getElementById(targetId).classList.add('print-target');
+            document.body.classList.add('printing');
+            window.addEventListener('afterprint', clearPrintMarks, { once: true });
+            window.print();
+        }
+        function nowLabel() {
+            const n = new Date();
+            return 'Stampato il ' + n.toLocaleDateString('it-IT') + ' ' + n.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+        }
+        function printSelection(key) {
+            const info = ARCH[key];
+            const chosen = currentVisible[key].filter(id => selected.has(id));
+            if (!chosen.length) return;
+            clearPrintMarks();
+            $(info.list).querySelectorAll(info.rows).forEach(row => {
+                const cb = row.querySelector('[data-sel]');
+                if (!cb || !cb.checked) row.classList.add('print-hide');
+            });
+            const emp = $('filterEmployee').value;
+            startPrint(info.target, info.sub, nowLabel() + (emp !== 'ALL' ? ' - Dipendente: ' + emp : '') + ' - Richieste selezionate: ' + chosen.length);
+        }
+
+        /* ---- cancellazione ---- */
         async function deleteMany(key) {
             const ids = currentVisible[key].filter(id => selected.has(id));
             if (!ids.length) return;
             if (!confirm('Vuoi cancellare definitivamente ' + ids.length + (ids.length === 1 ? ' richiesta selezionata?' : ' richieste selezionate?') + '\n\nL\'operazione non si può annullare.')) return;
-
-            const btn = document.getElementById(ARCH[key].bar).querySelector('[data-delmany]');
+            const btn = $(ARCH[key].bar).querySelector('[data-delmany]');
             btn.disabled = true; btn.textContent = 'Cancellazione...';
             const deleted = [];
             for (let i = 0; i < ids.length; i += 40) {
@@ -695,50 +1257,15 @@
                     const d = await jsonp({ action: 'deleteMany', ids: chunk.join(','), password: adminPassword }, 30000);
                     if (d && d.ok) { chunk.forEach(id => deleted.push(id)); }
                     else { alert('Cancellazione non riuscita: ' + ((d && d.error) || 'errore sconosciuto')); break; }
-                } catch (err) {
-                    alert('Cancellazione non riuscita: connessione al server assente.');
-                    break;
-                }
+                } catch (err) { alert('Cancellazione non riuscita: connessione al server assente.'); break; }
             }
             requests = requests.filter(r => !deleted.includes(String(r.id)));
             deleted.forEach(id => selected.delete(id));
-            displayTable();
+            renderActiveTab();
         }
 
-        // Stampa / salvataggio PDF: solo le richieste selezionate
-        function clearPrintMarks() {
-            document.body.classList.remove('printing');
-            document.querySelectorAll('.print-hide').forEach(el => el.classList.remove('print-hide'));
-            document.querySelectorAll('.print-target').forEach(el => el.classList.remove('print-target'));
-        }
+        const dash = $('admin-dashboard');
 
-        function printSelection(key) {
-            const info = ARCH[key];
-            const chosen = currentVisible[key].filter(id => selected.has(id));
-            if (!chosen.length) return;
-            clearPrintMarks();
-
-            // nasconde in stampa le righe NON spuntate
-            document.getElementById(info.list).querySelectorAll(info.rows).forEach(row => {
-                const cb = row.querySelector('[data-sel]');
-                if (!cb || !cb.checked) row.classList.add('print-hide');
-            });
-
-            const emp = document.getElementById('filterEmployee').value;
-            const now = new Date();
-            const when = now.toLocaleDateString('it-IT') + ' ' + now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-            document.getElementById(info.sub).textContent =
-                'Stampato il ' + when + (emp !== 'ALL' ? ' - Dipendente: ' + emp : '') + ' - Richieste selezionate: ' + chosen.length;
-
-            document.getElementById(info.target).classList.add('print-target');
-            document.body.classList.add('printing');
-            window.addEventListener('afterprint', clearPrintMarks, { once: true });
-            window.print();
-        }
-
-        const dash = document.getElementById('admin-dashboard');
-
-        // Spunte (singole e "Seleziona tutto")
         dash.addEventListener('change', function (e) {
             const t = e.target;
             if (t.dataset.sel !== undefined) {
@@ -747,21 +1274,19 @@
             } else if (t.dataset.selall) {
                 const key = t.dataset.selall;
                 currentVisible[key].forEach(id => { if (t.checked) selected.add(id); else selected.delete(id); });
-                document.getElementById(ARCH[key].list).querySelectorAll('[data-sel]').forEach(cb => { cb.checked = t.checked; });
+                $(ARCH[key].list).querySelectorAll('[data-sel]').forEach(cb => { cb.checked = t.checked; });
                 updateAllToolbars();
             }
         });
 
-        dash.addEventListener('click', async function (e) {
+        $('tab-requests').addEventListener('click', async function (e) {
             const pb = e.target.closest('button[data-print]');
             if (pb) { printSelection(pb.dataset.print); return; }
             const mb = e.target.closest('button[data-delmany]');
             if (mb) { deleteMany(mb.dataset.delmany); return; }
-
             const b = e.target.closest('button[data-id], button[data-del]');
             if (!b) return;
 
-            // Cancellazione singola
             if (b.dataset.del) {
                 const id = b.dataset.del;
                 const r = requests.find(x => String(x.id) === String(id));
@@ -770,34 +1295,251 @@
                 b.disabled = true;
                 try {
                     const d = await jsonp({ action: 'delete', id: id, password: adminPassword }, 20000);
-                    if (d && d.ok) {
-                        requests = requests.filter(x => String(x.id) !== String(id));
-                    } else {
-                        alert('Cancellazione non riuscita: ' + ((d && d.error) || 'errore sconosciuto'));
-                    }
-                } catch (err) {
-                    alert('Cancellazione non riuscita: connessione al server assente.');
-                }
-                displayTable();
+                    if (d && d.ok) requests = requests.filter(x => String(x.id) !== String(id));
+                    else alert('Cancellazione non riuscita: ' + ((d && d.error) || 'errore sconosciuto'));
+                } catch (err) { alert('Cancellazione non riuscita: connessione al server assente.'); }
+                renderActiveTab();
                 return;
             }
-
-            // Approva / Rifiuta
-            const id = b.dataset.id, status = b.dataset.status;
             b.parentElement.querySelectorAll('button').forEach(x => x.disabled = true);
-            try {
-                const d = await jsonp({ action: 'update', id: id, status: status, password: adminPassword }, 20000);
-                if (d && d.ok) {
-                    const r = requests.find(x => String(x.id) === String(id));
-                    if (r) r.status = status;
-                    selected.delete(String(id));   // la richiesta passa in archivio: parte deselezionata
-                } else {
-                    alert('Aggiornamento non riuscito: ' + ((d && d.error) || 'errore sconosciuto'));
-                }
-            } catch (err) {
-                alert('Aggiornamento non riuscito: connessione al server assente.');
+            if (b.dataset.status === 'Approvato') await approve(b.dataset.id);
+            else await reject(b.dataset.id);
+        });
+
+        /* ================= CALENDARIO ================= */
+        function renderCalendar() {
+            $('calTitle').textContent = MESI[calM] + ' ' + calY;
+            const emp = $('calEmp').value;
+            const items = requests.filter(r => (r.status === 'Approvato' || r.status === 'In attesa') && (emp === 'ALL' || r.name === emp));
+            const first = new Date(calY, calM, 1);
+            const offset = (first.getDay() + 6) % 7;                       // lunedì = 0
+            const daysInMonth = new Date(calY, calM + 1, 0).getDate();
+            const weeks = Math.ceil((offset + daysInMonth) / 7);
+            const start = addDays(first, -offset);
+            const todayIso = isoOf(new Date());
+            let html = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'].map(d => `<div class="cal-dow">${d}</div>`).join('');
+            for (let i = 0; i < weeks * 7; i++) {
+                const d = addDays(start, i), iso = isoOf(d), dow = d.getDay();
+                const day = items.filter(r => r.startDate <= iso && r.endDate >= iso);
+                const cls = ['cal-day'];
+                if (d.getMonth() !== calM) cls.push('out');
+                if (dow === 0 || dow === 6) cls.push('we');
+                if (isHoliday(iso)) cls.push('hol');
+                if (iso === todayIso) cls.push('today');
+                if (iso === calSel) cls.push('sel');
+                const chips = day.slice(0, 3).map(r => `<span class="chip ${r.status === 'Approvato' ? 'ok' : 'pend'}">${esc(shortName(r.name))}</span>`).join('') +
+                    (day.length > 3 ? `<span class="chip more">+${day.length - 3}</span>` : '');
+                html += `<button type="button" class="${cls.join(' ')}" data-date="${iso}" aria-label="${d.getDate()} ${MESI[d.getMonth()]}: ${day.length} assenti"><span class="cal-num">${d.getDate()}</span><span class="cal-chips">${chips}</span></button>`;
             }
-            displayTable();
+            $('calGrid').innerHTML = html;
+            renderCalDetail(items);
+        }
+        function renderCalDetail(items) {
+            const box = $('calDetail');
+            if (!calSel) { box.innerHTML = '<div class="empty">Tocca un giorno per vedere chi è assente.</div>'; return; }
+            items = items || requests.filter(r => r.status === 'Approvato' || r.status === 'In attesa');
+            const day = items.filter(r => r.startDate <= calSel && r.endDate >= calSel)
+                .sort((a, b) => (a.status === b.status ? a.name.localeCompare(b.name) : (a.status === 'Approvato' ? -1 : 1)));
+            const d = parseISO(calSel);
+            const hol = isHoliday(calSel) ? ' &middot; <span style="color:#b02a37">' + esc(HOLIDAY_NAMES[calSel]) + '</span>' : '';
+            box.innerHTML = `<h3 class="sub">${d.getDate()} ${MESI[d.getMonth()]} ${d.getFullYear()}${hol} &mdash; ${day.length} ${day.length === 1 ? 'assente' : 'assenti'}</h3>` +
+                (day.length ? day.map(r => `<div class="cal-row"><b>${esc(r.name)}</b><span>${esc(r.type)} &middot; ${fmtDate(r.startDate)} – ${fmtDate(r.endDate)}</span><span class="badge ${badgeClass(r.status)}">${esc(r.status)}</span></div>`).join('')
+                    : '<div class="empty">Nessuna assenza in questo giorno.</div>');
+        }
+        $('calPrev').addEventListener('click', () => { calM--; if (calM < 0) { calM = 11; calY--; } renderCalendar(); });
+        $('calNext').addEventListener('click', () => { calM++; if (calM > 11) { calM = 0; calY++; } renderCalendar(); });
+        $('calToday').addEventListener('click', () => { const n = new Date(); calY = n.getFullYear(); calM = n.getMonth(); calSel = isoOf(n); renderCalendar(); });
+        $('calEmp').addEventListener('change', renderCalendar);
+        $('calGrid').addEventListener('click', e => {
+            const b = e.target.closest('.cal-day'); if (!b) return;
+            calSel = b.dataset.date; renderCalendar();
+        });
+
+        /* ================= STATISTICHE ================= */
+        const TIPI = ['Ferie', 'Permesso', 'Malattia', 'Giorno Libero'];
+        function initStatsControls() {
+            const years = new Set([new Date().getFullYear()]);
+            requests.forEach(r => { years.add(+r.startDate.slice(0, 4)); years.add(+r.endDate.slice(0, 4)); });
+            const list = [...years].filter(y => y > 2000).sort((a, b) => b - a);
+            const cur = $('statsYear').value;
+            $('statsYear').innerHTML = list.map(y => `<option value="${y}">${y}</option>`).join('');
+            $('statsYear').value = list.map(String).includes(cur) ? cur : String(new Date().getFullYear());
+            const saved = lsGet('hr_daymode');
+            if (saved && ['cal', 'lv', 'ls'].includes(saved)) $('statsMode').value = saved;
+        }
+        function barRows(items, max, peak) {
+            return items.map(it => `<div class="bar-row ${peak !== undefined && it.value === peak && peak > 0 ? 'peak' : ''}">
+                <span>${esc(it.label)}</span><div class="bar"><i style="width:${max ? Math.round(it.value / max * 100) : 0}%"></i></div><b>${it.value}</b></div>`).join('');
+        }
+        function renderStats() {
+            const years = [...$('statsYear').options].map(o => +o.value);
+            const wanted = [...new Set([new Date().getFullYear()].concat(requests.flatMap(r => [+r.startDate.slice(0, 4), +r.endDate.slice(0, 4)])))];
+            if (wanted.some(y => !years.includes(y))) initStatsControls();
+            const yr = +$('statsYear').value, mode = $('statsMode').value;
+            const y0 = yr + '-01-01', y1 = yr + '-12-31';
+            const inYear = requests.filter(r => r.startDate <= y1 && r.endDate >= y0);
+            const cnt = s => inYear.filter(r => r.status === s).length;
+            const approved = inYear.filter(r => r.status === 'Approvato');
+
+            const perPerson = {}, perMonth = new Array(12).fill(0), perType = {};
+            employees.filter(e => e.active).forEach(e => { perPerson[e.name] = { total: 0, t: {} }; });
+            let totalDays = 0;
+            approved.forEach(r => {
+                const p = perPerson[r.name] || (perPerson[r.name] = { total: 0, t: {} });
+                const s = r.startDate < y0 ? y0 : r.startDate, e2 = r.endDate > y1 ? y1 : r.endDate;
+                let d = parseISO(s); const last = parseISO(e2);
+                for (let g = 0; d <= last && g < 400; g++, d = addDays(d, 1)) {
+                    if (!dayCounts(isoOf(d), mode)) continue;
+                    p.total++; p.t[r.type] = (p.t[r.type] || 0) + 1;
+                    perMonth[d.getMonth()]++; perType[r.type] = (perType[r.type] || 0) + 1; totalDays++;
+                }
+            });
+
+            $('statsKpis').innerHTML = [
+                [inYear.length, 'Richieste nell\'anno'], [cnt('In attesa'), 'In attesa'], [cnt('Approvato'), 'Approvate'],
+                [cnt('Rifiutato'), 'Rifiutate'], [totalDays, 'Giorni di assenza']
+            ].map(k => `<div class="kpi"><b>${k[0]}</b><span>${k[1]}</span></div>`).join('');
+
+            const types = TIPI.concat(Object.keys(perType).filter(t => !TIPI.includes(t)));
+            $('statsHead').innerHTML = '<tr><th>Dipendente</th>' + types.map(t => `<th class="num">${esc(t)}</th>`).join('') + '<th class="num">Totale</th></tr>';
+            const everyone = Object.keys(perPerson).map(n => ({ n: n, p: perPerson[n] })).sort((a, b) => b.p.total - a.p.total || a.n.localeCompare(b.n));
+            const rows = everyone.filter(r => r.p.total > 0);
+            const zero = everyone.length - rows.length;
+            $('statsZero').textContent = zero ? (zero === 1 ? '1 dipendente senza assenze approvate in questo anno.' : zero + ' dipendenti senza assenze approvate in questo anno.') : '';
+            $('statsBody').innerHTML = rows.length ? rows.map(r =>
+                `<tr><td data-label="Dipendente"><strong>${esc(r.n)}</strong></td>` +
+                types.map(t => `<td class="num" data-label="${esc(t)}">${r.p.t[t] || 0}</td>`).join('') +
+                `<td class="num" data-label="Totale"><b>${r.p.total}</b></td></tr>`).join('')
+                : '<tr><td colspan="6" style="text-align:center;">Nessuna assenza approvata in questo anno.</td></tr>';
+
+            const maxM = Math.max.apply(null, perMonth);
+            $('statsMonths').innerHTML = barRows(perMonth.map((v, i) => ({ label: MESI[i], value: v })), maxM, maxM);
+            const tt = types.map(t => ({ label: t, value: perType[t] || 0 }));
+            $('statsTypes').innerHTML = barRows(tt, Math.max.apply(null, tt.map(x => x.value).concat([0])));
+        }
+        $('statsYear').addEventListener('change', renderStats);
+        $('statsMode').addEventListener('change', () => { lsSet('hr_daymode', $('statsMode').value); renderStats(); });
+
+        /* ================= ESPORTA ================= */
+        function exportList() {
+            const emp = $('exEmp').value, st = $('exStatus').value, ty = $('exType').value, from = $('exFrom').value, to = $('exTo').value;
+            return requests.filter(r => (emp === 'ALL' || r.name === emp) && (st === 'ALL' || r.status === st) &&
+                (ty === 'ALL' || r.type === ty) && (!from || r.endDate >= from) && (!to || r.startDate <= to))
+                .sort((a, b) => a.startDate.localeCompare(b.startDate) || a.name.localeCompare(b.name));
+        }
+        function renderExport() {
+            const list = exportList();
+            $('exCount').textContent = list.length + (list.length === 1 ? ' richiesta corrisponde' : ' richieste corrispondono') + ' ai filtri.';
+            $('exBody').innerHTML = list.length ? list.map(r => {
+                const note = [r.notes, r.reason ? 'Motivo rifiuto: ' + r.reason : ''].filter(Boolean).join(' | ');
+                return `<tr><td data-label="Dipendente"><strong>${esc(r.name)}</strong></td><td data-label="Tipo">${esc(r.type)}</td>
+                    <td data-label="Dal">${fmtDate(r.startDate)}</td><td data-label="Al">${fmtDate(r.endDate)}</td>
+                    <td data-label="Giorni">${countDays(r.startDate, r.endDate, 'cal')}</td>
+                    <td data-label="Stato"><span class="badge ${badgeClass(r.status)}">${esc(r.status)}</span></td>
+                    <td data-label="Note / Motivo">${esc(note) || '-'}</td></tr>`;
+            }).join('') : '<tr><td colspan="7" style="text-align:center;">Nessuna richiesta con questi filtri.</td></tr>';
+        }
+        ['exEmp', 'exStatus', 'exType', 'exFrom', 'exTo'].forEach(id => $(id).addEventListener('change', renderExport));
+        document.querySelectorAll('[data-range]').forEach(b => b.addEventListener('click', () => {
+            const n = new Date(); let a = '', z = '';
+            if (b.dataset.range === 'month') { a = isoOf(new Date(n.getFullYear(), n.getMonth(), 1)); z = isoOf(new Date(n.getFullYear(), n.getMonth() + 1, 0)); }
+            if (b.dataset.range === 'prev') { a = isoOf(new Date(n.getFullYear(), n.getMonth() - 1, 1)); z = isoOf(new Date(n.getFullYear(), n.getMonth(), 0)); }
+            if (b.dataset.range === 'year') { a = n.getFullYear() + '-01-01'; z = n.getFullYear() + '-12-31'; }
+            $('exFrom').value = a; $('exTo').value = z; renderExport();
+        }));
+        $('exXlsx').addEventListener('click', () => {
+            const list = exportList();
+            if (!list.length) { toast('Nessuna richiesta da esportare con questi filtri.'); return; }
+            const rows = list.map(r => [r.name, r.type, { date: r.startDate }, { date: r.endDate },
+                countDays(r.startDate, r.endDate, 'cal'), countDays(r.startDate, r.endDate, 'lv'),
+                r.status, r.notes, r.reason, r.sentAt]);
+            const blob = buildXlsx('Richieste', ['Dipendente', 'Tipologia', 'Dal', 'Al', 'Giorni (calendario)', 'Giorni lavorativi (lun-ven)', 'Stato', 'Note', 'Motivo rifiuto', 'Inviata il'],
+                rows, [28, 16, 12, 12, 18, 24, 12, 40, 30, 18]);
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'richieste_' + isoOf(new Date()) + '.xlsx';
+            document.body.appendChild(a); a.click();
+            setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+            toast('File Excel scaricato (' + list.length + ' richieste).');
+        });
+        $('exPrint').addEventListener('click', () => {
+            const list = exportList();
+            if (!list.length) { toast('Nessuna richiesta da stampare con questi filtri.'); return; }
+            clearPrintMarks();
+            const f = [];
+            if ($('exEmp').value !== 'ALL') f.push('Dipendente: ' + $('exEmp').value);
+            if ($('exStatus').value !== 'ALL') f.push('Stato: ' + $('exStatus').value);
+            if ($('exType').value !== 'ALL') f.push('Tipo: ' + $('exType').value);
+            if ($('exFrom').value || $('exTo').value) f.push('Periodo: ' + ($('exFrom').value ? 'dal ' + fmtDate($('exFrom').value) : '') + ($('exTo').value ? ' al ' + fmtDate($('exTo').value) : ''));
+            startPrint('exportCard', 'printSubExport', nowLabel() + (f.length ? ' - ' + f.join(' - ') : '') + ' - Richieste: ' + list.length);
+        });
+
+        /* ================= DIPENDENTI ================= */
+        function randomPin() { return String(Math.floor(1000 + Math.random() * 9000)); }
+        function renderEmployees() {
+            const show = $('showPins').checked;
+            $('empCount').textContent = employees.length;
+            $('empBody').innerHTML = employees.length ? employees.map(e => `<tr>
+                <td data-label="Nome"><strong>${esc(e.name)}</strong></td>
+                <td data-label="Email">${e.email ? esc(e.email) : '<span class="muted">nessuna</span>'}</td>
+                <td data-label="PIN"><code class="pin">${show ? esc(e.pin) : '••••'}</code></td>
+                <td data-label="Stato"><span class="badge ${e.active ? 'badge-approved' : 'badge-rejected'}">${e.active ? 'Attivo' : 'Disattivato'}</span></td>
+                <td data-label="Azioni"><div class="row-actions">
+                    <button type="button" class="btn btn-tool" data-emp="edit" data-name="${esc(e.name)}">Modifica</button>
+                    <button type="button" class="btn btn-del" data-emp="newpin" data-name="${esc(e.name)}">Nuovo PIN</button>
+                    <button type="button" class="btn btn-danger" data-emp="delete" data-name="${esc(e.name)}">Elimina</button>
+                </div></td></tr>`).join('') : '<tr><td colspan="5" style="text-align:center;">Nessun dipendente.</td></tr>';
+        }
+        $('showPins').addEventListener('change', renderEmployees);
+
+        async function saveEmployee(p, okMessage) {
+            try {
+                const d = await jsonp({ action: 'empsave', old: p.old || '', name: p.name, email: p.email, pin: p.pin, active: p.active ? 'SI' : 'NO', password: adminPassword }, 30000);
+                if (d && d.ok) {
+                    employees = d.employees;
+                    const saved = employees.find(e => e.name === String(p.name).replace(/\s+/g, ' ').trim().toUpperCase());
+                    if (p.old && saved && saved.name !== p.old) await loadAll(true);   // il nome è cambiato: ricarico anche le richieste
+                    refreshEmployeeSelects(); renderEmployees();
+                    toast(okMessage ? okMessage(saved) : 'Dipendente salvato.', 8000);
+                } else alert('Salvataggio non riuscito: ' + ((d && d.error) || 'errore sconosciuto'));
+            } catch (err) { alert('Salvataggio non riuscito: connessione al server assente.'); }
+        }
+        async function editEmployee(emp) {
+            const isNew = !emp;
+            const res = await showModal({
+                title: isNew ? 'Nuovo dipendente' : 'Modifica dipendente',
+                body: `<div class="form-group"><label for="mName">Nome e Cognome</label><input id="mName" type="text" value="${esc(emp ? emp.name : '')}" placeholder="COGNOME NOME"></div>
+                       <div class="form-group"><label for="mEmail">Email (per l'avviso di esito)</label><input id="mEmail" type="email" value="${esc(emp ? emp.email : '')}" placeholder="nome@esempio.it"></div>
+                       <div class="form-group"><label for="mPin">PIN (4-8 cifre)</label><input id="mPin" type="text" inputmode="numeric" maxlength="8" value="${esc(emp ? emp.pin : '')}" placeholder="${isNew ? 'Vuoto = lo genero io' : ''}"></div>
+                       <label class="remember"><input id="mActive" type="checkbox" ${!emp || emp.active ? 'checked' : ''}> Dipendente attivo (può accedere)</label>`,
+                okText: 'Salva', okClass: 'btn-success',
+                collect: () => ({ name: $('mName').value.trim(), email: $('mEmail').value.trim(), pin: $('mPin').value.trim(), active: $('mActive').checked }),
+                validate: d => !d.name ? 'Inserisci il nome.' :
+                    (d.pin && !/^\d{4,8}$/.test(d.pin) ? 'Il PIN deve avere da 4 a 8 cifre.' :
+                    (d.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email) ? 'Email non valida.' : null))
+            });
+            if (!res) return;
+            await saveEmployee({ old: emp ? emp.name : '', name: res.name, email: res.email, pin: res.pin, active: res.active },
+                saved => isNew && saved ? 'Dipendente aggiunto. PIN: ' + saved.pin : 'Dipendente salvato.');
+        }
+        $('empAdd').addEventListener('click', () => editEmployee(null));
+        $('empBody').addEventListener('click', async function (e) {
+            const b = e.target.closest('button[data-emp]'); if (!b) return;
+            const emp = employees.find(x => x.name === b.dataset.name); if (!emp) return;
+            if (b.dataset.emp === 'edit') return editEmployee(emp);
+            if (b.dataset.emp === 'newpin') {
+                if (!confirm('Generare un nuovo PIN per ' + emp.name + '?\nQuello attuale non funzionerà più.')) return;
+                const pin = randomPin();
+                return saveEmployee({ old: emp.name, name: emp.name, email: emp.email, pin: pin, active: emp.active }, () => 'Nuovo PIN per ' + emp.name + ': ' + pin);
+            }
+            if (b.dataset.emp === 'delete') {
+                if (!confirm('Eliminare ' + emp.name + '?\nLe sue richieste restano nello storico, ma non potrà più accedere.\n(In alternativa puoi disattivarlo con "Modifica".)')) return;
+                try {
+                    const d = await jsonp({ action: 'empdelete', name: emp.name, password: adminPassword }, 25000);
+                    if (d && d.ok) { employees = d.employees; refreshEmployeeSelects(); renderEmployees(); toast('Dipendente eliminato.'); }
+                    else alert('Eliminazione non riuscita: ' + ((d && d.error) || 'errore'));
+                } catch (err) { alert('Eliminazione non riuscita: connessione al server assente.'); }
+            }
         });
     </script>
 

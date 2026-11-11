@@ -192,6 +192,66 @@
         @media print { .install-bar { display: none !important; } }
 
         @media (min-width: 1200px) { .container { max-width: 880px; } .card { padding: 36px; } }
+            /* ===== Novità: elementi comuni ===== */
+        :root { --warning: #ffc107; --danger: #dc3545; }
+        .badge { padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 900; color: #fff; display: inline-block; }
+        .badge-pending { background-color: var(--warning); color: #111; }
+        .badge-approved { background-color: var(--success); }
+        .badge-rejected { background-color: var(--danger); }
+        .btn-success { background-color: var(--success); }
+        .btn-success:hover { background-color: #218838; }
+        .btn-danger { background-color: var(--danger); }
+        .btn-danger:hover { background-color: #c82333; }
+        .btn-del { background-color: #6c757d; }
+        .btn-del:hover { background-color: #565e64; }
+        .btn-tool { background-color: #0047bb; }
+        .btn-tool:hover { background-color: #002b66; }
+        .btn-small { width: auto; padding: 8px 14px; font-size: 0.9rem; }
+        .form-group textarea { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem; font-weight: 700; background: #fff; resize: vertical; font-family: inherit; }
+        .empty { text-align: center; color: #666; padding: 8px; font-weight: 700; }
+        .muted { color: #888; font-weight: 700; }
+        .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+        .tab { flex: 1 1 auto; background: #fff; color: var(--unieuro-blue-dark); border: 2px solid #000; border-radius: 12px; padding: 12px 16px;
+               font-weight: 900; font-size: 1rem; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.2); position: relative; font-family: inherit; }
+        .tab:hover { transform: translateY(-1px); }
+        .tab.active { background: var(--unieuro-orange); color: #fff; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+        .dot { background: #dc3545; color: #fff; border-radius: 10px; padding: 1px 8px; font-size: 0.78rem; margin-left: 6px; display: inline-block; }
+        .dot[hidden] { display: none; }
+        .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(24px + env(safe-area-inset-bottom)); background: #111; color: #fff;
+                 padding: 12px 18px; border-radius: 12px; font-weight: 800; z-index: 2000; max-width: 92vw; border: 2px solid var(--unieuro-orange);
+                 box-shadow: 0 6px 20px rgba(0,0,0,0.45); text-align: center; }
+        .toast[hidden] { display: none; }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 1500; }
+        .modal[hidden] { display: none; }
+        .modal-box { background: #fff; border-radius: 14px; border-top: 5px solid var(--unieuro-orange); padding: 22px; width: 100%; max-width: 480px; max-height: 92vh; overflow: auto; }
+        .modal-box h3 { color: var(--unieuro-blue-dark); margin-bottom: 12px; font-size: 1.2rem; }
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 14px; flex-wrap: wrap; }
+        .modal-actions .btn { width: auto; }
+        .ov-list { padding-left: 20px; font-weight: 700; }
+        .ov-list li { margin: 4px 0; }
+        .remember { display: flex; align-items: center; gap: 8px; margin: 4px 0 16px; font-weight: 800; cursor: pointer; }
+        .remember input { width: 20px; height: 20px; accent-color: #0047bb; flex: none; }
+        @media print { .toast, .modal, .tabs { display: none !important; } }
+        /* ===== Portale dipendenti ===== */
+        .userbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; background: #fff; border-radius: 12px; padding: 10px 14px;
+                   margin-bottom: 14px; border: 2px solid #000; font-weight: 800; box-shadow: 0 3px 8px rgba(0,0,0,0.25); }
+        .hint { margin-top: 14px; color: #555; font-size: 0.85rem; font-weight: 700; text-align: center; }
+        .banner { background: #fff8e1; border: 2px solid #ffc107; border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; font-weight: 800;
+                  display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+        .banner[hidden] { display: none; }
+        .banner .btn { width: auto; }
+        .char-count { text-align: right; font-size: 0.8rem; color: #666; margin-top: 4px; font-weight: 700; }
+        .req { border: 2px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+        .req-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 6px; font-size: 1.05rem; }
+        .req-meta { color: #444; font-weight: 700; font-size: 0.9rem; }
+        .req-note { margin-top: 6px; font-style: italic; color: #555; }
+        .req-reason { margin-top: 8px; background: #fdeaec; border: 2px solid #dc3545; color: #9b1c2a; border-radius: 8px; padding: 8px 10px; font-weight: 800; }
+        .req-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+        .req-actions .btn { width: auto; padding: 8px 14px; font-size: 0.9rem; }
+        .edit-form { margin-top: 12px; border-top: 2px dashed var(--border); padding-top: 12px; }
+        .edit-form .form-group { margin-bottom: 12px; }
     </style>
     <meta name="theme-color" content="#002b66">
     <meta name="mobile-web-app-capable" content="yes">
@@ -212,31 +272,57 @@
     </header>
 
     <div class="container">
-        <div class="card">
-            <h2>Nuova Richiesta Ferie / Permesso</h2>
 
-            <iframe name="hidden_iframe" style="display:none;" title="invio"></iframe>
+        <!-- ACCESSO CON PIN -->
+        <div class="card" id="loginView">
+            <h2>Accedi al portale</h2>
+            <form id="loginForm" autocomplete="on">
+                <div class="form-group">
+                    <label for="loginName">Nome e Cognome Dipendente</label>
+                    <select id="loginName" required>
+                        <option value="" disabled selected>Caricamento elenco...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="loginPin">PIN personale</label>
+                    <input type="password" id="loginPin" inputmode="numeric" autocomplete="current-password" maxlength="8" placeholder="Il tuo PIN" required>
+                </div>
+                <label class="remember"><input type="checkbox" id="remember" checked> Ricordami su questo dispositivo</label>
+                <button type="submit" class="btn" id="loginBtn">Accedi</button>
+                <button type="button" class="btn btn-small btn-del" id="retryLoad" hidden style="margin-top:10px;">Riprova a caricare l'elenco</button>
+                <div id="loginMsg" class="msg" role="status"></div>
+                <p class="hint">Non conosci il tuo PIN? Chiedilo all'amministratore.</p>
+            </form>
+        </div>
 
-            <form id="requestForm" method="POST" accept-charset="UTF-8" target="hidden_iframe">
-                <input type="hidden" name="id" id="reqId">
+        <!-- AREA DIPENDENTE -->
+        <div id="appView" style="display:none;">
+            <div class="userbar">
+                <div>Ciao, <b id="userName"></b></div>
+                <button type="button" class="btn btn-small btn-del" id="logoutBtn">Esci</button>
+            </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="empName">Nome e Cognome Dipendente</label>
-                        <select name="name" id="empName" required>
-                            <option value="" disabled selected>Seleziona il tuo nome...</option>
-                            <option value="MORABITO GIUSEPPE">MORABITO GIUSEPPE</option>
-                            <option value="CAPONE DANIELE">CAPONE DANIELE</option>
-                            <option value="D'AGOSTINO DOMENICO">D'AGOSTINO DOMENICO</option>
-                            <option value="KEITA OUSMANE">KEITA OUSMANE</option>
-                            <option value="RODI GIORGIO">RODI GIORGIO</option>
-                            <option value="VIOLA PAOLO">VIOLA PAOLO</option>
-                            <option value="ROSATO DOMENICO">ROSATO DOMENICO</option>
-                            <option value="PLUTINO ANTONINO">PLUTINO ANTONINO</option>
-                            <option value="ZUMBO VITALIANO">ZUMBO VITALIANO</option>
-                            <option value="OPANASENKO POLINA">OPANASENKO POLINA</option>
-                        </select>
-                    </div>
+            <div class="banner" id="updatesBanner" hidden>
+                <span id="updatesText"></span>
+                <button type="button" class="btn btn-small" id="updatesBtn">Vedi</button>
+            </div>
+
+            <div class="tabs" role="tablist">
+                <button type="button" class="tab active" data-tab="new">Nuova richiesta</button>
+                <button type="button" class="tab" data-tab="mine">Le mie richieste <span class="dot" id="mineBadge" hidden>0</span></button>
+            </div>
+
+            <!-- NUOVA RICHIESTA -->
+            <div class="card tab-panel active" id="panel-new">
+                <h2>Nuova Richiesta Ferie / Permesso</h2>
+
+                <iframe name="hidden_iframe" style="display:none;" title="invio"></iframe>
+
+                <form id="requestForm" method="POST" accept-charset="UTF-8" target="hidden_iframe">
+                    <input type="hidden" name="id" id="reqId">
+                    <input type="hidden" name="name" id="reqName">
+                    <input type="hidden" name="pin" id="reqPin">
+
                     <div class="form-group">
                         <label for="reqType">Tipologia</label>
                         <select name="type" id="reqType" required>
@@ -246,29 +332,42 @@
                             <option value="Giorno Libero">Giorno Libero</option>
                         </select>
                     </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="startDate">Data Inizio</label>
-                        <input type="date" name="startDate" id="startDate" required>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="startDate">Data Inizio</label>
+                            <input type="date" name="startDate" id="startDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endDate">Data Fine</label>
+                            <input type="date" name="endDate" id="endDate" required>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="endDate">Data Fine</label>
-                        <input type="date" name="endDate" id="endDate" required>
+                        <label for="notes">Note / Motivazione (opzionale)</label>
+                        <textarea name="notes" id="notes" rows="3" maxlength="300" placeholder="Aggiungi eventuali dettagli..."></textarea>
+                        <div class="char-count"><span id="notesCount">0</span>/300</div>
                     </div>
+                    <button type="submit" class="btn" id="submitBtn">Invia Richiesta</button>
+                    <div id="msg" class="msg" role="status"></div>
+                </form>
+            </div>
+
+            <!-- LE MIE RICHIESTE -->
+            <div class="card tab-panel" id="panel-mine">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
+                    <h2 style="margin:0; border:0; padding:0;">Le mie richieste</h2>
+                    <button type="button" class="btn btn-small btn-tool" id="refreshMine">Aggiorna</button>
                 </div>
-                <div class="form-group">
-                    <label for="notes">Note / Motivazione (opzionale)</label>
-                    <textarea name="notes" id="notes" rows="3" placeholder="Aggiungi eventuali dettagli..."></textarea>
-                </div>
-                <button type="submit" class="btn" id="submitBtn">Invia Richiesta</button>
-                <div id="msg" class="msg" role="status"></div>
-            </form>
+                <div id="mineMsg" class="msg" role="status" style="margin:0 0 14px;"></div>
+                <div id="mineList"></div>
+            </div>
         </div>
     </div>
 
+    <div id="toast" class="toast" hidden></div>
+
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgXwgBmCrcX7JtpKvjdP8RRXxKScZCkK0F1br9fpLW_lpfrLQnxiTzbnpr9vL66UEhCQ/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyp5VEIGl4DiHFPe7kvk41K65o-3dU3d-svCxjOSe-nCpzRLgMn9dymONueZFNUebXaWA/exec";
 
         // Chiamata verso Google Script: prima via JSONP (tag script), se non va via fetch (piano B)
         function jsonpOnce(params, timeoutMs) {
@@ -306,17 +405,277 @@
             return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
         }
+        function fmtDate(s) {
+            const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s || '');
+            return m ? m[3] + '/' + m[2] + '/' + m[1] : esc(s);
+        }
+        function byIdDesc(a, b) {
+            return String(b.id).localeCompare(String(a.id), undefined, { numeric: true });
+        }
+        function badgeClass(status) {
+            if (status === 'Approvato') return 'badge-approved';
+            if (status === 'Rifiutato') return 'badge-rejected';
+            return 'badge-pending';
+        }
+        function typeLabel(t) { return t === 'Permesso' ? 'Permesso orario' : t; }
+        let toastTimer = null;
+        function toast(text, ms) {
+            const t = document.getElementById('toast');
+            if (!t) return;
+            t.textContent = text; t.hidden = false;
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => { t.hidden = true; }, ms || 4500);
+        }
 
-        const form = document.getElementById('requestForm');
-        const btn = document.getElementById('submitBtn');
-        const msg = document.getElementById('msg');
+        const $ = id => document.getElementById(id);
+        let session = null;          // { name, pin }
+        let myReqs = [];
+        let lastLoad = 0;
+        let activeTab = 'new';
+
+        function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+        function lsSet(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
+        function ssGet(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }
+        function ssSet(k, v) { try { if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch (e) {} }
+
+        function setMsg(el, kind, text) { el.className = text ? 'msg ' + kind : 'msg'; el.textContent = text || ''; }
+
+        /* ---------- Elenco dipendenti + accesso ---------- */
+        async function loadEmployees() {
+            const sel = $('loginName');
+            $('retryLoad').hidden = true;
+            try {
+                const d = await jsonp({ action: 'employees' }, 20000);
+                if (!d || !d.ok) throw new Error('risposta non valida');
+                sel.innerHTML = '<option value="" disabled selected>Seleziona il tuo nome...</option>';
+                d.employees.forEach(n => {
+                    const o = document.createElement('option');
+                    o.value = n; o.textContent = n; sel.appendChild(o);
+                });
+                return true;
+            } catch (e) {
+                sel.innerHTML = '<option value="" disabled selected>Elenco non disponibile</option>';
+                setMsg($('loginMsg'), 'err', 'Impossibile caricare l\'elenco dei dipendenti. Controlla la connessione e riprova.');
+                $('retryLoad').hidden = false;
+                return false;
+            }
+        }
+
+        function savedCred() {
+            try { return JSON.parse(lsGet('hr_cred') || ssGet('hr_cred_s') || 'null'); } catch (e) { return null; }
+        }
+
+        async function doLogin(name, pin, remember, silent) {
+            const btn = $('loginBtn');
+            btn.disabled = true; btn.textContent = 'Accesso in corso...';
+            setMsg($('loginMsg'), 'info', 'Verifica in corso...');
+            try {
+                const d = await jsonp({ action: 'emplogin', name: name, pin: pin }, 20000);
+                if (d && d.ok) {
+                    session = { name: d.name, pin: pin };
+                    ssSet('hr_cred_s', JSON.stringify(session));
+                    lsSet('hr_cred', remember ? JSON.stringify(session) : null);
+                    setMsg($('loginMsg'), '', '');
+                    btn.disabled = false; btn.textContent = 'Accedi';
+                    enterApp();
+                    return true;
+                }
+                if (d && d.error === 'locked') setMsg($('loginMsg'), 'err', 'Troppi tentativi errati. Riprova tra 15 minuti.');
+                else if (d && d.error === 'pin') {
+                    setMsg($('loginMsg'), 'err', silent ? 'Il PIN è cambiato o non è più valido: accedi di nuovo.' : 'Nome o PIN non corretti.');
+                    if (silent) { lsSet('hr_cred', null); ssSet('hr_cred_s', null); }
+                } else setMsg($('loginMsg'), 'err', 'Errore del server: ' + ((d && d.error) || 'sconosciuto'));
+            } catch (err) {
+                setMsg($('loginMsg'), 'err', 'Impossibile contattare il server. Controlla la connessione e riprova.');
+            }
+            btn.disabled = false; btn.textContent = 'Accedi';
+            return false;
+        }
+
+        function enterApp() {
+            $('loginView').style.display = 'none';
+            $('appView').style.display = 'block';
+            $('userName').textContent = session.name;
+            $('loginPin').value = '';
+            showTab('new');
+            loadMine(false);
+        }
+
+        function logout(message) {
+            session = null; myReqs = [];
+            lsSet('hr_cred', null); ssSet('hr_cred_s', null);
+            $('appView').style.display = 'none';
+            $('loginView').style.display = 'block';
+            $('updatesBanner').hidden = true;
+            setMsg($('loginMsg'), message ? 'info' : '', message || '');
+            $('requestForm').reset(); $('notesCount').textContent = '0';
+        }
+
+        $('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const name = $('loginName').value, pin = $('loginPin').value.trim();
+            if (!name || !pin) { setMsg($('loginMsg'), 'err', 'Seleziona il nome e inserisci il PIN.'); return; }
+            doLogin(name, pin, $('remember').checked, false);
+        });
+        $('logoutBtn').addEventListener('click', () => logout(''));
+        $('retryLoad').addEventListener('click', async () => { setMsg($('loginMsg'), '', ''); await loadEmployees(); });
+
+        /* ---------- Schede ---------- */
+        function showTab(tab) {
+            activeTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+            $('panel-new').classList.toggle('active', tab === 'new');
+            $('panel-mine').classList.toggle('active', tab === 'mine');
+            if (tab === 'mine') { markSeen(); }
+        }
+        document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab)));
+        $('updatesBtn').addEventListener('click', () => showTab('mine'));
+
+        /* ---------- Le mie richieste ---------- */
+        async function loadMine(silent) {
+            if (!session) return;
+            const list = $('mineList');
+            if (!silent) list.innerHTML = '<div class="empty">Caricamento...</div>';
+            try {
+                const d = await jsonp({ action: 'my', name: session.name, pin: session.pin }, 20000);
+                if (d && d.ok) {
+                    lastLoad = Date.now();
+                    myReqs = (d.requests || []).sort(byIdDesc);
+                    renderMine();
+                    checkNews();
+                } else if (d && (d.error === 'pin' || d.error === 'locked')) {
+                    logout('Il PIN è cambiato o non è più valido: accedi di nuovo.');
+                } else if (!silent) {
+                    list.innerHTML = '<div class="empty">Errore: ' + esc(d && d.error) + '</div>';
+                }
+            } catch (err) {
+                if (!silent) list.innerHTML = '<div class="empty">Impossibile caricare le richieste. Riprova con "Aggiorna".</div>';
+            }
+        }
+
+        function renderMine() {
+            const list = $('mineList');
+            if (!myReqs.length) { list.innerHTML = '<div class="empty">Non hai ancora inviato richieste.</div>'; return; }
+            list.innerHTML = myReqs.map(r => {
+                const pending = r.status === 'In attesa';
+                return `
+                <div class="req" data-id="${esc(r.id)}">
+                    <div class="req-top"><b>${esc(typeLabel(r.type))}</b><span class="badge ${badgeClass(r.status)}">${esc(r.status)}</span></div>
+                    <div class="req-meta">Dal ${fmtDate(r.startDate)} al ${fmtDate(r.endDate)}${r.sentAt ? ' &middot; inviata il ' + esc(r.sentAt) : ''}</div>
+                    ${r.notes ? `<div class="req-note">${esc(r.notes)}</div>` : ''}
+                    ${r.status === 'Rifiutato' && r.reason ? `<div class="req-reason">Motivo del rifiuto: ${esc(r.reason)}</div>` : ''}
+                    ${pending ? `<div class="req-actions">
+                        <button type="button" class="btn btn-tool" data-act="edit">Modifica</button>
+                        <button type="button" class="btn btn-danger" data-act="cancel">Annulla richiesta</button>
+                    </div>` : ''}
+                    <div class="edit-slot"></div>
+                </div>`;
+            }).join('');
+        }
+
+        /* "Novità": richieste approvate/rifiutate che il dipendente non ha ancora visto */
+        function seenKey() { return 'hr_seen_' + session.name; }
+        function currentMap() { const m = {}; myReqs.forEach(r => { m[r.id] = r.status; }); return m; }
+        function getSeen() { try { return JSON.parse(lsGet(seenKey()) || 'null'); } catch (e) { return null; } }
+        function markSeen() {
+            if (!session) return;
+            lsSet(seenKey(), JSON.stringify(currentMap()));
+            $('updatesBanner').hidden = true; $('mineBadge').hidden = true;
+        }
+        function checkNews() {
+            let seen = getSeen();
+            if (seen === null) { markSeenSilently(); seen = currentMap(); }   // primo accesso su questo dispositivo
+            const news = myReqs.filter(r => r.status !== 'In attesa' && seen[r.id] !== r.status);
+            const badge = $('mineBadge');
+            badge.textContent = news.length; badge.hidden = news.length === 0;
+            if (activeTab === 'mine') { markSeen(); return; }
+            const banner = $('updatesBanner');
+            if (!news.length) { banner.hidden = true; return; }
+            const r = news[0];
+            $('updatesText').textContent = news.length === 1
+                ? 'La tua richiesta di ' + typeLabel(r.type) + ' del ' + fmtDate(r.startDate).slice(0, 5) + ' è stata ' + (r.status === 'Approvato' ? 'APPROVATA' : 'RIFIUTATA') + '.'
+                : 'Hai ' + news.length + ' richieste con un nuovo esito.';
+            banner.hidden = false;
+        }
+        function markSeenSilently() { lsSet(seenKey(), JSON.stringify(currentMap())); }
+
+        $('refreshMine').addEventListener('click', () => loadMine(false));
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && session && Date.now() - lastLoad > 20000) loadMine(true);
+        });
+
+        /* modifica / annulla */
+        $('mineList').addEventListener('click', async function (e) {
+            const b = e.target.closest('button[data-act]');
+            if (!b) return;
+            const card = b.closest('.req');
+            const id = card.dataset.id;
+            const r = myReqs.find(x => String(x.id) === String(id));
+            if (!r) return;
+
+            if (b.dataset.act === 'cancel') {
+                if (!confirm('Vuoi annullare questa richiesta?\n\n' + typeLabel(r.type) + ' dal ' + fmtDate(r.startDate) + ' al ' + fmtDate(r.endDate))) return;
+                b.disabled = true;
+                try {
+                    const d = await jsonp({ action: 'cancel', name: session.name, pin: session.pin, id: id }, 20000);
+                    if (d && d.ok) { toast('Richiesta annullata.'); }
+                    else { alert(d && d.error === "gia' gestita" ? 'La richiesta è già stata gestita e non si può più annullare.' : 'Annullamento non riuscito: ' + ((d && d.error) || 'errore')); }
+                } catch (err) { alert('Annullamento non riuscito: connessione al server assente.'); }
+                loadMine(true);
+                return;
+            }
+
+            if (b.dataset.act === 'edit') {
+                const slot = card.querySelector('.edit-slot');
+                if (slot.innerHTML) { slot.innerHTML = ''; return; }
+                const opt = t => `<option value="${t}" ${r.type === t ? 'selected' : ''}>${t === 'Permesso' ? 'Permesso Orario' : t}</option>`;
+                slot.innerHTML = `
+                <form class="edit-form" data-id="${esc(id)}">
+                    <div class="form-group"><label>Tipologia</label>
+                        <select name="type">${['Ferie', 'Permesso', 'Malattia', 'Giorno Libero'].map(opt).join('')}</select></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Data Inizio</label><input type="date" name="startDate" value="${esc(r.startDate)}" required></div>
+                        <div class="form-group"><label>Data Fine</label><input type="date" name="endDate" value="${esc(r.endDate)}" required></div>
+                    </div>
+                    <div class="form-group"><label>Note</label><textarea name="notes" rows="2" maxlength="300">${esc(r.notes)}</textarea></div>
+                    <div class="req-actions">
+                        <button type="submit" class="btn btn-success">Salva modifiche</button>
+                        <button type="button" class="btn btn-del" data-act="close-edit">Chiudi</button>
+                    </div>
+                    <div class="msg" role="status"></div>
+                </form>`;
+            }
+            if (b.dataset.act === 'close-edit') { card.querySelector('.edit-slot').innerHTML = ''; }
+        });
+
+        $('mineList').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const f = e.target;
+            const msgEl = f.querySelector('.msg');
+            const fd = new FormData(f);
+            if (fd.get('endDate') < fd.get('startDate')) { setMsg(msgEl, 'err', 'La data di fine non può essere precedente alla data di inizio.'); return; }
+            const btn = f.querySelector('button[type=submit]');
+            btn.disabled = true; setMsg(msgEl, 'info', 'Salvataggio...');
+            try {
+                const d = await jsonp({ action: 'edit', name: session.name, pin: session.pin, id: f.dataset.id,
+                    type: fd.get('type'), startDate: fd.get('startDate'), endDate: fd.get('endDate'), notes: fd.get('notes') }, 20000);
+                if (d && d.ok) { toast('Richiesta modificata.'); loadMine(true); return; }
+                setMsg(msgEl, 'err', d && d.error === "gia' gestita" ? 'La richiesta è già stata gestita: non si può più modificare.' : 'Modifica non riuscita: ' + ((d && d.error) || 'errore'));
+            } catch (err) { setMsg(msgEl, 'err', 'Connessione al server assente. Riprova.'); }
+            btn.disabled = false;
+        });
+
+        /* ---------- Nuova richiesta ---------- */
+        const form = $('requestForm');
+        const btn = $('submitBtn');
+        const msg = $('msg');
         form.action = SCRIPT_URL;
-
-        function showMsg(kind, text) { msg.className = 'msg ' + kind; msg.textContent = text; }
+        function showMsg(kind, text) { setMsg(msg, kind, text); }
+        $('notes').addEventListener('input', () => { $('notesCount').textContent = $('notes').value.length; });
 
         form.addEventListener('submit', function (e) {
-            const start = document.getElementById('startDate').value;
-            const end = document.getElementById('endDate').value;
+            const start = $('startDate').value, end = $('endDate').value;
+            if (!session) { e.preventDefault(); showMsg('err', 'Sessione scaduta: accedi di nuovo.'); return; }
             if (end < start) {
                 e.preventDefault();
                 showMsg('err', 'La data di fine non può essere precedente alla data di inizio.');
@@ -324,7 +683,9 @@
             }
             // L'invio vero e proprio lo fa il form (POST nell'iframe nascosto).
             const id = Date.now() + '' + Math.floor(Math.random() * 900 + 100);
-            document.getElementById('reqId').value = id;
+            $('reqId').value = id;
+            $('reqName').value = session.name;
+            $('reqPin').value = session.pin;
             btn.disabled = true;
             btn.textContent = 'Invio in corso...';
             showMsg('info', 'Invio della richiesta in corso...');
@@ -339,19 +700,32 @@
                 try {
                     const d = await jsonp({ action: 'check', id: id }, 10000);
                     if (d && d.exists) {
-                        showMsg('ok', 'Richiesta inviata con successo! L\'amministratore è stato avvisato via email.');
-                        form.reset();
-                        btn.disabled = false;
-                        btn.textContent = 'Invia Richiesta';
+                        showMsg('', '');
+                        form.reset(); $('notesCount').textContent = '0';
+                        btn.disabled = false; btn.textContent = 'Invia Richiesta';
+                        showTab('mine');
+                        setMsg($('mineMsg'), 'ok', 'Richiesta inviata con successo! L\'amministratore è stato avvisato via email.');
+                        setTimeout(() => setMsg($('mineMsg'), '', ''), 8000);
+                        loadMine(false);
                         return;
                     }
                 } catch (err) { /* riprova */ }
                 await new Promise(r => setTimeout(r, 2000));
             }
-            showMsg('err', 'Non ho ricevuto conferma dal server. Riprova tra poco; se il problema continua avvisa l\'amministratore.');
+            showMsg('err', 'Non ho ricevuto conferma dal server. Se il problema continua esci e rientra con il tuo PIN, oppure avvisa l\'amministratore.');
             btn.disabled = false;
             btn.textContent = 'Invia Richiesta';
         }
+
+        /* ---------- Avvio ---------- */
+        (async function init() {
+            const ok = await loadEmployees();
+            const saved = savedCred();
+            if (ok && saved && saved.name && saved.pin) {
+                $('loginName').value = saved.name;
+                await doLogin(saved.name, saved.pin, !!lsGet('hr_cred'), true);
+            }
+        })();
     </script>
 
     <div id="installBar" class="install-bar" hidden>
