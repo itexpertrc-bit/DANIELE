@@ -252,6 +252,17 @@
         .req-actions .btn { width: auto; padding: 8px 14px; font-size: 0.9rem; }
         .edit-form { margin-top: 12px; border-top: 2px dashed var(--border); padding-top: 12px; }
         .edit-form .form-group { margin-bottom: 12px; }
+            /* ===== Orario ===== */
+        .sch-top { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px; }
+        .sch-top select { width: auto; flex: 1 1 220px; margin: 0; }
+        .sch-img-box { border: 2px solid #ddd; border-radius: 10px; overflow: hidden; background: #fff; cursor: zoom-in; }
+        .sch-img-box img { display: block; width: 100%; height: auto; }
+        .sch-viewer { position: fixed; inset: 0; background: rgba(0,0,0,.92); z-index: 2000; display: flex; flex-direction: column; }
+        .sch-viewer[hidden] { display: none; }
+        .sch-vbar { display: flex; gap: 8px; padding: 10px; justify-content: center; flex-wrap: wrap; background: #002b66; }
+        .sch-vbar .btn { width: auto; padding: 8px 14px; margin: 0; }
+        .sch-vscroll { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; text-align: left; }
+        .sch-vscroll img { display: block; max-width: none; margin: 0 auto; }
     </style>
     <meta name="theme-color" content="#002b66">
     <meta name="mobile-web-app-capable" content="yes">
@@ -310,6 +321,7 @@
             <div class="tabs" role="tablist">
                 <button type="button" class="tab active" data-tab="new">Nuova richiesta</button>
                 <button type="button" class="tab" data-tab="mine">Le mie richieste <span class="dot" id="mineBadge" hidden>0</span></button>
+                <button type="button" class="tab" data-tab="schedule">Orario <span class="dot" id="schBadge" hidden></span></button>
             </div>
 
             <!-- NUOVA RICHIESTA -->
@@ -361,13 +373,39 @@
                 <div id="mineMsg" class="msg" role="status" style="margin:0 0 14px;"></div>
                 <div id="mineList"></div>
             </div>
+
+            <!-- ORARIO -->
+            <div class="card tab-panel" id="panel-schedule">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
+                    <h2 style="margin:0; border:0; padding:0;">Orario di lavoro</h2>
+                    <button type="button" class="btn btn-small btn-tool" id="refreshSch">Aggiorna</button>
+                </div>
+                <div class="sch-top" id="schTop" hidden>
+                    <select id="schWeek" aria-label="Settimana"></select>
+                    <button type="button" class="btn btn-small btn-tool" id="schZoom">Ingrandisci</button>
+                    <button type="button" class="btn btn-small btn-del" id="schDl">Scarica</button>
+                </div>
+                <div id="schMsg" class="msg" role="status" style="margin:0 0 14px;"></div>
+                <div class="sch-img-box" id="schBox" hidden><img id="schImg" alt="Orario di lavoro"></div>
+                <p class="hint" id="schHint" style="margin-top:10px;" hidden>Tocca l'immagine per ingrandirla e scorrerla.</p>
+            </div>
         </div>
     </div>
 
     <div id="toast" class="toast" hidden></div>
 
+    <div class="sch-viewer" id="schViewer" hidden>
+        <div class="sch-vbar">
+            <button type="button" class="btn btn-tool" id="vZin">＋</button>
+            <button type="button" class="btn btn-tool" id="vZout">－</button>
+            <button type="button" class="btn btn-tool" id="vFit">Adatta</button>
+            <button type="button" class="btn" id="vClose">Chiudi</button>
+        </div>
+        <div class="sch-vscroll" id="vScroll"><img id="vImg" alt="Orario di lavoro"></div>
+    </div>
+
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx5sM8P-NG2bDfc1QODLGMAHSpK2CdFkmGAOUjE4B-BChrobD5wPOcfmpTfdEavVnXD7A/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPwgO0ZYLEBhlSHfN1raZgKSzznC1xMJsz6AZsK5_Fa79MUCnpbY1KKcnRwvhQ_Erqbw/exec";
 
         // Chiamata verso Google Script: prima via JSONP (tag script), se non va via fetch (piano B)
         function jsonpOnce(params, timeoutMs) {
@@ -499,10 +537,11 @@
             $('loginPin').value = '';
             showTab('new');
             loadMine(false);
+            loadSchedule(true);
         }
 
         function logout(message) {
-            session = null; myReqs = [];
+            session = null; myReqs = []; schWeeks = []; schCurrent = ''; schDataUrl = '';
             lsSet('hr_cred', null); ssSet('hr_cred_s', null);
             $('appView').style.display = 'none';
             $('loginView').style.display = 'block';
@@ -526,10 +565,97 @@
             document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
             $('panel-new').classList.toggle('active', tab === 'new');
             $('panel-mine').classList.toggle('active', tab === 'mine');
+            $('panel-schedule').classList.toggle('active', tab === 'schedule');
             if (tab === 'mine') { markSeen(); }
+            if (tab === 'schedule') { if (schCurrent) schMarkSeen(schCurrent); else loadSchedule(false); }
         }
         document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab)));
         $('updatesBtn').addEventListener('click', () => showTab('mine'));
+
+
+        /* ---------- Orario ---------- */
+        let schWeeks = [], schCurrent = '', schDataUrl = '', schVz = 1;
+        function schSeenKey() { return 'hr_sch_seen_' + (session ? session.name : ''); }
+        function schGetSeen() { try { return JSON.parse(lsGet(schSeenKey()) || '{}') || {}; } catch (e) { return {}; } }
+        function schMarkSeen(week) {
+            const w = schWeeks.find(x => x.week === week); if (!w) return;
+            const s = schGetSeen(); s[week] = w.tok || w.at; lsSet(schSeenKey(), JSON.stringify(s)); schBadge();
+        }
+        function schBadge() {
+            const s = schGetSeen();
+            const n = schWeeks.filter(w => s[w.week] !== (w.tok || w.at)).length;
+            const b = $('schBadge'); b.textContent = n ? 'nuovo' : ''; b.hidden = !n;
+        }
+        function schLabel(iso) { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso); return m ? m[3] + '/' + m[2] + '/' + m[1] : iso; }
+        async function loadSchedule(silent) {
+            if (!session) return;
+            if (!silent) setMsg($('schMsg'), 'info', 'Caricamento...');
+            try {
+                const d = await jsonp({ action: 'schedpub', name: session.name, pin: session.pin }, 20000);
+                if (d && d.ok) {
+                    schWeeks = d.weeks || [];
+                    schBadge();
+                    const sel = $('schWeek');
+                    sel.innerHTML = schWeeks.map(w => '<option value="' + esc(w.week) + '">Settimana dal ' + schLabel(w.week) + '</option>').join('');
+                    if (!schWeeks.length) {
+                        $('schTop').hidden = true; $('schBox').hidden = true; $('schHint').hidden = true; schCurrent = '';
+                        setMsg($('schMsg'), 'info', 'Nessun orario pubblicato al momento.');
+                        return;
+                    }
+                    // di default: la settimana in corso, altrimenti la più recente
+                    const today = new Date(); const iso = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+                    const cur = schWeeks.filter(w => w.week <= iso).sort((a, b) => a.week < b.week ? 1 : -1)[0];
+                    const keep = schWeeks.some(w => w.week === schCurrent) ? schCurrent : (cur || schWeeks[0]).week;
+                    sel.value = keep;
+                    $('schTop').hidden = false;
+                    setMsg($('schMsg'), '', '');
+                    await showSchedule(keep, silent);
+                } else if (d && (d.error === 'pin' || d.error === 'locked')) {
+                    logout('Il PIN è cambiato o non è più valido: accedi di nuovo.');
+                } else if (!silent) setMsg($('schMsg'), 'err', 'Errore: ' + ((d && d.error) || 'sconosciuto'));
+            } catch (err) {
+                if (!silent) setMsg($('schMsg'), 'err', 'Impossibile caricare l\'orario. Riprova con "Aggiorna".');
+            }
+        }
+        async function showSchedule(week, silent) {
+            if (!silent || week !== schCurrent) setMsg($('schMsg'), 'info', 'Carico l\'immagine...');
+            try {
+                const d = await jsonp({ action: 'schedimg', name: session.name, pin: session.pin, week: week }, 40000);
+                if (d && d.ok && d.data) {
+                    schCurrent = week; schDataUrl = d.data;
+                    $('schImg').src = d.data;
+                    $('schBox').hidden = false; $('schHint').hidden = false;
+                    setMsg($('schMsg'), '', '');
+                    if (activeTab === 'schedule') schMarkSeen(week);
+                } else {
+                    $('schBox').hidden = true; $('schHint').hidden = true;
+                    setMsg($('schMsg'), 'info', 'Questo orario non è più disponibile.');
+                }
+            } catch (err) { setMsg($('schMsg'), 'err', 'Impossibile caricare l\'immagine. Riprova.'); }
+        }
+        $('refreshSch').addEventListener('click', () => loadSchedule(false));
+        $('schWeek').addEventListener('change', e => { showSchedule(e.target.value, false); });
+        function openViewer() {
+            if (!schDataUrl) return;
+            $('vImg').src = schDataUrl; $('schViewer').hidden = false; viewerFit();
+        }
+        function viewerFit() { schVz = 0; $('vImg').style.width = '100%'; }
+        function viewerZoom(f) {
+            const img = $('vImg'); if (schVz === 0) schVz = img.clientWidth / (window.innerWidth || 1) || 1;
+            schVz = Math.max(.5, Math.min(4, schVz * f)); img.style.width = Math.round(schVz * (window.innerWidth || 800)) + 'px';
+        }
+        $('schBox').addEventListener('click', openViewer);
+        $('schZoom').addEventListener('click', openViewer);
+        $('vClose').addEventListener('click', () => { $('schViewer').hidden = true; });
+        $('vZin').addEventListener('click', () => viewerZoom(1.4));
+        $('vZout').addEventListener('click', () => viewerZoom(1 / 1.4));
+        $('vFit').addEventListener('click', viewerFit);
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') $('schViewer').hidden = true; });
+        $('schDl').addEventListener('click', () => {
+            if (!schDataUrl) return;
+            const a = document.createElement('a'); a.href = schDataUrl; a.download = 'orario_' + schCurrent + '.png';
+            document.body.appendChild(a); a.click(); a.remove();
+        });
 
         /* ---------- Le mie richieste ---------- */
         async function loadMine(silent) {
@@ -727,6 +853,7 @@
             }
         })();
     </script>
+
 
     <div id="installBar" class="install-bar" hidden>
         <div class="install-text" id="installText">Installa l'app sul tuo dispositivo per aprirla con un tocco</div>
