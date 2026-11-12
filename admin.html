@@ -477,7 +477,7 @@
         .sch-wrap { overflow: auto; max-height: 78vh; border: 3px solid #000; border-radius: 4px; background: #fff; -webkit-overflow-scrolling: touch; }
         @media (max-height: 560px) { .sch-wrap { max-height: none; } }
         #schTable { border-collapse: separate; border-spacing: 0; min-width: 1500px; width: 100%; font-size: 0.78rem; margin: 0; }
-        #schTable th, #schTable td { border-right: 1px solid #000; border-bottom: 1px solid #000; padding: 2px 2px; text-align: center; white-space: nowrap; background: #fff; color: #111; }
+        #schTable th, #schTable td { border-right: 1px solid #bdbdbd; border-bottom: 2px solid #000; padding: 2px 2px; text-align: center; white-space: nowrap; background: #fff; color: #111; }
         #schTable thead th { position: sticky; top: 0; z-index: 3; background: #ffd23f; color: #111; font-size: 0.8rem; padding: 6px 4px; }
         #schTable thead th small { display: block; font-weight: 700; font-size: 0.72rem; }
         #schTable thead th.hol { background: #ff9d9d; }
@@ -495,6 +495,7 @@
         #schTable .sch-cov td.ok { background: #009600; }
         #schTable .sch-cov td.ko { background: #d00000; }
         #schTable .sch-cov td.sch-name { background: #e8e8e8; color: #111; }
+        #schTable thead th { border-right: 1px solid #000; }
         #schTable .dsep { border-left: 3px solid #000; }
         #schTable thead th { border-bottom: 3px solid #000; }
         #schTable .sch-corner, #schTable .sch-name { border-right: 3px solid #000; }
@@ -2306,7 +2307,7 @@
             cv.width = Math.round(W * S); cv.height = Math.round(H * S);
             const c = cv.getContext('2d'); c.scale(S, S);
             c.fillStyle = '#fff'; c.fillRect(0, 0, W, H);
-            const BORD = '#000';
+            const BORD = '#b5b5b5';
             function box(x, y, w, h, fill) { c.fillStyle = fill; c.fillRect(x, y, w, h); c.strokeStyle = BORD; c.lineWidth = 1; c.strokeRect(x + .5, y + .5, w - 1, h - 1); }
             function txt(s, x, y, w, h, o) {
                 o = o || {}; let sz = o.size || 14; const bold = o.bold === false ? '' : 'bold ';
@@ -2339,13 +2340,13 @@
             }
             if (hrs) { box(M + nameW + dayW * 7, y, totW, thH, '#ffd23f'); txt('TOTALE ORE', M + nameW + dayW * 7, y, totW, thH, { size: 13 }); }
             y += thH;
-            const tTop = M + headH, secY = [];
+            const tTop = M + headH, secY = [], rowY = [];
             schCfg.sections.forEach(sec => {
                 secY.push(y);
                 box(M, y, W - M * 2, secH, '#0f9ed5'); txt(sec.name, M, y, W - M * 2, secH, { size: 15, color: '#fff', align: 'left' });
                 y += secH; secY.push(y);
                 sec.staff.forEach(st => {
-                    const row = schData.rows[st.label]; let tot = 0;
+                    const row = schData.rows[st.label]; let tot = 0; rowY.push(y);
                     box(M, y, nameW, rowH, '#f0f0f0'); txt(st.label, M, y, nameW, rowH, { size: 15, align: 'left' });
                     for (let d = 0; d < 7; d++) {
                         const dx = M + nameW + d * dayW, hh = schHours(st.label, d); tot += hh;
@@ -2378,6 +2379,7 @@
                 ln(M, tTop, M, tBot, 3); ln(xR, tTop, xR, tBot, 3);
                 ln(M, tTop, xR, tTop, 3); ln(M, tTop + thH, xR, tTop + thH, 3); ln(M, tBot, xR, tBot, 3);
                 secY.forEach(yy => ln(M, yy, xR, yy, 2.5));
+                rowY.forEach(yy => ln(M, yy, xR, yy, 2));
             }
             if (lines.length) {
                 y += 16;
