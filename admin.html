@@ -692,7 +692,7 @@
                         <div><label for="exStatus">Stato (solo elenco)</label>
                             <select id="exStatus"><option value="ALL">Tutti gli stati</option><option>In attesa</option><option>Approvato</option><option>Rifiutato</option></select></div>
                         <div><label for="exType">Tipologia</label>
-                            <select id="exType"><option value="ALL">Tutte</option><option>Ferie</option><option>Permesso</option><option>Malattia</option><option>Giorno Libero</option></select></div>
+                            <select id="exType"><option value="ALL">Tutte</option><option>Giorno Libero</option><option value="Permesso">Mezza Giornata</option><option>Ferie</option><option>Malattia</option></select></div>
                         <div><label for="exFrom">Dal</label><input type="date" id="exFrom"></div>
                         <div><label for="exTo">Al</label><input type="date" id="exTo"></div>
                         <div><label for="statsMode">Conteggio dei giorni</label>
@@ -809,7 +809,7 @@
     <div id="toast" class="toast" hidden></div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwU_ekCf3gl43kcO-N5DAVOYDYxRRRLOaiEgIiGjglOcki_MhrsM3IvcchNGSk-M7xFnw/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzTrHvnRwyLfYlbGbIojfWAnvqa6EmO0ZYSZUY8ptaLOJBuRaBGdu8NvnKR3DJ3CHE5Vg/exec";
 
         // Chiamata verso Google Script: prima via JSONP (tag script), se non va via fetch (piano B)
         function jsonpOnce(params, timeoutMs) {
@@ -859,7 +859,10 @@
             if (status === 'Rifiutato') return 'badge-rejected';
             return 'badge-pending';
         }
-        function typeLabel(t) { return t === 'Permesso' ? 'Permesso orario' : t; }
+        function typeLabel(t) { return t === 'Permesso' ? 'Mezza Giornata' : t; }
+        function typeFull(r) { return typeLabel(r.type) + (r.type === 'Permesso' && r.slot ? ' · ' + r.slot : ''); }
+        function isHalf(r) { return r.type === 'Permesso' && !!r.slot; }
+        function fmtN(n) { return String(Math.round(n * 100) / 100).replace('.', ','); }
         let toastTimer = null;
         function toast(text, ms) {
             const t = document.getElementById('toast');
@@ -1159,7 +1162,7 @@
             if (emp !== 'ALL' && r.name !== emp) return false;
             const q = $('filterSearch').value.trim().toLowerCase();
             if (q) {
-                const hay = [r.name, r.type, typeLabel(r.type), r.notes, r.status, r.reason, fmtDate(r.startDate), fmtDate(r.endDate)].join(' ').toLowerCase();
+                const hay = [r.name, r.type, typeFull(r), r.notes, r.status, r.reason, fmtDate(r.startDate), fmtDate(r.endDate)].join(' ').toLowerCase();
                 if (!q.split(/\s+/).every(w => hay.includes(w))) return false;
             }
             const from = $('filterFrom').value, to = $('filterTo').value;
@@ -1193,7 +1196,7 @@
                     <label class="a-check"><input type="checkbox" data-sel="${esc(id)}" ${selected.has(id) ? 'checked' : ''}></label>
                     <div class="a-body">
                         <div class="a-name">${esc(r.name)}</div>
-                        <div class="a-meta">${esc(r.type)} &middot; ${fmtDate(r.startDate)} al ${fmtDate(r.endDate)}</div>
+                        <div class="a-meta">${esc(typeFull(r))} &middot; ${fmtDate(r.startDate)} al ${fmtDate(r.endDate)}</div>
                         ${r.notes ? `<div class="a-note">${esc(r.notes)}</div>` : ''}
                         ${r.status === 'Rifiutato' && r.reason ? `<div class="a-reason">Motivo: ${esc(r.reason)}</div>` : ''}
                         <div class="a-foot">
@@ -1244,7 +1247,7 @@
                     tr.innerHTML = `
                         <td class="col-sel" data-label="Seleziona"><input type="checkbox" data-sel="${esc(id)}" ${selected.has(id) ? 'checked' : ''}></td>
                         <td data-label="Dipendente"><strong>${esc(req.name)}</strong></td>
-                        <td data-label="Tipo">${esc(req.type)}</td>
+                        <td data-label="Tipo">${esc(typeFull(req))}</td>
                         <td data-label="Periodo">${fmtDate(req.startDate)} al ${fmtDate(req.endDate)}${overlapNote(req)}</td>
                         <td data-label="Note">${esc(req.notes) || '-'}</td>
                         <td data-label="Stato"><span class="badge ${badgeClass(req.status)}">${esc(req.status)}</span></td>
@@ -1296,7 +1299,7 @@
                 const ok = await showModal({
                     title: 'Attenzione: sovrapposizione',
                     body: `<p style="margin-bottom:10px;"><b>${esc(r.name)}</b> chiede dal ${fmtDate(r.startDate)} al ${fmtDate(r.endDate)}.<br>Nello stesso periodo sono già assenti:</p>
-                           <ul class="ov-list">${ov.map(o => `<li><b>${esc(o.name)}</b> &middot; ${esc(o.type)} &middot; ${fmtDate(o.startDate)} – ${fmtDate(o.endDate)}</li>`).join('')}</ul>
+                           <ul class="ov-list">${ov.map(o => `<li><b>${esc(o.name)}</b> &middot; ${esc(typeFull(o))} &middot; ${fmtDate(o.startDate)} – ${fmtDate(o.endDate)}</li>`).join('')}</ul>
                            <p style="margin-top:10px;">Vuoi approvare comunque?</p>`,
                     okText: 'Approva comunque', okClass: 'btn-success'
                 });
@@ -1309,7 +1312,7 @@
             if (!r) return;
             const res = await showModal({
                 title: 'Rifiuta la richiesta',
-                body: `<p style="margin-bottom:10px;"><b>${esc(r.name)}</b> &middot; ${esc(r.type)} &middot; ${fmtDate(r.startDate)} – ${fmtDate(r.endDate)}</p>
+                body: `<p style="margin-bottom:10px;"><b>${esc(r.name)}</b> &middot; ${esc(typeFull(r))} &middot; ${fmtDate(r.startDate)} – ${fmtDate(r.endDate)}</p>
                        <div class="form-group"><label for="rejReason">Motivo del rifiuto (lo vede il dipendente)</label>
                        <textarea id="rejReason" rows="3" maxlength="300" placeholder="Facoltativo"></textarea></div>`,
                 okText: 'Rifiuta', okClass: 'btn-danger',
@@ -1449,7 +1452,7 @@
             const d = parseISO(calSel);
             const hol = isHoliday(calSel) ? ' &middot; <span style="color:#b02a37">' + esc(HOLIDAY_NAMES[calSel]) + '</span>' : '';
             box.innerHTML = `<h3 class="sub">${d.getDate()} ${MESI[d.getMonth()]} ${d.getFullYear()}${hol} &mdash; ${day.length} ${day.length === 1 ? 'assente' : 'assenti'}</h3>` +
-                (day.length ? day.map(r => `<div class="cal-row"><b>${esc(r.name)}</b><span>${esc(r.type)} &middot; ${fmtDate(r.startDate)} – ${fmtDate(r.endDate)}</span><span class="badge ${badgeClass(r.status)}">${esc(r.status)}</span></div>`).join('')
+                (day.length ? day.map(r => `<div class="cal-row"><b>${esc(r.name)}</b><span>${esc(typeFull(r))} &middot; ${fmtDate(r.startDate)} – ${fmtDate(r.endDate)}</span><span class="badge ${badgeClass(r.status)}">${esc(r.status)}</span></div>`).join('')
                     : '<div class="empty">Nessuna assenza in questo giorno.</div>');
         }
         $('calPrev').addEventListener('click', () => { calM--; if (calM < 0) { calM = 11; calY--; } renderCalendar(); });
@@ -1462,7 +1465,8 @@
         });
 
         /* ================= STATISTICHE ED ESPORTAZIONE (unite) ================= */
-        const TIPI = ['Ferie', 'Permesso', 'Malattia', 'Giorno Libero'];
+        const TIPI = ['Giorno Libero', 'Permesso', 'Ferie', 'Malattia'];
+        function reqDays(r, mode) { return countDays(r.startDate, r.endDate, mode) * (isHalf(r) ? 0.5 : 1); }
         let statsInit = false;
         function initStatsControls() {
             if (!statsInit) {
@@ -1475,7 +1479,7 @@
         }
         function barRows(items, max, peak) {
             return items.map(it => `<div class="bar-row ${peak !== undefined && it.value === peak && peak > 0 ? 'peak' : ''}">
-                <span>${esc(it.label)}</span><div class="bar"><i style="width:${max ? Math.round(it.value / max * 100) : 0}%"></i></div><b>${it.value}</b></div>`).join('');
+                <span>${esc(it.label)}</span><div class="bar"><i style="width:${max ? Math.round(it.value / max * 100) : 0}%"></i></div><b>${fmtN(it.value)}</b></div>`).join('');
         }
         function exFilters() {
             return { emp: $('exEmp').value, st: $('exStatus').value, ty: $('exType').value, from: $('exFrom').value, to: $('exTo').value, mode: $('statsMode').value };
@@ -1503,8 +1507,9 @@
                 for (let g = 0; d && last && d <= last && g < 800; g++, d = addDays(d, 1)) {
                     if (!dayCounts(isoOf(d), f.mode)) continue;
                     const mk = isoOf(d).slice(0, 7);
-                    p.total++; p.t[r.type] = (p.t[r.type] || 0) + 1;
-                    perMonth[mk] = (perMonth[mk] || 0) + 1; perType[r.type] = (perType[r.type] || 0) + 1; totalDays++;
+                    const w = isHalf(r) ? 0.5 : 1;
+                    p.total += w; p.t[r.type] = (p.t[r.type] || 0) + w;
+                    perMonth[mk] = (perMonth[mk] || 0) + w; perType[r.type] = (perType[r.type] || 0) + w; totalDays += w;
                 }
             });
             // mesi da mostrare: tutti quelli del periodo (max 24) oppure solo quelli con dati
@@ -1535,29 +1540,29 @@
             const S = computeStats();
             $('statsKpis').innerHTML = [
                 [S.total, 'Richieste nel periodo'], [S.pend, 'In attesa'], [S.appr, 'Approvate'],
-                [S.rej, 'Rifiutate'], [S.totalDays, 'Giorni di assenza']
+                [S.rej, 'Rifiutate'], [fmtN(S.totalDays), 'Giorni di assenza']
             ].map(k => `<div class="kpi"><b>${k[0]}</b><span>${k[1]}</span></div>`).join('');
-            $('statsHead').innerHTML = '<tr><th>Dipendente</th>' + S.types.map(t => `<th class="num">${esc(t)}</th>`).join('') + '<th class="num">Totale</th></tr>';
+            $('statsHead').innerHTML = '<tr><th>Dipendente</th>' + S.types.map(t => `<th class="num">${esc(typeLabel(t))}</th>`).join('') + '<th class="num">Totale</th></tr>';
             const rows = S.everyone.filter(r => r.p.total > 0);
             const zero = S.everyone.length - rows.length;
             $('statsZero').textContent = zero ? (zero === 1 ? '1 dipendente senza assenze approvate nel periodo.' : zero + ' dipendenti senza assenze approvate nel periodo.') : '';
             $('statsBody').innerHTML = rows.length ? rows.map(r =>
                 `<tr><td data-label="Dipendente"><strong>${esc(r.n)}</strong></td>` +
-                S.types.map(t => `<td class="num" data-label="${esc(t)}">${r.p.t[t] || 0}</td>`).join('') +
-                `<td class="num" data-label="Totale"><b>${r.p.total}</b></td></tr>`).join('')
+                S.types.map(t => `<td class="num" data-label="${esc(typeLabel(t))}">${fmtN(r.p.t[t] || 0)}</td>`).join('') +
+                `<td class="num" data-label="Totale"><b>${fmtN(r.p.total)}</b></td></tr>`).join('')
                 : '<tr><td colspan="' + (S.types.length + 2) + '" style="text-align:center;">Nessuna assenza approvata nel periodo.</td></tr>';
             const maxM = Math.max.apply(null, S.months.map(m => m.value).concat([0]));
             $('statsMonths').innerHTML = S.months.length ? barRows(S.months, maxM, maxM) : '<div class="empty">Nessun dato.</div>';
-            const tt = S.types.map(t => ({ label: t, value: S.perType[t] || 0 }));
+            const tt = S.types.map(t => ({ label: typeLabel(t), value: S.perType[t] || 0 }));
             $('statsTypes').innerHTML = barRows(tt, Math.max.apply(null, tt.map(x => x.value).concat([0])));
         }
         function renderExport() {
             const list = exportList();
             $('exCount').textContent = list.length + (list.length === 1 ? ' richiesta corrisponde' : ' richieste corrispondono') + ' ai filtri.';
             $('exBody').innerHTML = list.length ? list.map(r => {
-                return `<tr><td data-label="Dipendente"><strong>${esc(r.name)}</strong></td><td data-label="Tipo">${esc(r.type)}</td>
+                return `<tr><td data-label="Dipendente"><strong>${esc(r.name)}</strong></td><td data-label="Tipo">${esc(typeFull(r))}</td>
                     <td data-label="Dal">${fmtDate(r.startDate)}</td><td data-label="Al">${fmtDate(r.endDate)}</td>
-                    <td data-label="Giorni">${countDays(r.startDate, r.endDate, 'cal')}</td>
+                    <td data-label="Giorni">${fmtN(reqDays(r, 'cal'))}</td>
                     <td data-label="Stato"><span class="badge ${badgeClass(r.status)}">${esc(r.status)}</span></td>
                     <td data-label="Note / Motivo">${esc(noteOf(r)) || '-'}</td></tr>`;
             }).join('') : '<tr><td colspan="7" style="text-align:center;">Nessuna richiesta con questi filtri.</td></tr>';
@@ -1591,12 +1596,12 @@
                 { name: 'Indicatori', header: ['Voce', 'Valore'], widths: [34, 40], rows: [
                     ['Report generato il', nowLabel().replace('Stampato il ', '')]].concat(fs.map(x => { const k = x.indexOf(': '); return [x.slice(0, k), x.slice(k + 2)]; }),
                     [['Richieste nel periodo', S.total], ['In attesa', S.pend], ['Approvate', S.appr], ['Rifiutate', S.rej], ['Giorni di assenza (approvate)', S.totalDays]]) },
-                { name: 'Per persona', header: ['Dipendente'].concat(S.types, ['Totale']), widths: [30].concat(S.types.map(() => 14), [12]),
+                { name: 'Per persona', header: ['Dipendente'].concat(S.types.map(typeLabel), ['Totale']), widths: [30].concat(S.types.map(() => 14), [12]),
                   rows: S.everyone.map(r => [r.n].concat(S.types.map(t => r.p.t[t] || 0), [r.p.total])).concat([['TOTALE'].concat(S.types.map(t => S.perType[t] || 0), [S.totalDays])]) },
                 { name: 'Per mese', header: ['Mese', 'Giorni di assenza'], widths: [24, 18], rows: S.months.map(m => [m.label, m.value]) },
                 { name: 'Richieste', header: ['Dipendente', 'Tipologia', 'Dal', 'Al', 'Giorni (calendario)', 'Giorni lavorativi (lun-ven)', 'Stato', 'Note', 'Motivo rifiuto', 'Inviata il'],
                   widths: [28, 16, 12, 12, 18, 24, 12, 40, 30, 18],
-                  rows: list.map(r => [r.name, r.type, { date: r.startDate }, { date: r.endDate }, countDays(r.startDate, r.endDate, 'cal'), countDays(r.startDate, r.endDate, 'lv'), r.status, r.notes, r.reason, r.sentAt]) }
+                  rows: list.map(r => [r.name, typeFull(r), { date: r.startDate }, { date: r.endDate }, reqDays(r, 'cal'), reqDays(r, 'lv'), r.status, r.notes, r.reason, r.sentAt]) }
             ];
             saveBlobAdmin(buildXlsxMulti(sheets), 'report_assenze_' + isoOf(new Date()) + '.xlsx');
             toast('File Excel scaricato.');
@@ -1670,21 +1675,21 @@
             filterSummary().forEach(l => { text(l, M, y, 9.5, false, '#333333'); y += 13; });
             y += 6;
             // indicatori
-            const k = [[S.total, 'Richieste'], [S.pend, 'In attesa'], [S.appr, 'Approvate'], [S.rej, 'Rifiutate'], [S.totalDays, 'Giorni di assenza']];
+            const k = [[S.total, 'Richieste'], [S.pend, 'In attesa'], [S.appr, 'Approvate'], [S.rej, 'Rifiutate'], [fmtN(S.totalDays), 'Giorni di assenza']];
             const kw = (PW - 2 * M - 4 * 10) / 5;
             k.forEach((it, i) => { const x = M + i * (kw + 10); rect(x, y, kw, 44, '#eef2fa'); text(String(it[0]), x, y + 6, 20, true, '#ff6600', 'c', kw); text(it[1], x, y + 30, 9, true, '#002b66', 'c', kw); });
             y += 58;
             title('Giorni di assenza per persona e per tipo');
-            const cols = [{ t: 'Dipendente', w: 30 }].concat(S.types.map(t => ({ t: t, w: 13, a: 'r' })), [{ t: 'Totale', w: 11, a: 'r' }]);
-            const prow = S.everyone.filter(r => r.p.total > 0).map(r => ({ cells: [r.n].concat(S.types.map(t => String(r.p.t[t] || 0)), [String(r.p.total)]) }));
-            prow.push({ cells: ['TOTALE'].concat(S.types.map(t => String(S.perType[t] || 0)), [String(S.totalDays)]), bold: true, fill: '#dbe4f5' });
+            const cols = [{ t: 'Dipendente', w: 30 }].concat(S.types.map(t => ({ t: typeLabel(t), w: 13, a: 'r' })), [{ t: 'Totale', w: 11, a: 'r' }]);
+            const prow = S.everyone.filter(r => r.p.total > 0).map(r => ({ cells: [r.n].concat(S.types.map(t => fmtN(r.p.t[t] || 0)), [fmtN(r.p.total)]) }));
+            prow.push({ cells: ['TOTALE'].concat(S.types.map(t => fmtN(S.perType[t] || 0)), [fmtN(S.totalDays)]), bold: true, fill: '#dbe4f5' });
             table(cols, prow);
             title('Giorni di assenza per mese');
-            table([{ t: 'Mese', w: 30 }, { t: 'Giorni', w: 12, a: 'r' }], S.months.map(m => ({ cells: [m.label, String(m.value)] })));
+            table([{ t: 'Mese', w: 30 }, { t: 'Giorni', w: 12, a: 'r' }], S.months.map(m => ({ cells: [m.label, fmtN(m.value)] })));
             title('Elenco richieste (' + list.length + ')');
             const colorOf = s => s === 'Approvato' ? '#1c7a34' : (s === 'Rifiutato' ? '#b02a37' : '#9a6b00');
             table([{ t: 'Dipendente', w: 22 }, { t: 'Tipo', w: 12 }, { t: 'Dal', w: 10 }, { t: 'Al', w: 10 }, { t: 'Giorni', w: 7, a: 'r' }, { t: 'Stato', w: 10 }, { t: 'Note / Motivo', w: 40 }],
-                list.map(r => ({ cells: [r.name, r.type, fmtDate(r.startDate), fmtDate(r.endDate), String(countDays(r.startDate, r.endDate, 'cal')), r.status, noteOf(r) || '-'], colors: [null, null, null, null, null, colorOf(r.status), null] })));
+                list.map(r => ({ cells: [r.name, typeFull(r), fmtDate(r.startDate), fmtDate(r.endDate), fmtN(reqDays(r, 'cal')), r.status, noteOf(r) || '-'], colors: [null, null, null, null, null, colorOf(r.status), null] })));
             // numeri di pagina
             pages.forEach((p, i) => { ops = p; text('Pagina ' + (i + 1) + ' di ' + pages.length, PW - M - 100, PH - 22, 8, false, '#666666', 'r', 100); text('HR Orion', M, PH - 22, 8, false, '#666666'); });
 
@@ -1855,7 +1860,7 @@
             const a = schIso(0), b = schIso(6);
             const byEmp = {}; schAllStaff().forEach(st => { if (st.emp) byEmp[st.emp] = st.label; });
             return requests.filter(r => r.status !== 'Rifiutato' && r.startDate <= b && r.endDate >= a && (!excludeSick || r.type !== 'Malattia'))
-                .map(r => ({ label: byEmp[r.name] || r.name, type: typeLabel(r.type), from: r.startDate, to: r.endDate, status: r.status }))
+                .map(r => ({ label: byEmp[r.name] || r.name, type: typeFull(r), from: r.startDate, to: r.endDate, status: r.status }))
                 .sort((x, y) => x.label < y.label ? -1 : 1);
         }
 
@@ -1983,7 +1988,7 @@
                         let cls = '', ttl = '';
                         if (abs && working) {
                             cls = ' sch-conf' + (abs.status === 'In attesa' ? ' soft' : '');
-                            ttl = typeLabel(abs.type) + ' (' + abs.status + ')';
+                            ttl = typeFull(abs) + ' (' + abs.status + ')';
                             conflicts.push({ who: stf.label, day: schDayName(d) + ' ' + schDmy(schDate(d)), what: ttl });
                         }
                         const hrs = schHours(stf.label, d); tot += hrs;
@@ -2434,7 +2439,7 @@
             const conflicts = []; schAllStaff().forEach(st => { for (let d = 0; d < 7; d++) {
                 const abs = schAbs(st.emp, schIso(d));
                 const row = schData.rows[st.label][d];
-                if (abs && row.some(v => schParse(v) > 0)) conflicts.push(st.label + ' · ' + schDayName(d) + ' ' + schDmy(schDate(d)) + ' (' + typeLabel(abs.type) + ', ' + abs.status + ')');
+                if (abs && row.some(v => schParse(v) > 0)) conflicts.push(st.label + ' · ' + schDayName(d) + ' ' + schDmy(schDate(d)) + ' (' + typeFull(abs) + ', ' + abs.status + ')');
             } });
             const lacking = []; for (let d = 0; d < 7; d++) if (schCover(d) < schCfg.minPeople) lacking.push(schDayName(d) + ' ' + schDmy(schDate(d)));
             let warn = '';
