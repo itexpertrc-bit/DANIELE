@@ -502,6 +502,21 @@
         .sch-box .bad { color: #c00000; font-weight: 800; }
         .sch-state { display: inline-block; border-radius: 12px; padding: 3px 10px; font-size: 0.8rem; margin-left: 8px; font-weight: 900; color: #fff; background: #6c757d; vertical-align: middle; }
         .sch-state.on { background: var(--success); }
+        .sch-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+        .sch-head h2 { margin-bottom: 8px; }
+        .sch-bar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+        .sch-grp { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 12px; background: #f4f6fa; border: 1px solid var(--border); border-radius: 12px; }
+        .sch-grp-t { font-size: 0.68rem; font-weight: 900; color: #556; text-transform: uppercase; letter-spacing: .6px; width: 100%; margin: -2px 0 -2px; }
+        .sch-grp .btn { margin: 0; }
+        .sch-grp input[type=date] { width: auto; padding: 6px 8px; margin: 0; }
+        .sch-dirty { display: inline-block; margin-left: 8px; font-size: 0.78rem; font-weight: 900; color: #b45f00; vertical-align: middle; }
+        .sch-mode { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+        .sch-mode label { flex: 1 1 200px; display: flex; gap: 8px; align-items: center; border: 2px solid var(--border); border-radius: 10px; padding: 10px; font-weight: 900; font-size: 0.88rem; cursor: pointer; margin: 0; }
+        .sch-mode label.on { border-color: var(--unieuro-orange); background: #fff4ec; }
+        .sch-mode input { width: 18px; height: 18px; margin: 0; flex: none; }
+        .sch-list { font-size: 0.85rem; background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; margin-top: 8px; max-height: 160px; overflow: auto; }
+        @media (max-width: 700px) { .sch-grp { width: 100%; } }
+        .sch-grp .sch-range { font-weight: 900; color: var(--unieuro-blue-dark); }
         .sch-nav { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
         .sch-nav input[type=date] { width: auto; padding: 6px 8px; margin: 0; }
         .sch-nav .sch-range { font-weight: 900; color: var(--unieuro-blue-dark); }
@@ -713,27 +728,35 @@
             <!-- ============ ORARIO ============ -->
             <section class="tab-panel" id="tab-schedule">
                 <div class="card" id="schCard">
-                    <h2>Orario di lavoro <span class="sch-state" id="schState">…</span></h2>
+                    <div class="sch-head">
+                        <h2>Orario di lavoro <span class="sch-state" id="schState">…</span> <span class="sch-dirty" id="schDirty" hidden>● modifiche non salvate</span></h2>
+                        <button type="button" class="btn btn-small btn-del" data-sch="settings">⚙ Impostazioni</button>
+                    </div>
                     <p class="hint-left">Scegli il giorno d'inizio (le 7 date si compilano da sole), imposta gli orari e premi <b>Pubblica</b>: i dipendenti vedranno l'orario come <b>immagine uguale per tutti</b> nella loro app.</p>
-                    <div class="sch-nav">
-                        <button type="button" class="btn btn-small btn-del" data-sch="prev">&larr; Prec.</button>
-                        <input type="date" id="schStart" aria-label="Data di inizio">
-                        <button type="button" class="btn btn-small btn-del" data-sch="next">Succ. &rarr;</button>
-                        <span class="sch-range" id="schRange"></span>
-                    </div>
-                    <div class="toolbar">
-                        <button type="button" class="btn btn-small btn-success" data-sch="save">Salva</button>
-                        <button type="button" class="btn btn-small btn-tool" data-sch="copyprev">Copia sett. precedente</button>
-                        <button type="button" class="btn btn-small btn-del" data-sch="clear">Svuota</button>
-                        <button type="button" class="btn btn-small btn-tool" data-sch="verify">Verifica permessi</button>
-                        <button type="button" class="btn btn-small btn-tool" data-sch="month">Totale ore mese</button>
-                        <button type="button" class="btn btn-small btn-del" data-sch="settings">Impostazioni</button>
-                    </div>
-                    <div class="toolbar">
-                        <button type="button" class="btn btn-small btn-del" data-sch="download">Scarica immagine</button>
-                        <button type="button" class="btn btn-small btn-del" data-sch="pdf">Scarica PDF</button>
-                        <button type="button" class="btn btn-small" data-sch="publish">&#10003; Pubblica ai dipendenti</button>
-                        <button type="button" class="btn btn-small btn-danger" data-sch="unpublish" id="schUnpub" hidden>Ritira orario</button>
+                    <div class="sch-bar">
+                        <div class="sch-grp">
+                            <span class="sch-grp-t">Settimana</span>
+                            <button type="button" class="btn btn-small btn-del" data-sch="prev" title="Settimana precedente">&larr;</button>
+                            <input type="date" id="schStart" aria-label="Data di inizio">
+                            <button type="button" class="btn btn-small btn-del" data-sch="next" title="Settimana successiva">&rarr;</button>
+                            <button type="button" class="btn btn-small btn-del" data-sch="today">Oggi</button>
+                            <span class="sch-range" id="schRange"></span>
+                        </div>
+                        <div class="sch-grp">
+                            <span class="sch-grp-t">Modifica</span>
+                            <button type="button" class="btn btn-small btn-success" data-sch="save">Salva</button>
+                            <button type="button" class="btn btn-small btn-tool" data-sch="copy">Copia / Ripeti</button>
+                            <button type="button" class="btn btn-small btn-tool" data-sch="verify">Verifica permessi</button>
+                            <button type="button" class="btn btn-small btn-tool" data-sch="month">Totale ore mese</button>
+                            <button type="button" class="btn btn-small btn-del" data-sch="clear">Svuota</button>
+                        </div>
+                        <div class="sch-grp">
+                            <span class="sch-grp-t">Esporta e pubblica</span>
+                            <button type="button" class="btn btn-small btn-del" data-sch="download">Immagine</button>
+                            <button type="button" class="btn btn-small btn-del" data-sch="pdf">PDF</button>
+                            <button type="button" class="btn btn-small" data-sch="publish">&#10003; Pubblica ai dipendenti</button>
+                            <button type="button" class="btn btn-small btn-danger" data-sch="unpublish" id="schUnpub" hidden>Ritira</button>
+                        </div>
                     </div>
                     <div class="sch-wrap"><table id="schTable"></table></div>
                     <div id="schInfo"></div>
@@ -1892,6 +1915,7 @@
             if (ok) {
                 schDirty = false;
                 if (!schWeeks.some(w => w.week === schStart)) schWeeks.push({ week: schStart, published: false });
+                $('schDirty').hidden = true;
                 if (!silent) toast('Orario salvato.');
             } else toast('Salvataggio non confermato: riprova.', 6000);
             return ok;
@@ -1925,6 +1949,7 @@
             stt.className = 'sch-state' + (schPub.published ? ' on' : '');
             stt.title = schPub.published ? 'Pubblicato il ' + schPub.at : '';
             $('schUnpub').hidden = !schPub.published;
+            $('schDirty').hidden = !schDirty;
             const permLabels = new Set(schWeekPermits(false).map(p => p.label));
 
             let h = '<thead><tr><th class="sch-corner">ORARI NEGOZIO</th>';
@@ -2012,18 +2037,8 @@
                 if (!confirm('Svuotare tutta la settimana (tutti a riposo)?')) return;
                 schData.rows = {}; schData.permits = []; schEnsure(); schDirty = true; drawSchedule(); return;
             }
-            if (a === 'copyprev') {
-                const prev = isoOf(addDays(parseISO(schStart), -7));
-                try {
-                    const d = await jsonp({ action: 'schedget', week: prev, password: adminPassword }, 20000);
-                    const pd = d && d.data ? JSON.parse(d.data) : null;
-                    if (!pd || !pd.rows) { toast('La settimana precedente non ha un orario salvato.'); return; }
-                    if (!confirm('Copiare gli orari della settimana precedente (' + schDmy(parseISO(prev)) + ') in questa?')) return;
-                    schAllStaff().forEach(s => { if (pd.rows[s.label]) schData.rows[s.label] = JSON.parse(JSON.stringify(pd.rows[s.label])); });
-                    schEnsure(); schDirty = true; drawSchedule(); toast('Orari copiati. Ricorda di salvare.');
-                } catch (err) { toast('Copia non riuscita.'); }
-                return;
-            }
+            if (a === 'today') return schGoto(isoOf(schMonday(new Date())));
+            if (a === 'copy') return schCopy();
             if (a === 'verify') {
                 if (!schWeekPermits(false).length) { schFlag = false; drawSchedule(); toast('Nessuna corrispondenza trovata.'); return; }
                 schFlag = !schFlag; drawSchedule();
@@ -2068,6 +2083,102 @@
                 validate: v => v.date ? '' : 'Scrivi il giorno o l\'orario.'
             });
             if (r) { schData.permits.push(r); schDirty = true; drawSchedule(); }
+        }
+
+
+        /* ---------- Copia / Ripeti ---------- */
+        function schWeekLabel(iso) { const d = parseISO(iso); return schDmy(d) + ' → ' + schDmy(addDays(d, 6)); }
+        function schCloneRows(rows) {
+            const out = {};
+            schAllStaff().forEach(st => { out[st.label] = JSON.parse(JSON.stringify(rows[st.label] || [])); });
+            return out;
+        }
+        async function schCopy() {
+            const prev = isoOf(addDays(parseISO(schStart), -7));
+            const saved = schWeeks.map(w => w.week).filter(w => w !== schStart).sort().reverse();
+            if (saved.indexOf(prev) < 0) saved.unshift(prev);
+            const srcOpts = saved.map(w => '<option value="' + w + '">' + (w === prev ? 'Settimana precedente · ' : '') + schWeekLabel(w) + (schWeeks.some(x => x.week === w) ? '' : ' (vuota)') + '</option>').join('') +
+                '<option value="__other">Un\'altra data…</option>';
+            const res = showModal({
+                title: 'Copia / Ripeti orario',
+                body: '<div class="sch-mode">' +
+                    '<label class="on"><input type="radio" name="cpMode" value="from" checked> Copia in questa settimana da un\'altra</label>' +
+                    '<label><input type="radio" name="cpMode" value="to"> Ripeti questa settimana su altre date</label></div>' +
+                    '<div id="cpFrom"><div class="form-group"><label>Copia da</label><select id="cpSrc">' + srcOpts + '</select></div>' +
+                    '<div class="form-group" id="cpOtherBox" hidden><label>Primo giorno della settimana da copiare</label><input type="date" id="cpSrcDate"></div>' +
+                    '<p class="hint-left">Gli orari vengono messi qui sotto: li controlli e poi premi <b>Salva</b>.</p></div>' +
+                    '<div id="cpTo" hidden><div class="form-group"><label>Primo giorno della prima settimana di destinazione</label><input type="date" id="cpDst"></div>' +
+                    '<div class="form-group"><label>Per quante settimane (di fila)</label><input type="number" id="cpN" min="1" max="26" value="1"></div>' +
+                    '<div class="sch-list" id="cpPrev">Scegli la data di destinazione.</div>' +
+                    '<p class="hint-left">L\'orario di questa settimana (' + esc(schWeekLabel(schStart)) + ') viene salvato direttamente nelle settimane scelte. Gli orari già presenti lì vengono sostituiti.</p></div>',
+                okText: 'Conferma',
+                collect: () => ({
+                    mode: document.querySelector('input[name=cpMode]:checked').value,
+                    src: $('cpSrc').value === '__other' ? $('cpSrcDate').value : $('cpSrc').value,
+                    dst: $('cpDst').value, n: parseInt($('cpN').value, 10)
+                }),
+                validate: v => {
+                    if (v.mode === 'from') return /^\d{4}-\d{2}-\d{2}$/.test(v.src) ? (v.src === schStart ? 'Hai scelto la settimana che stai già guardando.' : '') : 'Scegli la settimana da copiare.';
+                    if (!/^\d{4}-\d{2}-\d{2}$/.test(v.dst)) return 'Scegli la data di destinazione.';
+                    if (!(v.n >= 1 && v.n <= 26)) return 'Le settimane devono essere da 1 a 26.';
+                    return '';
+                }
+            });
+            const mb = $('modalBody');
+            const upd = () => {
+                const mode = document.querySelector('input[name=cpMode]:checked').value;
+                mb.querySelectorAll('.sch-mode label').forEach(l => l.classList.toggle('on', l.querySelector('input').checked));
+                $('cpFrom').hidden = mode !== 'from'; $('cpTo').hidden = mode !== 'to';
+                $('cpOtherBox').hidden = $('cpSrc').value !== '__other';
+                const dst = $('cpDst').value, n = parseInt($('cpN').value, 10);
+                if (mode === 'to' && /^\d{4}-\d{2}-\d{2}$/.test(dst) && n >= 1) {
+                    let h = '', ex = 0;
+                    for (let i = 0; i < Math.min(n, 26); i++) {
+                        const w = isoOf(addDays(parseISO(dst), 7 * i)), has = schWeeks.some(x => x.week === w);
+                        if (has) ex++;
+                        h += '<div>' + esc(schWeekLabel(w)) + (has ? ' <b style="color:#b45f00">(ha già un orario: sarà sostituito)</b>' : '') + '</div>';
+                    }
+                    const wd = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'];
+                    const w0 = wd[parseISO(dst).getDay()], w1 = wd[parseISO(schStart).getDay()];
+                    $('cpPrev').innerHTML = (w0 !== w1 ? '<div style="color:#b45f00;font-weight:800">Attenzione: la settimana attuale inizia di ' + w1 + ', la destinazione di ' + w0 + '. Gli orari restano nello stesso ordine di giorni.</div>' : '') + h;
+                }
+            };
+            mb.onchange = upd; mb.oninput = upd; upd();
+            const r = await res;
+            mb.onchange = null; mb.oninput = null;
+            if (!r) return;
+            if (r.mode === 'from') {
+                try {
+                    const d = await jsonp({ action: 'schedget', week: r.src, password: adminPassword }, 20000);
+                    const pd = d && d.ok && d.data ? JSON.parse(d.data) : null;
+                    if (!pd || !pd.rows) { toast('Quella settimana non ha un orario salvato.', 6000); return; }
+                    schData.rows = schCloneRows(pd.rows); schEnsure(); schDirty = true; drawSchedule();
+                    toast('Orari copiati da ' + schWeekLabel(r.src) + '. Controlla e premi Salva.', 7000);
+                } catch (err) { toast('Copia non riuscita: controlla la connessione.'); }
+                return;
+            }
+            // ripeti su altre settimane
+            const targets = []; for (let i = 0; i < r.n; i++) targets.push(isoOf(addDays(parseISO(r.dst), 7 * i)));
+            const list = targets.filter(t => t !== schStart);
+            if (!list.length) { toast('Nessuna settimana di destinazione diversa da quella attuale.'); return; }
+            const existing = list.filter(t => schWeeks.some(x => x.week === t)).length;
+            if (existing && !confirm(existing + (existing === 1 ? ' settimana ha' : ' settimane hanno') + ' già un orario: verrà sostituito. Continuare?')) return;
+            schLoading = true; toast('Copio su ' + list.length + (list.length === 1 ? ' settimana…' : ' settimane…'), 4000);
+            const json = JSON.stringify({ rows: schCloneRows(schData.rows), permits: [] });
+            let okN = 0;
+            for (const t of list) {
+                const ok = await schPostVerified({ op: 'schedsave', week: t, data: json }, async () => {
+                    const d = await jsonp({ action: 'schedget', week: t, password: adminPassword }, 15000);
+                    return d && d.ok && d.data === json;
+                });
+                if (ok) { okN++; if (!schWeeks.some(x => x.week === t)) schWeeks.push({ week: t, published: false }); }
+                else break;
+            }
+            schLoading = false;
+            if (okN === list.length) {
+                toast('Orario copiato su ' + okN + (okN === 1 ? ' settimana.' : ' settimane.') + ' Ti porto alla prima.', 6000);
+                schGoto(list[0]);
+            } else toast('Copiate ' + okN + ' settimane su ' + list.length + ': riprova per le restanti.', 8000);
         }
 
         /* ---------- impostazioni ---------- */
@@ -2167,7 +2278,7 @@
 
         /* ---------- immagine (identica per tutti) ---------- */
         function schRender(opt) {
-            const S = 1.5, M = 20, nameW = 190, slotW = 82, oreW = 46, totW = 90;
+            const S = 1.5, M = 20, nameW = 190, hrs = opt.hours !== false, slotW = hrs ? 82 : 104, oreW = hrs ? 46 : 0, totW = hrs ? 90 : 0;
             const dayW = slotW * 2 + oreW, W = M * 2 + nameW + dayW * 7 + totW;
             const headH = 112, thH = 54, secH = 30, rowH = 36, covH = 34, lineH = 24;
             const perms = opt.permits ? schWeekPermits(true) : [];
@@ -2215,7 +2326,7 @@
                 txt(schDayName(d), dx, y, dayW, thH / 2 + 4, { size: 16 });
                 txt(schDmy(schDate(d)) + (hol ? ' · FESTIVO' : ''), dx, y + thH / 2 - 2, dayW, thH / 2 + 2, { size: 13 });
             }
-            box(M + nameW + dayW * 7, y, totW, thH, '#ffd23f'); txt('TOTALE ORE', M + nameW + dayW * 7, y, totW, thH, { size: 13 });
+            if (hrs) { box(M + nameW + dayW * 7, y, totW, thH, '#ffd23f'); txt('TOTALE ORE', M + nameW + dayW * 7, y, totW, thH, { size: 13 }); }
             y += thH;
             schCfg.sections.forEach(sec => {
                 box(M, y, W - M * 2, secH, '#0f9ed5'); txt(sec.name, M, y, W - M * 2, secH, { size: 15, color: '#fff', align: 'left' });
@@ -2224,14 +2335,14 @@
                     const row = schData.rows[st.label]; let tot = 0;
                     box(M, y, nameW, rowH, '#f0f0f0'); txt(st.label, M, y, nameW, rowH, { size: 15, align: 'left' });
                     for (let d = 0; d < 7; d++) {
-                        const dx = M + nameW + d * dayW, hrs = schHours(st.label, d); tot += hrs;
+                        const dx = M + nameW + d * dayW, hh = schHours(st.label, d); tot += hh;
                         for (let s = 0; s < 2; s++) {
                             const v = row[d][s];
                             box(dx + s * slotW, y, slotW, rowH, schColor(v)); txt(schLabel(v), dx + s * slotW, y, slotW, rowH, { size: 13 });
                         }
-                        box(dx + slotW * 2, y, oreW, rowH, '#fff'); txt(fmtH(hrs), dx + slotW * 2, y, oreW, rowH, { size: 14 });
+                        if (hrs) { box(dx + slotW * 2, y, oreW, rowH, '#fff'); txt(fmtH(hh), dx + slotW * 2, y, oreW, rowH, { size: 14 }); }
                     }
-                    box(M + nameW + dayW * 7, y, totW, rowH, '#f7f7f7'); txt(fmtH(tot), M + nameW + dayW * 7, y, totW, rowH, { size: 16 });
+                    if (hrs) { box(M + nameW + dayW * 7, y, totW, rowH, '#f7f7f7'); txt(fmtH(tot), M + nameW + dayW * 7, y, totW, rowH, { size: 16 }); }
                     y += rowH;
                 });
             });
@@ -2305,23 +2416,24 @@
             const modal = $('modal'); modal.classList.add('wide');
             const body = () => '<p>' + (schPub.published ? '<b>Sostituirà</b> l\'orario già pubblicato per questa settimana.' : 'Controlla l\'anteprima: i dipendenti vedranno <b>esattamente questa immagine</b>.') + '</p>' + warn +
                 '<img class="sch-prev" id="pvImg" alt="Anteprima orario">' +
+                '<label class="sch-opt"><input type="checkbox" id="pvHrs" checked><span>Mostra le ore di ogni dipendente (ore del giorno e totale settimanale)<small>Se la spegni, nell\'immagine restano solo gli orari.</small></span></label>' +
                 '<label class="sch-opt"><input type="checkbox" id="pvCov"><span>Mostra nell\'immagine la riga di controllo copertura (OK / MANCANO PERSONE)<small>Di solito serve solo a te: lasciala spenta.</small></span></label>' +
                 '<label class="sch-opt"><input type="checkbox" id="pvPer"><span>Mostra nell\'immagine i permessi/assenze della settimana<small>Le malattie non vengono mai mostrate.</small></span></label>' +
                 '<label class="sch-opt"><input type="checkbox" id="pvMail"><span>Invia una email di avviso ai dipendenti<small>Solo a chi ha un indirizzo email nella scheda Dipendenti.</small></span></label>';
             const res = showModal({
                 title: 'Pubblicare l\'orario dal ' + schDmy(schDate(0)) + '?', body: body(), okText: 'Sì, pubblica',
-                collect: () => ({ cov: $('pvCov').checked, per: $('pvPer').checked, mail: $('pvMail').checked })
+                collect: () => ({ cov: $('pvCov').checked, per: $('pvPer').checked, hrs: $('pvHrs').checked, mail: $('pvMail').checked })
             });
-            const upd = () => { $('pvImg').src = schRender({ coverage: $('pvCov').checked, permits: $('pvPer').checked }).toDataURL('image/png'); };
-            upd(); $('pvCov').onchange = upd; $('pvPer').onchange = upd;
+            const upd = () => { $('pvImg').src = schRender({ coverage: $('pvCov').checked, permits: $('pvPer').checked, hours: $('pvHrs').checked }).toDataURL('image/png'); };
+            upd(); $('pvCov').onchange = upd; $('pvPer').onchange = upd; $('pvHrs').onchange = upd;
             const r = await res;
             modal.classList.remove('wide');
             if (!r) return;
             const btn = document.querySelector('[data-sch="publish"]'); btn.disabled = true; btn.textContent = 'Pubblico…';
             try {
-                const img = schRender({ coverage: r.cov, permits: r.per }).toDataURL('image/png');
+                const img = schRender({ coverage: r.cov, permits: r.per, hours: r.hrs }).toDataURL('image/png');
                 const tok = String(Date.now());
-                const ok = await schPostVerified({ op: 'schedpublish', week: schStart, data: JSON.stringify(schData), img, tok, notify: r.mail ? '1' : '0', opts: JSON.stringify({ cov: r.cov, per: r.per }) }, async () => {
+                const ok = await schPostVerified({ op: 'schedpublish', week: schStart, data: JSON.stringify(schData), img, tok, notify: r.mail ? '1' : '0', opts: JSON.stringify({ cov: r.cov, per: r.per, hrs: r.hrs }) }, async () => {
                     const d = await jsonp({ action: 'schedcheck', week: schStart, password: adminPassword }, 15000);
                     return d && d.ok && d.published && d.tok === tok;
                 });
