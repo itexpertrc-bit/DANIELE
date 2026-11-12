@@ -559,8 +559,7 @@
                 <div class="tabs" role="tablist">
                     <button type="button" class="tab active" data-tab="requests">Richieste <span class="dot" id="pendingBadge" hidden>0</span></button>
                     <button type="button" class="tab" data-tab="calendar">Calendario</button>
-                    <button type="button" class="tab" data-tab="stats">Statistiche</button>
-                    <button type="button" class="tab" data-tab="export">Esporta</button>
+                    <button type="button" class="tab" data-tab="stats">Statistiche ed Esporta</button>
                     <button type="button" class="tab" data-tab="schedule">Orario</button>
                     <button type="button" class="tab" data-tab="employees">Dipendenti</button>
                 </div>
@@ -657,47 +656,25 @@
                 </div>
             </section>
 
-            <!-- ============ STATISTICHE ============ -->
+            <!-- ============ STATISTICHE ED ESPORTAZIONE ============ -->
             <section class="tab-panel" id="tab-stats">
-                <div class="card">
-                    <h2>Statistiche assenze</h2>
-                    <div class="filters-grid stats-controls">
-                        <div><label for="statsYear">Anno</label><select id="statsYear"></select></div>
+                <div class="card" id="exportCard">
+                    <h2>Statistiche ed esportazione</h2>
+                    <div class="print-only" id="printSubExport"></div>
+                    <div class="filters-grid export-filters no-print">
+                        <div><label for="exEmp">Dipendente</label><select id="exEmp"><option value="ALL">Tutti i dipendenti</option></select></div>
+                        <div><label for="exStatus">Stato (solo elenco)</label>
+                            <select id="exStatus"><option value="ALL">Tutti gli stati</option><option>In attesa</option><option>Approvato</option><option>Rifiutato</option></select></div>
+                        <div><label for="exType">Tipologia</label>
+                            <select id="exType"><option value="ALL">Tutte</option><option>Ferie</option><option>Permesso</option><option>Malattia</option><option>Giorno Libero</option></select></div>
+                        <div><label for="exFrom">Dal</label><input type="date" id="exFrom"></div>
+                        <div><label for="exTo">Al</label><input type="date" id="exTo"></div>
                         <div><label for="statsMode">Conteggio dei giorni</label>
                             <select id="statsMode">
                                 <option value="cal">Di calendario (tutti i giorni)</option>
                                 <option value="ls">Lavorativi lun-sab (esclusi festivi)</option>
                                 <option value="lv">Lavorativi lun-ven (esclusi festivi)</option>
                             </select></div>
-                    </div>
-                    <p class="hint-left">I giorni di assenza si riferiscono alle richieste <b>approvate</b>.</p>
-                    <div class="kpis" id="statsKpis"></div>
-
-                    <h3 class="sub">Giorni di assenza per persona e per tipo</h3>
-                    <div class="table-responsive"><table class="matrix"><thead id="statsHead"></thead><tbody id="statsBody"></tbody></table></div>
-                    <p class="hint-left" id="statsZero"></p>
-
-                    <h3 class="sub">Mesi più carichi</h3>
-                    <div class="bars" id="statsMonths"></div>
-
-                    <h3 class="sub">Per tipologia</h3>
-                    <div class="bars" id="statsTypes"></div>
-                </div>
-            </section>
-
-            <!-- ============ ESPORTA ============ -->
-            <section class="tab-panel" id="tab-export">
-                <div class="card" id="exportCard">
-                    <h2>Esporta richieste</h2>
-                    <div class="print-only" id="printSubExport"></div>
-                    <div class="filters-grid export-filters no-print">
-                        <div><label for="exEmp">Dipendente</label><select id="exEmp"><option value="ALL">Tutti i dipendenti</option></select></div>
-                        <div><label for="exStatus">Stato</label>
-                            <select id="exStatus"><option value="ALL">Tutti gli stati</option><option>In attesa</option><option>Approvato</option><option>Rifiutato</option></select></div>
-                        <div><label for="exType">Tipologia</label>
-                            <select id="exType"><option value="ALL">Tutte</option><option>Ferie</option><option>Permesso</option><option>Malattia</option><option>Giorno Libero</option></select></div>
-                        <div><label for="exFrom">Dal</label><input type="date" id="exFrom"></div>
-                        <div><label for="exTo">Al</label><input type="date" id="exTo"></div>
                     </div>
                     <div class="toolbar no-print">
                         <button type="button" class="btn btn-small btn-del" data-range="month">Questo mese</button>
@@ -706,9 +683,24 @@
                         <button type="button" class="btn btn-small btn-del" data-range="all">Tutto</button>
                         <span style="flex:1"></span>
                         <button type="button" class="btn btn-small btn-success" id="exXlsx">Scarica Excel (.xlsx)</button>
-                        <button type="button" class="btn btn-small btn-tool" id="exPrint">Stampa / PDF</button>
+                        <button type="button" class="btn btn-small btn-danger" id="exPdf">Scarica PDF</button>
+                        <button type="button" class="btn btn-small btn-tool" id="exPrint">Stampa</button>
                     </div>
-                    <p class="hint-left no-print" id="exCount"></p>
+                    <p class="hint-left no-print">Statistiche ed elenco seguono gli stessi filtri. I giorni di assenza contano le richieste <b>approvate</b> nel periodo scelto; il filtro <b>Stato</b> riguarda solo l'elenco.</p>
+                    <div class="kpis" id="statsKpis"></div>
+
+                    <h3 class="sub">Giorni di assenza per persona e per tipo</h3>
+                    <div class="table-responsive"><table class="matrix"><thead id="statsHead"></thead><tbody id="statsBody"></tbody></table></div>
+                    <p class="hint-left" id="statsZero"></p>
+
+                    <h3 class="sub">Giorni di assenza per mese</h3>
+                    <div class="bars" id="statsMonths"></div>
+
+                    <h3 class="sub">Per tipologia</h3>
+                    <div class="bars" id="statsTypes"></div>
+
+                    <h3 class="sub">Elenco richieste</h3>
+                    <p class="hint-left" id="exCount"></p>
                     <div class="table-responsive">
                         <table>
                             <thead><tr><th>Dipendente</th><th>Tipo</th><th>Dal</th><th>Al</th><th>Giorni</th><th>Stato</th><th>Note / Motivo</th></tr></thead>
@@ -942,27 +934,32 @@
         function colName(i) { let s = ''; i++; while (i > 0) { const m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); } return s; }
         function excelSerial(iso) { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso || ''); return m ? (Date.UTC(+m[1], +m[2] - 1, +m[3]) - Date.UTC(1899, 11, 30)) / 86400000 : null; }
 
-        // header: ['A','B'...]; rows: array di array; celle: stringa | numero | {date:'2026-11-05'}; widths: larghezze colonne
-        function buildXlsx(sheetName, header, rows, widths) {
+        // sheets: [{name, header, rows, widths}] ; celle: stringa | numero | {date:'2026-11-05'}
+        function buildXlsx(sheetName, header, rows, widths) { return buildXlsxMulti([{ name: sheetName, header, rows, widths }]); }
+        function buildXlsxMulti(sheets) {
             const cell = (v, r, c) => {
                 const ref = colName(c) + r;
                 if (v && typeof v === 'object' && v.date) { const n = excelSerial(v.date); if (n !== null) return '<c r="' + ref + '" s="2"><v>' + n + '</v></c>'; v = v.date; }
                 if (typeof v === 'number') return '<c r="' + ref + '"><v>' + v + '</v></c>';
                 return '<c r="' + ref + '" t="inlineStr"><is><t xml:space="preserve">' + xmlEsc(v) + '</t></is></c>';
             };
-            let sd = '<row r="1">' + header.map((h, c) => '<c r="' + colName(c) + '1" s="1" t="inlineStr"><is><t>' + xmlEsc(h) + '</t></is></c>').join('') + '</row>';
-            rows.forEach((row, i) => { sd += '<row r="' + (i + 2) + '">' + row.map((v, c) => cell(v, i + 2, c)).join('') + '</row>'; });
-            const last = colName(header.length - 1) + (rows.length + 1);
-            const cols = '<cols>' + widths.map((w, i) => '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>').join('') + '</cols>';
             const NS = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"';
+            const H = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+            const sheetXml = sh => {
+                let sd = '<row r="1">' + sh.header.map((h, c) => '<c r="' + colName(c) + '1" s="1" t="inlineStr"><is><t>' + xmlEsc(h) + '</t></is></c>').join('') + '</row>';
+                sh.rows.forEach((row, i) => { sd += '<row r="' + (i + 2) + '">' + row.map((v, c) => cell(v, i + 2, c)).join('') + '</row>'; });
+                const last = colName(sh.header.length - 1) + (sh.rows.length + 1);
+                const cols = '<cols>' + sh.widths.map((w, i) => '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>').join('') + '</cols>';
+                return H + '<worksheet ' + NS + '><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>' + cols + '<sheetData>' + sd + '</sheetData><autoFilter ref="A1:' + last + '"/></worksheet>';
+            };
+            const n = sheets.length, REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
             const files = [
-                { name: '[Content_Types].xml', text: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>' },
-                { name: '_rels/.rels', text: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>' },
-                { name: 'xl/workbook.xml', text: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook ' + NS + ' xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="' + xmlEsc(sheetName) + '" sheetId="1" r:id="rId1"/></sheets></workbook>' },
-                { name: 'xl/_rels/workbook.xml.rels', text: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>' },
-                { name: 'xl/styles.xml', text: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet ' + NS + '><numFmts count="1"><numFmt numFmtId="164" formatCode="dd/mm/yyyy"/></numFmts><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF002B66"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/><xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>' },
-                { name: 'xl/worksheets/sheet1.xml', text: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet ' + NS + '><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>' + cols + '<sheetData>' + sd + '</sheetData><autoFilter ref="A1:' + last + '"/></worksheet>' }
-            ];
+                { name: '[Content_Types].xml', text: H + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>' + sheets.map((_, i) => '<Override PartName="/xl/worksheets/sheet' + (i + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>').join('') + '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>' },
+                { name: '_rels/.rels', text: H + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="' + REL + '/officeDocument" Target="xl/workbook.xml"/></Relationships>' },
+                { name: 'xl/workbook.xml', text: H + '<workbook ' + NS + ' xmlns:r="' + REL + '"><sheets>' + sheets.map((sh, i) => '<sheet name="' + xmlEsc(sh.name) + '" sheetId="' + (i + 1) + '" r:id="rId' + (i + 1) + '"/>').join('') + '</sheets></workbook>' },
+                { name: 'xl/_rels/workbook.xml.rels', text: H + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' + sheets.map((_, i) => '<Relationship Id="rId' + (i + 1) + '" Type="' + REL + '/worksheet" Target="worksheets/sheet' + (i + 1) + '.xml"/>').join('') + '<Relationship Id="rId' + (n + 1) + '" Type="' + REL + '/styles" Target="styles.xml"/></Relationships>' },
+                { name: 'xl/styles.xml', text: H + '<styleSheet ' + NS + '><numFmts count="1"><numFmt numFmtId="164" formatCode="dd/mm/yyyy"/></numFmts><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF002B66"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/><xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>' }
+            ].concat(sheets.map((sh, i) => ({ name: 'xl/worksheets/sheet' + (i + 1) + '.xml', text: sheetXml(sh) })));
             return zipStore(files);
         }
 
@@ -1072,8 +1069,7 @@
             const badge = $('pendingBadge'); badge.textContent = pend; badge.hidden = pend === 0;
             if (activeTab === 'requests') renderRequests();
             else if (activeTab === 'calendar') renderCalendar();
-            else if (activeTab === 'stats') renderStats();
-            else if (activeTab === 'export') renderExport();
+            else if (activeTab === 'stats') renderStatsAll();
             else if (activeTab === 'employees') renderEmployees();
             else if (activeTab === 'schedule') renderSchedule();
         }
@@ -1430,15 +1426,15 @@
             calSel = b.dataset.date; renderCalendar();
         });
 
-        /* ================= STATISTICHE ================= */
+        /* ================= STATISTICHE ED ESPORTAZIONE (unite) ================= */
         const TIPI = ['Ferie', 'Permesso', 'Malattia', 'Giorno Libero'];
+        let statsInit = false;
         function initStatsControls() {
-            const years = new Set([new Date().getFullYear()]);
-            requests.forEach(r => { years.add(+r.startDate.slice(0, 4)); years.add(+r.endDate.slice(0, 4)); });
-            const list = [...years].filter(y => y > 2000).sort((a, b) => b - a);
-            const cur = $('statsYear').value;
-            $('statsYear').innerHTML = list.map(y => `<option value="${y}">${y}</option>`).join('');
-            $('statsYear').value = list.map(String).includes(cur) ? cur : String(new Date().getFullYear());
+            if (!statsInit) {
+                const y = new Date().getFullYear();
+                $('exFrom').value = y + '-01-01'; $('exTo').value = y + '-12-31';
+                statsInit = true;
+            }
             const saved = lsGet('hr_daymode');
             if (saved && ['cal', 'lv', 'ls'].includes(saved)) $('statsMode').value = saved;
         }
@@ -1446,107 +1442,246 @@
             return items.map(it => `<div class="bar-row ${peak !== undefined && it.value === peak && peak > 0 ? 'peak' : ''}">
                 <span>${esc(it.label)}</span><div class="bar"><i style="width:${max ? Math.round(it.value / max * 100) : 0}%"></i></div><b>${it.value}</b></div>`).join('');
         }
-        function renderStats() {
-            const years = [...$('statsYear').options].map(o => +o.value);
-            const wanted = [...new Set([new Date().getFullYear()].concat(requests.flatMap(r => [+r.startDate.slice(0, 4), +r.endDate.slice(0, 4)])))];
-            if (wanted.some(y => !years.includes(y))) initStatsControls();
-            const yr = +$('statsYear').value, mode = $('statsMode').value;
-            const y0 = yr + '-01-01', y1 = yr + '-12-31';
-            const inYear = requests.filter(r => r.startDate <= y1 && r.endDate >= y0);
-            const cnt = s => inYear.filter(r => r.status === s).length;
-            const approved = inYear.filter(r => r.status === 'Approvato');
-
-            const perPerson = {}, perMonth = new Array(12).fill(0), perType = {};
-            employees.filter(e => e.active).forEach(e => { perPerson[e.name] = { total: 0, t: {} }; });
+        function exFilters() {
+            return { emp: $('exEmp').value, st: $('exStatus').value, ty: $('exType').value, from: $('exFrom').value, to: $('exTo').value, mode: $('statsMode').value };
+        }
+        // elenco (con filtro stato)
+        function exportList() {
+            const f = exFilters();
+            return requests.filter(r => (f.emp === 'ALL' || r.name === f.emp) && (f.st === 'ALL' || r.status === f.st) &&
+                (f.ty === 'ALL' || r.type === f.ty) && (!f.from || r.endDate >= f.from) && (!f.to || r.startDate <= f.to))
+                .sort((a, b) => a.startDate.localeCompare(b.startDate) || a.name.localeCompare(b.name));
+        }
+        // statistiche (stessi filtri, ma senza filtro stato)
+        function computeStats() {
+            const f = exFilters();
+            const base = requests.filter(r => (f.emp === 'ALL' || r.name === f.emp) && (f.ty === 'ALL' || r.type === f.ty) &&
+                (!f.from || r.endDate >= f.from) && (!f.to || r.startDate <= f.to));
+            const cnt = s => base.filter(r => r.status === s).length;
+            const perPerson = {}, perMonth = {}, perType = {};
+            employees.filter(e => e.active && (f.emp === 'ALL' || e.name === f.emp)).forEach(e => { perPerson[e.name] = { total: 0, t: {} }; });
             let totalDays = 0;
-            approved.forEach(r => {
+            base.filter(r => r.status === 'Approvato').forEach(r => {
                 const p = perPerson[r.name] || (perPerson[r.name] = { total: 0, t: {} });
-                const s = r.startDate < y0 ? y0 : r.startDate, e2 = r.endDate > y1 ? y1 : r.endDate;
+                const s = f.from && r.startDate < f.from ? f.from : r.startDate, e2 = f.to && r.endDate > f.to ? f.to : r.endDate;
                 let d = parseISO(s); const last = parseISO(e2);
-                for (let g = 0; d <= last && g < 400; g++, d = addDays(d, 1)) {
-                    if (!dayCounts(isoOf(d), mode)) continue;
+                for (let g = 0; d && last && d <= last && g < 800; g++, d = addDays(d, 1)) {
+                    if (!dayCounts(isoOf(d), f.mode)) continue;
+                    const mk = isoOf(d).slice(0, 7);
                     p.total++; p.t[r.type] = (p.t[r.type] || 0) + 1;
-                    perMonth[d.getMonth()]++; perType[r.type] = (perType[r.type] || 0) + 1; totalDays++;
+                    perMonth[mk] = (perMonth[mk] || 0) + 1; perType[r.type] = (perType[r.type] || 0) + 1; totalDays++;
                 }
             });
-
-            $('statsKpis').innerHTML = [
-                [inYear.length, 'Richieste nell\'anno'], [cnt('In attesa'), 'In attesa'], [cnt('Approvato'), 'Approvate'],
-                [cnt('Rifiutato'), 'Rifiutate'], [totalDays, 'Giorni di assenza']
-            ].map(k => `<div class="kpi"><b>${k[0]}</b><span>${k[1]}</span></div>`).join('');
-
+            // mesi da mostrare: tutti quelli del periodo (max 24) oppure solo quelli con dati
+            let keys = Object.keys(perMonth).sort();
+            if (f.from && f.to) {
+                const a = parseISO(f.from), z = parseISO(f.to);
+                if (a && z) {
+                    const n = (z.getFullYear() - a.getFullYear()) * 12 + z.getMonth() - a.getMonth() + 1;
+                    if (n >= 1 && n <= 24) { keys = []; for (let i = 0; i < n; i++) { const d = new Date(a.getFullYear(), a.getMonth() + i, 1); keys.push(d.getFullYear() + '-' + pad2(d.getMonth() + 1)); } }
+                }
+            }
+            const months = keys.map(k => ({ label: MESI[+k.slice(5) - 1] + ' ' + k.slice(0, 4), value: perMonth[k] || 0 }));
             const types = TIPI.concat(Object.keys(perType).filter(t => !TIPI.includes(t)));
-            $('statsHead').innerHTML = '<tr><th>Dipendente</th>' + types.map(t => `<th class="num">${esc(t)}</th>`).join('') + '<th class="num">Totale</th></tr>';
             const everyone = Object.keys(perPerson).map(n => ({ n: n, p: perPerson[n] })).sort((a, b) => b.p.total - a.p.total || a.n.localeCompare(b.n));
-            const rows = everyone.filter(r => r.p.total > 0);
-            const zero = everyone.length - rows.length;
-            $('statsZero').textContent = zero ? (zero === 1 ? '1 dipendente senza assenze approvate in questo anno.' : zero + ' dipendenti senza assenze approvate in questo anno.') : '';
+            return {
+                f, total: base.length, pend: cnt('In attesa'), appr: cnt('Approvato'), rej: cnt('Rifiutato'), totalDays,
+                types, everyone, months, perType, mode: f.mode
+            };
+        }
+        function periodLabel() {
+            const f = exFilters();
+            return f.from || f.to ? ((f.from ? 'dal ' + fmtDate(f.from) : '') + (f.to ? ' al ' + fmtDate(f.to) : '')).trim() : 'tutto il periodo';
+        }
+        const MODE_LABEL = { cal: 'giorni di calendario', ls: 'lavorativi lun-sab', lv: 'lavorativi lun-ven' };
+        function noteOf(r) { return [r.notes, r.reason ? 'Motivo rifiuto: ' + r.reason : ''].filter(Boolean).join(' | '); }
+
+        function renderStats() {
+            const S = computeStats();
+            $('statsKpis').innerHTML = [
+                [S.total, 'Richieste nel periodo'], [S.pend, 'In attesa'], [S.appr, 'Approvate'],
+                [S.rej, 'Rifiutate'], [S.totalDays, 'Giorni di assenza']
+            ].map(k => `<div class="kpi"><b>${k[0]}</b><span>${k[1]}</span></div>`).join('');
+            $('statsHead').innerHTML = '<tr><th>Dipendente</th>' + S.types.map(t => `<th class="num">${esc(t)}</th>`).join('') + '<th class="num">Totale</th></tr>';
+            const rows = S.everyone.filter(r => r.p.total > 0);
+            const zero = S.everyone.length - rows.length;
+            $('statsZero').textContent = zero ? (zero === 1 ? '1 dipendente senza assenze approvate nel periodo.' : zero + ' dipendenti senza assenze approvate nel periodo.') : '';
             $('statsBody').innerHTML = rows.length ? rows.map(r =>
                 `<tr><td data-label="Dipendente"><strong>${esc(r.n)}</strong></td>` +
-                types.map(t => `<td class="num" data-label="${esc(t)}">${r.p.t[t] || 0}</td>`).join('') +
+                S.types.map(t => `<td class="num" data-label="${esc(t)}">${r.p.t[t] || 0}</td>`).join('') +
                 `<td class="num" data-label="Totale"><b>${r.p.total}</b></td></tr>`).join('')
-                : '<tr><td colspan="6" style="text-align:center;">Nessuna assenza approvata in questo anno.</td></tr>';
-
-            const maxM = Math.max.apply(null, perMonth);
-            $('statsMonths').innerHTML = barRows(perMonth.map((v, i) => ({ label: MESI[i], value: v })), maxM, maxM);
-            const tt = types.map(t => ({ label: t, value: perType[t] || 0 }));
+                : '<tr><td colspan="' + (S.types.length + 2) + '" style="text-align:center;">Nessuna assenza approvata nel periodo.</td></tr>';
+            const maxM = Math.max.apply(null, S.months.map(m => m.value).concat([0]));
+            $('statsMonths').innerHTML = S.months.length ? barRows(S.months, maxM, maxM) : '<div class="empty">Nessun dato.</div>';
+            const tt = S.types.map(t => ({ label: t, value: S.perType[t] || 0 }));
             $('statsTypes').innerHTML = barRows(tt, Math.max.apply(null, tt.map(x => x.value).concat([0])));
-        }
-        $('statsYear').addEventListener('change', renderStats);
-        $('statsMode').addEventListener('change', () => { lsSet('hr_daymode', $('statsMode').value); renderStats(); });
-
-        /* ================= ESPORTA ================= */
-        function exportList() {
-            const emp = $('exEmp').value, st = $('exStatus').value, ty = $('exType').value, from = $('exFrom').value, to = $('exTo').value;
-            return requests.filter(r => (emp === 'ALL' || r.name === emp) && (st === 'ALL' || r.status === st) &&
-                (ty === 'ALL' || r.type === ty) && (!from || r.endDate >= from) && (!to || r.startDate <= to))
-                .sort((a, b) => a.startDate.localeCompare(b.startDate) || a.name.localeCompare(b.name));
         }
         function renderExport() {
             const list = exportList();
             $('exCount').textContent = list.length + (list.length === 1 ? ' richiesta corrisponde' : ' richieste corrispondono') + ' ai filtri.';
             $('exBody').innerHTML = list.length ? list.map(r => {
-                const note = [r.notes, r.reason ? 'Motivo rifiuto: ' + r.reason : ''].filter(Boolean).join(' | ');
                 return `<tr><td data-label="Dipendente"><strong>${esc(r.name)}</strong></td><td data-label="Tipo">${esc(r.type)}</td>
                     <td data-label="Dal">${fmtDate(r.startDate)}</td><td data-label="Al">${fmtDate(r.endDate)}</td>
                     <td data-label="Giorni">${countDays(r.startDate, r.endDate, 'cal')}</td>
                     <td data-label="Stato"><span class="badge ${badgeClass(r.status)}">${esc(r.status)}</span></td>
-                    <td data-label="Note / Motivo">${esc(note) || '-'}</td></tr>`;
+                    <td data-label="Note / Motivo">${esc(noteOf(r)) || '-'}</td></tr>`;
             }).join('') : '<tr><td colspan="7" style="text-align:center;">Nessuna richiesta con questi filtri.</td></tr>';
         }
-        ['exEmp', 'exStatus', 'exType', 'exFrom', 'exTo'].forEach(id => $(id).addEventListener('change', renderExport));
+        function renderStatsAll() { renderStats(); renderExport(); }
+        ['exEmp', 'exStatus', 'exType', 'exFrom', 'exTo'].forEach(id => $(id).addEventListener('change', renderStatsAll));
+        $('statsMode').addEventListener('change', () => { lsSet('hr_daymode', $('statsMode').value); renderStatsAll(); });
         document.querySelectorAll('[data-range]').forEach(b => b.addEventListener('click', () => {
             const n = new Date(); let a = '', z = '';
             if (b.dataset.range === 'month') { a = isoOf(new Date(n.getFullYear(), n.getMonth(), 1)); z = isoOf(new Date(n.getFullYear(), n.getMonth() + 1, 0)); }
             if (b.dataset.range === 'prev') { a = isoOf(new Date(n.getFullYear(), n.getMonth() - 1, 1)); z = isoOf(new Date(n.getFullYear(), n.getMonth(), 0)); }
             if (b.dataset.range === 'year') { a = n.getFullYear() + '-01-01'; z = n.getFullYear() + '-12-31'; }
-            $('exFrom').value = a; $('exTo').value = z; renderExport();
+            $('exFrom').value = a; $('exTo').value = z; renderStatsAll();
         }));
+        function filterSummary() {
+            const f = exFilters(), o = [];
+            o.push('Periodo: ' + periodLabel());
+            if (f.emp !== 'ALL') o.push('Dipendente: ' + f.emp);
+            if (f.ty !== 'ALL') o.push('Tipo: ' + f.ty);
+            if (f.st !== 'ALL') o.push('Stato (elenco): ' + f.st);
+            o.push('Conteggio: ' + MODE_LABEL[f.mode]);
+            return o;
+        }
+
+        /* ---------- Excel: 4 fogli (Indicatori, Per persona, Per mese, Richieste) ---------- */
         $('exXlsx').addEventListener('click', () => {
-            const list = exportList();
-            if (!list.length) { toast('Nessuna richiesta da esportare con questi filtri.'); return; }
-            const rows = list.map(r => [r.name, r.type, { date: r.startDate }, { date: r.endDate },
-                countDays(r.startDate, r.endDate, 'cal'), countDays(r.startDate, r.endDate, 'lv'),
-                r.status, r.notes, r.reason, r.sentAt]);
-            const blob = buildXlsx('Richieste', ['Dipendente', 'Tipologia', 'Dal', 'Al', 'Giorni (calendario)', 'Giorni lavorativi (lun-ven)', 'Stato', 'Note', 'Motivo rifiuto', 'Inviata il'],
-                rows, [28, 16, 12, 12, 18, 24, 12, 40, 30, 18]);
+            const list = exportList(), S = computeStats();
+            if (!list.length && !S.everyone.length) { toast('Niente da esportare con questi filtri.'); return; }
+            const fs = filterSummary();
+            const sheets = [
+                { name: 'Indicatori', header: ['Voce', 'Valore'], widths: [34, 40], rows: [
+                    ['Report generato il', nowLabel().replace('Stampato il ', '')]].concat(fs.map(x => { const k = x.indexOf(': '); return [x.slice(0, k), x.slice(k + 2)]; }),
+                    [['Richieste nel periodo', S.total], ['In attesa', S.pend], ['Approvate', S.appr], ['Rifiutate', S.rej], ['Giorni di assenza (approvate)', S.totalDays]]) },
+                { name: 'Per persona', header: ['Dipendente'].concat(S.types, ['Totale']), widths: [30].concat(S.types.map(() => 14), [12]),
+                  rows: S.everyone.map(r => [r.n].concat(S.types.map(t => r.p.t[t] || 0), [r.p.total])).concat([['TOTALE'].concat(S.types.map(t => S.perType[t] || 0), [S.totalDays])]) },
+                { name: 'Per mese', header: ['Mese', 'Giorni di assenza'], widths: [24, 18], rows: S.months.map(m => [m.label, m.value]) },
+                { name: 'Richieste', header: ['Dipendente', 'Tipologia', 'Dal', 'Al', 'Giorni (calendario)', 'Giorni lavorativi (lun-ven)', 'Stato', 'Note', 'Motivo rifiuto', 'Inviata il'],
+                  widths: [28, 16, 12, 12, 18, 24, 12, 40, 30, 18],
+                  rows: list.map(r => [r.name, r.type, { date: r.startDate }, { date: r.endDate }, countDays(r.startDate, r.endDate, 'cal'), countDays(r.startDate, r.endDate, 'lv'), r.status, r.notes, r.reason, r.sentAt]) }
+            ];
+            saveBlobAdmin(buildXlsxMulti(sheets), 'report_assenze_' + isoOf(new Date()) + '.xlsx');
+            toast('File Excel scaricato.');
+        });
+        function saveBlobAdmin(blob, name) {
             const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'richieste_' + isoOf(new Date()) + '.xlsx';
+            a.href = URL.createObjectURL(blob); a.download = name;
             document.body.appendChild(a); a.click();
             setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
-            toast('File Excel scaricato (' + list.length + ' richieste).');
+        }
+
+        /* ---------- PDF vero (scaricabile), scritto a mano: Helvetica, A4 orizzontale ---------- */
+        function makeReportPdf() {
+            const S = computeStats(), list = exportList();
+            const PW = 842, PH = 595, M = 30;
+            const mc = document.createElement('canvas').getContext('2d');
+            const tw = (s, sz, b) => { mc.font = (b ? 'bold ' : '') + sz + 'px Arial, Helvetica, sans-serif'; return mc.measureText(s).width; };
+            const clean = s => String(s == null ? '' : s).replace(/[–—]/g, '-').replace(/[“”]/g, '"').replace(/[‘’]/g, "'").replace(/[^\x20-\xff]/g, '?');
+            const wrap = (s, w, sz, b) => {
+                s = clean(s); const out = []; let line = '';
+                s.split(/\s+/).forEach(word => {
+                    const t = line ? line + ' ' + word : word;
+                    if (tw(t, sz, b) <= w || !line) line = t; else { out.push(line); line = word; }
+                });
+                if (line) out.push(line);
+                return out.length ? out : [''];
+            };
+            const pages = []; let ops, y;
+            const newPage = () => { ops = []; pages.push(ops); y = M; };
+            const esc2 = s => clean(s).replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)');
+            const rgb = h => [1, 3, 5].map(i => (parseInt(h.slice(i, i + 2), 16) / 255).toFixed(3)).join(' ');
+            const rect = (x, yy, w, h, fill) => ops.push(rgb(fill) + ' rg ' + x.toFixed(1) + ' ' + (PH - yy - h).toFixed(1) + ' ' + w.toFixed(1) + ' ' + h.toFixed(1) + ' re f');
+            const text = (s, x, yy, sz, b, col, align, w) => {
+                s = clean(s); let xx = x;
+                if (align === 'r') xx = x + w - tw(s, sz, b); else if (align === 'c') xx = x + (w - tw(s, sz, b)) / 2;
+                ops.push('BT /' + (b ? 'F2' : 'F1') + ' ' + sz + ' Tf ' + rgb(col || '#111111') + ' rg ' + xx.toFixed(1) + ' ' + (PH - yy - sz * 0.82).toFixed(1) + ' Td (' + esc2(s) + ') Tj ET');
+            };
+            const ensure = h => { if (y + h > PH - M - 14) newPage(); };
+            // tabella con intestazione ripetuta e righe a capo (max 3 righe)
+            function table(cols, rows, opt) {
+                opt = opt || {}; const sz = 9, lh = 11.5;
+                const total = cols.reduce((a, c) => a + c.w, 0), sc = (PW - 2 * M) / total;
+                const cw = cols.map(c => c.w * sc);
+                const header = () => {
+                    ensure(24); rect(M, y, PW - 2 * M, 18, '#002b66');
+                    let x = M; cols.forEach((c, i) => { text(c.t, x + 4, y + 4.5, sz, true, '#ffffff', c.a, cw[i] - 8); x += cw[i]; });
+                    y += 18;
+                };
+                header();
+                rows.forEach((r, ri) => {
+                    const cells = r.cells.map((v, i) => wrap(v, cw[i] - 8, sz, r.bold).slice(0, 3));
+                    const h = Math.max.apply(null, cells.map(c => c.length)) * lh + 6;
+                    if (y + h > PH - M - 14) { newPage(); header(); }
+                    if (r.fill) rect(M, y, PW - 2 * M, h, r.fill); else if (ri % 2) rect(M, y, PW - 2 * M, h, '#f3f5f9');
+                    let x = M;
+                    cells.forEach((lines, i) => {
+                        lines.forEach((ln, k) => text(ln, x + 4, y + 3 + k * lh, sz, r.bold, (r.colors && r.colors[i]) || '#111111', cols[i].a, cw[i] - 8));
+                        x += cw[i];
+                    });
+                    y += h;
+                });
+                y += 8;
+            }
+            const title = t => { ensure(40); text(t, M, y, 12, true, '#002b66'); y += 18; };
+
+            newPage();
+            rect(0, 0, PW, 54, '#002b66'); rect(0, 54, PW, 3, '#ff6600');
+            text('HR Orion - Report assenze', M, 14, 20, true, '#ffffff');
+            text(nowLabel().replace('Stampato il', 'Generato il'), M, 38, 9, false, '#dbe4f5');
+            y = 70;
+            filterSummary().forEach(l => { text(l, M, y, 9.5, false, '#333333'); y += 13; });
+            y += 6;
+            // indicatori
+            const k = [[S.total, 'Richieste'], [S.pend, 'In attesa'], [S.appr, 'Approvate'], [S.rej, 'Rifiutate'], [S.totalDays, 'Giorni di assenza']];
+            const kw = (PW - 2 * M - 4 * 10) / 5;
+            k.forEach((it, i) => { const x = M + i * (kw + 10); rect(x, y, kw, 44, '#eef2fa'); text(String(it[0]), x, y + 6, 20, true, '#ff6600', 'c', kw); text(it[1], x, y + 30, 9, true, '#002b66', 'c', kw); });
+            y += 58;
+            title('Giorni di assenza per persona e per tipo');
+            const cols = [{ t: 'Dipendente', w: 30 }].concat(S.types.map(t => ({ t: t, w: 13, a: 'r' })), [{ t: 'Totale', w: 11, a: 'r' }]);
+            const prow = S.everyone.filter(r => r.p.total > 0).map(r => ({ cells: [r.n].concat(S.types.map(t => String(r.p.t[t] || 0)), [String(r.p.total)]) }));
+            prow.push({ cells: ['TOTALE'].concat(S.types.map(t => String(S.perType[t] || 0)), [String(S.totalDays)]), bold: true, fill: '#dbe4f5' });
+            table(cols, prow);
+            title('Giorni di assenza per mese');
+            table([{ t: 'Mese', w: 30 }, { t: 'Giorni', w: 12, a: 'r' }], S.months.map(m => ({ cells: [m.label, String(m.value)] })));
+            title('Elenco richieste (' + list.length + ')');
+            const colorOf = s => s === 'Approvato' ? '#1c7a34' : (s === 'Rifiutato' ? '#b02a37' : '#9a6b00');
+            table([{ t: 'Dipendente', w: 22 }, { t: 'Tipo', w: 12 }, { t: 'Dal', w: 10 }, { t: 'Al', w: 10 }, { t: 'Giorni', w: 7, a: 'r' }, { t: 'Stato', w: 10 }, { t: 'Note / Motivo', w: 40 }],
+                list.map(r => ({ cells: [r.name, r.type, fmtDate(r.startDate), fmtDate(r.endDate), String(countDays(r.startDate, r.endDate, 'cal')), r.status, noteOf(r) || '-'], colors: [null, null, null, null, null, colorOf(r.status), null] })));
+            // numeri di pagina
+            pages.forEach((p, i) => { ops = p; text('Pagina ' + (i + 1) + ' di ' + pages.length, PW - M - 100, PH - 22, 8, false, '#666666', 'r', 100); text('HR Orion', M, PH - 22, 8, false, '#666666'); });
+
+            // assemblaggio file PDF
+            const enc = s => { const u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i) & 255; return u; };
+            const parts = [], offs = []; let len = 0;
+            const add = s => { const u = enc(s); parts.push(u); len += u.length; };
+            const obj = (n, body) => { offs[n] = len; add(n + ' 0 obj\n' + body + '\nendobj\n'); };
+            const np = pages.length, first = 5;
+            add('%PDF-1.4\n');
+            obj(1, '<< /Type /Catalog /Pages 2 0 R >>');
+            obj(2, '<< /Type /Pages /Kids [' + pages.map((_, i) => (first + i * 2) + ' 0 R').join(' ') + '] /Count ' + np + ' >>');
+            obj(3, '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+            obj(4, '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+            pages.forEach((p, i) => {
+                const pn = first + i * 2, cn = pn + 1, stream = p.join('\n');
+                obj(pn, '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + PW + ' ' + PH + '] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents ' + cn + ' 0 R >>');
+                obj(cn, '<< /Length ' + stream.length + ' >>\nstream\n' + stream + '\nendstream');
+            });
+            const n = first + np * 2, xr = len;
+            let t = 'xref\n0 ' + n + '\n0000000000 65535 f \n';
+            for (let i = 1; i < n; i++) t += String(offs[i]).padStart(10, '0') + ' 00000 n \n';
+            add(t + 'trailer\n<< /Size ' + n + ' /Root 1 0 R >>\nstartxref\n' + xr + '\n%%EOF');
+            return new Blob(parts, { type: 'application/pdf' });
+        }
+        $('exPdf').addEventListener('click', () => {
+            try { saveBlobAdmin(makeReportPdf(), 'report_assenze_' + isoOf(new Date()) + '.pdf'); toast('PDF scaricato.'); }
+            catch (err) { toast('PDF non riuscito: ' + (err && err.message), 6000); }
         });
         $('exPrint').addEventListener('click', () => {
-            const list = exportList();
-            if (!list.length) { toast('Nessuna richiesta da stampare con questi filtri.'); return; }
             clearPrintMarks();
-            const f = [];
-            if ($('exEmp').value !== 'ALL') f.push('Dipendente: ' + $('exEmp').value);
-            if ($('exStatus').value !== 'ALL') f.push('Stato: ' + $('exStatus').value);
-            if ($('exType').value !== 'ALL') f.push('Tipo: ' + $('exType').value);
-            if ($('exFrom').value || $('exTo').value) f.push('Periodo: ' + ($('exFrom').value ? 'dal ' + fmtDate($('exFrom').value) : '') + ($('exTo').value ? ' al ' + fmtDate($('exTo').value) : ''));
-            startPrint('exportCard', 'printSubExport', nowLabel() + (f.length ? ' - ' + f.join(' - ') : '') + ' - Richieste: ' + list.length);
+            startPrint('exportCard', 'printSubExport', nowLabel() + ' - ' + filterSummary().join(' - '));
         });
 
         /* ================= DIPENDENTI ================= */
