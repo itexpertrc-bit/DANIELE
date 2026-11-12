@@ -474,9 +474,10 @@
             body.printing .archive-item .a-reason { color: #333; }
         }
             /* ===== Orario ===== */
-        .sch-wrap { overflow: auto; max-height: 72vh; border: 1px solid var(--border); border-radius: 8px; background: #fff; -webkit-overflow-scrolling: touch; }
-        #schTable { border-collapse: separate; border-spacing: 0; min-width: 1560px; width: auto; font-size: 0.78rem; margin: 0; }
-        #schTable th, #schTable td { border-right: 1px solid #c9c9c9; border-bottom: 1px solid #c9c9c9; padding: 2px 3px; text-align: center; white-space: nowrap; background: #fff; color: #111; }
+        .sch-wrap { overflow: auto; max-height: 78vh; border: 3px solid #000; border-radius: 4px; background: #fff; -webkit-overflow-scrolling: touch; }
+        @media (max-height: 560px) { .sch-wrap { max-height: none; } }
+        #schTable { border-collapse: separate; border-spacing: 0; min-width: 1500px; width: 100%; font-size: 0.78rem; margin: 0; }
+        #schTable th, #schTable td { border-right: 1px solid #000; border-bottom: 1px solid #000; padding: 2px 2px; text-align: center; white-space: nowrap; background: #fff; color: #111; }
         #schTable thead th { position: sticky; top: 0; z-index: 3; background: #ffd23f; color: #111; font-size: 0.8rem; padding: 6px 4px; }
         #schTable thead th small { display: block; font-weight: 700; font-size: 0.72rem; }
         #schTable thead th.hol { background: #ff9d9d; }
@@ -485,8 +486,8 @@
         #schTable .sch-name.flag { color: #d00000; background: #ffe0e0; }
         #schTable .sch-sec td { background: #0f9ed5; color: #fff; font-weight: 900; text-align: left; padding: 5px 8px; letter-spacing: .5px; }
         #schTable .sch-sec td.sch-name { background: #0f9ed5; }
-        #schTable select { width: auto; min-width: 96px; max-width: 110px; padding: 5px 2px; margin: 0; font-size: 0.78rem; font-weight: 800; border: 1px solid #aaa; border-radius: 4px; color: #111; text-align: center; text-align-last: center; font-family: inherit; }
-        #schTable td.sch-h { font-weight: 900; min-width: 34px; }
+        #schTable select { -webkit-appearance: none; appearance: none; background-image: none; cursor: pointer; width: 100%; min-width: 80px; max-width: none; padding: 5px 0; margin: 0; font-size: 0.78rem; font-weight: 800; border: 1px solid #aaa; border-radius: 4px; color: #111; text-align: center; text-align-last: center; font-family: inherit; }
+        #schTable td.sch-h { font-weight: 900; min-width: 28px; }
         #schTable td.sch-tot { font-weight: 900; min-width: 64px; background: #f7f7f7; }
         #schTable td.sch-conf { outline: 3px solid #ff6600; outline-offset: -3px; }
         #schTable td.sch-conf.soft { outline-color: #ffc107; }
@@ -494,6 +495,15 @@
         #schTable .sch-cov td.ok { background: #009600; }
         #schTable .sch-cov td.ko { background: #d00000; }
         #schTable .sch-cov td.sch-name { background: #e8e8e8; color: #111; }
+        #schTable .dsep { border-left: 3px solid #000; }
+        #schTable thead th { border-bottom: 3px solid #000; }
+        #schTable .sch-corner, #schTable .sch-name { border-right: 3px solid #000; }
+        #schTable .sch-sec td { border-top: 2px solid #000; border-bottom: 2px solid #000; }
+        #schTable tr:last-child td { border-bottom: 0; }
+        @media (min-width: 1500px) { #schTable { font-size: 0.88rem; } #schTable select { font-size: 0.8rem; padding: 7px 0; min-width: 82px; } #schTable .sch-name { font-size: 0.92rem; } }
+        @media (max-width: 800px) { #schTable { font-size: 0.72rem; min-width: 1380px; } #schTable select { min-width: 78px; font-size: 0.72rem; padding: 4px 0; } #schTable .sch-name, #schTable .sch-corner { min-width: 96px; padding: 4px; } }
+        body.sch-wide .container { max-width: none !important; margin-left: 0; margin-right: 0; padding-left: 10px; padding-right: 10px; }
+        body.sch-wide #schCard { padding: 14px; }
         .sch-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-top: 14px; font-size: 0.9rem; }
         .sch-box h3 { font-size: 1rem; color: var(--unieuro-blue-dark); margin-bottom: 8px; }
         .sch-box ul { margin: 0; padding-left: 18px; }
@@ -1081,6 +1091,7 @@
         /* ================= Schede ================= */
         function showTab(tab) {
             activeTab = tab;
+            document.body.classList.toggle('sch-wide', tab === 'schedule');
             document.querySelectorAll('.admin-tabs-wrap .tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
             document.querySelectorAll('#admin-dashboard .tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + tab));
             renderActiveTab();
@@ -1955,9 +1966,9 @@
             let h = '<thead><tr><th class="sch-corner">ORARI NEGOZIO</th>';
             for (let i = 0; i < 7; i++) {
                 const iso = schIso(i);
-                h += '<th colspan="3" class="' + (isHoliday(iso) ? 'hol' : '') + '">' + schDayName(i) + '<small>' + schDmy(schDate(i)) + (isHoliday(iso) ? ' · FESTIVO' : '') + '</small></th>';
+                h += '<th colspan="3" class="dsep ' + (isHoliday(iso) ? 'hol' : '') + '">' + schDayName(i) + '<small>' + schDmy(schDate(i)) + (isHoliday(iso) ? ' · FESTIVO' : '') + '</small></th>';
             }
-            h += '<th>TOTALE ORE</th></tr></thead><tbody>';
+            h += '<th class="dsep">TOTALE ORE</th></tr></thead><tbody>';
             const conflicts = [];
             schCfg.sections.forEach(sec => {
                 h += '<tr class="sch-sec"><td class="sch-name" colspan="1">' + esc(sec.name) + '</td><td colspan="22"></td></tr>';
@@ -1976,11 +1987,11 @@
                         }
                         const hrs = schHours(stf.label, d); tot += hrs;
                         for (let s = 0; s < 2; s++) {
-                            h += '<td class="' + cls.trim() + '" title="' + esc(ttl) + '"><select data-l="' + esc(stf.label) + '" data-d="' + d + '" data-s="' + s + '" style="background:' + schColor(row[d][s]) + '">' + schOpts(row[d][s]) + '</select></td>';
+                            h += '<td class="' + (cls + (s === 0 ? ' dsep' : '')).trim() + '" title="' + esc(ttl) + '"><select data-l="' + esc(stf.label) + '" data-d="' + d + '" data-s="' + s + '" style="background:' + schColor(row[d][s]) + '">' + schOpts(row[d][s]) + '</select></td>';
                         }
                         h += '<td class="sch-h">' + fmtH(hrs) + '</td>';
                     }
-                    h += '<td class="sch-tot">' + fmtH(tot) + '</td></tr>';
+                    h += '<td class="sch-tot dsep">' + fmtH(tot) + '</td></tr>';
                 });
             });
             h += '<tr class="sch-cov"><td class="sch-name">CONTROLLO (≥' + schCfg.minPeople + ' alle ' + esc(schCfg.afterStart) + ')</td>';
@@ -1988,9 +1999,9 @@
             for (let d = 0; d < 7; d++) {
                 const n = schCover(d), ok = n >= schCfg.minPeople;
                 if (!ok) lacking.push(schDayName(d) + ' ' + schDmy(schDate(d)) + ' (' + n + '/' + schCfg.minPeople + ')');
-                h += '<td colspan="3" class="' + (ok ? 'ok' : 'ko') + '">' + (ok ? 'OK' : 'MANCANO PERSONE') + ' (' + n + ')</td>';
+                h += '<td colspan="3" class="dsep ' + (ok ? 'ok' : 'ko') + '">' + (ok ? 'OK' : 'MANCANO PERSONE') + ' (' + n + ')</td>';
             }
-            h += '<td></td></tr></tbody>';
+            h += '<td class="dsep"></td></tr></tbody>';
             $('schTable').innerHTML = h;
             wrap.scrollLeft = sl; wrap.scrollTop = st;
 
@@ -2295,7 +2306,7 @@
             cv.width = Math.round(W * S); cv.height = Math.round(H * S);
             const c = cv.getContext('2d'); c.scale(S, S);
             c.fillStyle = '#fff'; c.fillRect(0, 0, W, H);
-            const BORD = '#8a8a8a';
+            const BORD = '#000';
             function box(x, y, w, h, fill) { c.fillStyle = fill; c.fillRect(x, y, w, h); c.strokeStyle = BORD; c.lineWidth = 1; c.strokeRect(x + .5, y + .5, w - 1, h - 1); }
             function txt(s, x, y, w, h, o) {
                 o = o || {}; let sz = o.size || 14; const bold = o.bold === false ? '' : 'bold ';
@@ -2328,9 +2339,11 @@
             }
             if (hrs) { box(M + nameW + dayW * 7, y, totW, thH, '#ffd23f'); txt('TOTALE ORE', M + nameW + dayW * 7, y, totW, thH, { size: 13 }); }
             y += thH;
+            const tTop = M + headH, secY = [];
             schCfg.sections.forEach(sec => {
+                secY.push(y);
                 box(M, y, W - M * 2, secH, '#0f9ed5'); txt(sec.name, M, y, W - M * 2, secH, { size: 15, color: '#fff', align: 'left' });
-                y += secH;
+                y += secH; secY.push(y);
                 sec.staff.forEach(st => {
                     const row = schData.rows[st.label]; let tot = 0;
                     box(M, y, nameW, rowH, '#f0f0f0'); txt(st.label, M, y, nameW, rowH, { size: 15, align: 'left' });
@@ -2353,6 +2366,18 @@
                     box(dx, y, dayW, covH, ok ? '#009600' : '#d00000'); txt(ok ? 'OK' : 'MANCANO PERSONE', dx, y, dayW, covH, { size: 14, color: '#fff' });
                 }
                 y += covH;
+            }
+            // griglia nera: bordo esterno, divisori dei giorni e delle sezioni piu' marcati
+            {
+                const tBot = y, xR = M + nameW + dayW * 7 + totW;
+                const ln = (x1, y1, x2, y2, w) => { c.strokeStyle = '#000'; c.lineWidth = w; c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke(); };
+                // linee verticali dei giorni: solo su intestazione e righe del personale (non attraversano le barre delle sezioni)
+                const segs = [[tTop, secY[0]]];
+                for (let k = 1; k < secY.length; k += 2) segs.push([secY[k], k + 1 < secY.length ? secY[k + 1] : tBot]);
+                segs.forEach(sg => { for (let d = 0; d <= 7; d++) { const xx = M + nameW + d * dayW; ln(xx, sg[0], xx, sg[1], 3); } });
+                ln(M, tTop, M, tBot, 3); ln(xR, tTop, xR, tBot, 3);
+                ln(M, tTop, xR, tTop, 3); ln(M, tTop + thH, xR, tTop + thH, 3); ln(M, tBot, xR, tBot, 3);
+                secY.forEach(yy => ln(M, yy, xR, yy, 2.5));
             }
             if (lines.length) {
                 y += 16;
