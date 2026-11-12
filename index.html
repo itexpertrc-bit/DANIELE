@@ -254,6 +254,15 @@
         .edit-form .form-group { margin-bottom: 12px; }
             /* ===== Orario ===== */
         body.sch-wide .container { max-width: 1500px !important; }
+        .seg { display: flex; gap: 10px; }
+        .seg label { flex: 1; margin: 0; cursor: pointer; }
+        .seg input { position: absolute; opacity: 0; pointer-events: none; }
+        .seg span { display: block; text-align: center; padding: 12px 8px; border: 2px solid var(--border); border-radius: 8px; background: #fff; font-weight: 900; font-size: 1rem; color: var(--unieuro-blue-dark); }
+        .seg input:checked + span { background: var(--unieuro-orange); border-color: #000; color: #fff; box-shadow: 0 3px 6px rgba(0,0,0,0.2); }
+        .seg input:focus-visible + span { outline: 3px solid var(--unieuro-blue); outline-offset: 2px; }
+        .type-hint { margin-top: 6px; font-size: 0.85rem; font-weight: 700; color: #555; }
+        label .opt { font-weight: 600; color: #777; font-size: 0.85em; }
+        .form-row .form-group[hidden], .form-group[hidden] { display: none !important; }
         .sch-top { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px; }
         .sch-top select { width: auto; flex: 1 1 220px; margin: 0; }
         .sch-img-box { border: 3px solid #000; border-radius: 10px; overflow: hidden; background: #fff; cursor: zoom-in; }
@@ -330,37 +339,45 @@
 
             <!-- NUOVA RICHIESTA -->
             <div class="card tab-panel active" id="panel-new">
-                <h2>Nuova Richiesta Ferie / Permesso</h2>
+                <h2>Nuova Richiesta</h2>
 
                 <iframe name="hidden_iframe" style="display:none;" title="invio"></iframe>
 
-                <form id="requestForm" method="POST" accept-charset="UTF-8" target="hidden_iframe">
+                <form id="requestForm" method="POST" accept-charset="UTF-8" target="hidden_iframe" novalidate>
                     <input type="hidden" name="id" id="reqId">
                     <input type="hidden" name="name" id="reqName">
                     <input type="hidden" name="pin" id="reqPin">
 
                     <div class="form-group">
-                        <label for="reqType">Tipologia</label>
+                        <label for="reqType">Cosa vuoi richiedere?</label>
                         <select name="type" id="reqType" required>
-                            <option value="Ferie">Ferie</option>
-                            <option value="Permesso">Permesso Orario</option>
-                            <option value="Malattia">Malattia</option>
                             <option value="Giorno Libero">Giorno Libero</option>
+                            <option value="Permesso">Mezza Giornata Libera</option>
+                            <option value="Ferie">Ferie</option>
+                            <option value="Malattia">Malattia</option>
                         </select>
+                        <div class="type-hint"></div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="startDate">Data Inizio</label>
-                            <input type="date" name="startDate" id="startDate" required>
+                            <label for="startDate" class="start-lbl">Giorno</label>
+                            <input type="date" name="startDate" id="startDate">
                         </div>
-                        <div class="form-group">
-                            <label for="endDate">Data Fine</label>
-                            <input type="date" name="endDate" id="endDate" required>
+                        <div class="form-group end-group">
+                            <label for="endDate">Ultimo giorno</label>
+                            <input type="date" name="endDate" id="endDate">
+                        </div>
+                    </div>
+                    <div class="form-group slot-group">
+                        <label>Quale mezza giornata?</label>
+                        <div class="seg">
+                            <label><input type="radio" name="slot" value="Mattina"><span>Mattina</span></label>
+                            <label><input type="radio" name="slot" value="Pomeriggio"><span>Pomeriggio</span></label>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="notes">Note / Motivazione (opzionale)</label>
-                        <textarea name="notes" id="notes" rows="3" maxlength="300" placeholder="Aggiungi eventuali dettagli..."></textarea>
+                        <label for="notes">Note <span class="opt">(facoltative)</span></label>
+                        <textarea name="notes" id="notes" rows="3" maxlength="300" placeholder="Puoi lasciare vuoto"></textarea>
                         <div class="char-count"><span id="notesCount">0</span>/300</div>
                     </div>
                     <button type="submit" class="btn" id="submitBtn">Invia Richiesta</button>
@@ -411,7 +428,7 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwU_ekCf3gl43kcO-N5DAVOYDYxRRRLOaiEgIiGjglOcki_MhrsM3IvcchNGSk-M7xFnw/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzTrHvnRwyLfYlbGbIojfWAnvqa6EmO0ZYSZUY8ptaLOJBuRaBGdu8NvnKR3DJ3CHE5Vg/exec";
 
         // Chiamata verso Google Script: prima via JSONP (tag script), se non va via fetch (piano B)
         function jsonpOnce(params, timeoutMs) {
@@ -461,7 +478,37 @@
             if (status === 'Rifiutato') return 'badge-rejected';
             return 'badge-pending';
         }
-        function typeLabel(t) { return t === 'Permesso' ? 'Permesso orario' : t; }
+        function typeLabel(t) { return t === 'Permesso' ? 'Mezza Giornata' : t; }
+        function reqTitle(r) { return typeLabel(r.type) + (r.type === 'Permesso' && r.slot ? ' · ' + r.slot : ''); }
+        function reqWhen(r) { return r.startDate === r.endDate ? 'Il ' + fmtDate(r.startDate) : 'Dal ' + fmtDate(r.startDate) + ' al ' + fmtDate(r.endDate); }
+        const TYPE_HINT = {
+            'Giorno Libero': 'Un solo giorno libero: scegli la data.',
+            'Permesso': 'Mezza giornata libera: scegli il giorno e se la mattina o il pomeriggio.',
+            'Ferie': 'Indica il primo e l\'ultimo giorno di ferie.',
+            'Malattia': 'Indica il primo e l\'ultimo giorno di malattia.'
+        };
+        // Mostra solo i campi che servono per la tipologia scelta (vale per il modulo nuovo e per "Modifica")
+        function syncReqForm(f) {
+            const type = f.querySelector('[name=type]').value;
+            const single = type === 'Giorno Libero' || type === 'Permesso';
+            f.querySelector('.end-group').hidden = single;
+            f.querySelector('.slot-group').hidden = type !== 'Permesso';
+            f.querySelector('.start-lbl').textContent = single ? (type === 'Permesso' ? 'Giorno del permesso' : 'Giorno') : 'Primo giorno';
+            f.querySelector('.type-hint').textContent = TYPE_HINT[type] || '';
+            if (type !== 'Permesso') f.querySelectorAll('[name=slot]').forEach(x => { x.checked = false; });
+        }
+        // Controlla i dati e sistema la data di fine; restituisce un messaggio di errore oppure ''
+        function checkReqForm(f) {
+            const type = f.querySelector('[name=type]').value;
+            const s = f.querySelector('[name=startDate]'), e = f.querySelector('[name=endDate]');
+            const single = type === 'Giorno Libero' || type === 'Permesso';
+            if (!s.value) return single ? 'Scegli il giorno.' : 'Scegli il primo giorno.';
+            if (single) e.value = s.value;
+            else if (!e.value) return 'Scegli l\'ultimo giorno.';
+            else if (e.value < s.value) return 'L\'ultimo giorno non può essere prima del primo.';
+            if (type === 'Permesso' && !f.querySelector('[name=slot]:checked')) return 'Scegli se la mattina o il pomeriggio.';
+            return '';
+        }
         let toastTimer = null;
         function toast(text, ms) {
             const t = document.getElementById('toast');
@@ -738,8 +785,8 @@
                 const pending = r.status === 'In attesa';
                 return `
                 <div class="req" data-id="${esc(r.id)}">
-                    <div class="req-top"><b>${esc(typeLabel(r.type))}</b><span class="badge ${badgeClass(r.status)}">${esc(r.status)}</span></div>
-                    <div class="req-meta">Dal ${fmtDate(r.startDate)} al ${fmtDate(r.endDate)}${r.sentAt ? ' &middot; inviata il ' + esc(r.sentAt) : ''}</div>
+                    <div class="req-top"><b>${esc(reqTitle(r))}</b><span class="badge ${badgeClass(r.status)}">${esc(r.status)}</span></div>
+                    <div class="req-meta">${reqWhen(r)}${r.sentAt ? ' &middot; inviata il ' + esc(r.sentAt) : ''}</div>
                     ${r.notes ? `<div class="req-note">${esc(r.notes)}</div>` : ''}
                     ${r.status === 'Rifiutato' && r.reason ? `<div class="req-reason">Motivo del rifiuto: ${esc(r.reason)}</div>` : ''}
                     ${pending ? `<div class="req-actions">
@@ -792,7 +839,7 @@
             if (!r) return;
 
             if (b.dataset.act === 'cancel') {
-                if (!confirm('Vuoi annullare questa richiesta?\n\n' + typeLabel(r.type) + ' dal ' + fmtDate(r.startDate) + ' al ' + fmtDate(r.endDate))) return;
+                if (!confirm('Vuoi annullare questa richiesta?\n\n' + reqTitle(r) + ' - ' + reqWhen(r))) return;
                 b.disabled = true;
                 try {
                     const d = await jsonp({ action: 'cancel', name: session.name, pin: session.pin, id: id }, 20000);
@@ -806,37 +853,44 @@
             if (b.dataset.act === 'edit') {
                 const slot = card.querySelector('.edit-slot');
                 if (slot.innerHTML) { slot.innerHTML = ''; return; }
-                const opt = t => `<option value="${t}" ${r.type === t ? 'selected' : ''}>${t === 'Permesso' ? 'Permesso Orario' : t}</option>`;
+                const LBL = { 'Giorno Libero': 'Giorno Libero', 'Permesso': 'Mezza Giornata Libera', 'Ferie': 'Ferie', 'Malattia': 'Malattia' };
+                const opt = t => `<option value="${t}" ${r.type === t ? 'selected' : ''}>${LBL[t]}</option>`;
+                const rad = v => `<label><input type="radio" name="slot" value="${v}" ${r.slot === v ? 'checked' : ''}><span>${v}</span></label>`;
                 slot.innerHTML = `
-                <form class="edit-form" data-id="${esc(id)}">
-                    <div class="form-group"><label>Tipologia</label>
-                        <select name="type">${['Ferie', 'Permesso', 'Malattia', 'Giorno Libero'].map(opt).join('')}</select></div>
+                <form class="edit-form" data-id="${esc(id)}" novalidate>
+                    <div class="form-group"><label>Cosa vuoi richiedere?</label>
+                        <select name="type">${['Giorno Libero', 'Permesso', 'Ferie', 'Malattia'].map(opt).join('')}</select>
+                        <div class="type-hint"></div></div>
                     <div class="form-row">
-                        <div class="form-group"><label>Data Inizio</label><input type="date" name="startDate" value="${esc(r.startDate)}" required></div>
-                        <div class="form-group"><label>Data Fine</label><input type="date" name="endDate" value="${esc(r.endDate)}" required></div>
+                        <div class="form-group"><label class="start-lbl">Giorno</label><input type="date" name="startDate" value="${esc(r.startDate)}"></div>
+                        <div class="form-group end-group"><label>Ultimo giorno</label><input type="date" name="endDate" value="${esc(r.endDate)}"></div>
                     </div>
-                    <div class="form-group"><label>Note</label><textarea name="notes" rows="2" maxlength="300">${esc(r.notes)}</textarea></div>
+                    <div class="form-group slot-group"><label>Quale mezza giornata?</label><div class="seg">${rad('Mattina')}${rad('Pomeriggio')}</div></div>
+                    <div class="form-group"><label>Note <span class="opt">(facoltative)</span></label><textarea name="notes" rows="2" maxlength="300">${esc(r.notes)}</textarea></div>
                     <div class="req-actions">
                         <button type="submit" class="btn btn-success">Salva modifiche</button>
                         <button type="button" class="btn btn-del" data-act="close-edit">Chiudi</button>
                     </div>
                     <div class="msg" role="status"></div>
                 </form>`;
+                syncReqForm(slot.querySelector('form'));
             }
             if (b.dataset.act === 'close-edit') { card.querySelector('.edit-slot').innerHTML = ''; }
         });
 
+        $('mineList').addEventListener('change', e => { if (e.target.name === 'type') syncReqForm(e.target.closest('form')); });
         $('mineList').addEventListener('submit', async function (e) {
             e.preventDefault();
             const f = e.target;
             const msgEl = f.querySelector('.msg');
+            const bad = checkReqForm(f);
+            if (bad) { setMsg(msgEl, 'err', bad); return; }
             const fd = new FormData(f);
-            if (fd.get('endDate') < fd.get('startDate')) { setMsg(msgEl, 'err', 'La data di fine non può essere precedente alla data di inizio.'); return; }
             const btn = f.querySelector('button[type=submit]');
             btn.disabled = true; setMsg(msgEl, 'info', 'Salvataggio...');
             try {
                 const d = await jsonp({ action: 'edit', name: session.name, pin: session.pin, id: f.dataset.id,
-                    type: fd.get('type'), startDate: fd.get('startDate'), endDate: fd.get('endDate'), notes: fd.get('notes') }, 20000);
+                    type: fd.get('type'), startDate: fd.get('startDate'), endDate: fd.get('endDate'), notes: fd.get('notes') || '', slot: fd.get('slot') || '' }, 20000);
                 if (d && d.ok) { toast('Richiesta modificata.'); loadMine(true); return; }
                 setMsg(msgEl, 'err', d && d.error === "gia' gestita" ? 'La richiesta è già stata gestita: non si può più modificare.' : 'Modifica non riuscita: ' + ((d && d.error) || 'errore'));
             } catch (err) { setMsg(msgEl, 'err', 'Connessione al server assente. Riprova.'); }
@@ -849,16 +903,15 @@
         const msg = $('msg');
         form.action = SCRIPT_URL;
         function showMsg(kind, text) { setMsg(msg, kind, text); }
+        $('reqType').addEventListener('change', () => { syncReqForm(form); showMsg('', ''); });
+        form.addEventListener('reset', () => setTimeout(() => syncReqForm(form), 0));
+        syncReqForm(form);
         $('notes').addEventListener('input', () => { $('notesCount').textContent = $('notes').value.length; });
 
         form.addEventListener('submit', function (e) {
-            const start = $('startDate').value, end = $('endDate').value;
             if (!session) { e.preventDefault(); showMsg('err', 'Sessione scaduta: accedi di nuovo.'); return; }
-            if (end < start) {
-                e.preventDefault();
-                showMsg('err', 'La data di fine non può essere precedente alla data di inizio.');
-                return;
-            }
+            const bad = checkReqForm(form);
+            if (bad) { e.preventDefault(); showMsg('err', bad); return; }
             // L'invio vero e proprio lo fa il form (POST nell'iframe nascosto).
             const id = Date.now() + '' + Math.floor(Math.random() * 900 + 100);
             $('reqId').value = id;
