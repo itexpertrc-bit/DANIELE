@@ -253,9 +253,10 @@
         .edit-form { margin-top: 12px; border-top: 2px dashed var(--border); padding-top: 12px; }
         .edit-form .form-group { margin-bottom: 12px; }
             /* ===== Orario ===== */
+        body.sch-wide .container { max-width: 1500px !important; }
         .sch-top { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px; }
         .sch-top select { width: auto; flex: 1 1 220px; margin: 0; }
-        .sch-img-box { border: 2px solid #ddd; border-radius: 10px; overflow: hidden; background: #fff; cursor: zoom-in; }
+        .sch-img-box { border: 3px solid #000; border-radius: 10px; overflow: hidden; background: #fff; cursor: zoom-in; }
         .sch-img-box img { display: block; width: 100%; height: auto; }
         .sch-viewer { position: fixed; inset: 0; background: rgba(0,0,0,.92); z-index: 2000; display: flex; flex-direction: column; }
         .sch-viewer[hidden] { display: none; }
@@ -563,6 +564,7 @@
         /* ---------- Schede ---------- */
         function showTab(tab) {
             activeTab = tab;
+            document.body.classList.toggle('sch-wide', tab === 'schedule');
             document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
             $('panel-new').classList.toggle('active', tab === 'new');
             $('panel-mine').classList.toggle('active', tab === 'mine');
