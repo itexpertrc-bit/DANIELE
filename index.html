@@ -258,6 +258,9 @@
         .sch-top select { width: auto; flex: 1 1 220px; margin: 0; }
         .sch-img-box { border: 3px solid #000; border-radius: 10px; overflow: hidden; background: #fff; cursor: zoom-in; }
         .sch-img-box img { display: block; width: 100%; height: auto; }
+        .sch-img-box.big { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .sch-img-box.big img { width: 1150px; max-width: none; }
+        #panel-schedule { padding-left: 12px; padding-right: 12px; }
         .sch-viewer { position: fixed; inset: 0; background: rgba(0,0,0,.92); z-index: 2000; display: flex; flex-direction: column; }
         .sch-viewer[hidden] { display: none; }
         .sch-vbar { display: flex; gap: 8px; padding: 10px; justify-content: center; flex-wrap: wrap; background: #002b66; }
@@ -383,7 +386,8 @@
                 </div>
                 <div class="sch-top" id="schTop" hidden>
                     <select id="schWeek" aria-label="Settimana"></select>
-                    <button type="button" class="btn btn-small btn-tool" id="schZoom">Ingrandisci</button>
+                    <button type="button" class="btn btn-small btn-tool" id="schZoom">Schermo intero</button>
+                    <button type="button" class="btn btn-small btn-tool" id="schSize">Vista grande</button>
                     <button type="button" class="btn btn-small btn-del" id="schDl">Scarica immagine</button>
                     <button type="button" class="btn btn-small btn-del" id="schPdf">Scarica PDF</button>
                 </div>
@@ -609,7 +613,8 @@
         }
 
         /* ---------- Orario ---------- */
-        let schWeeks = [], schCurrent = '', schDataUrl = '', schVz = 1;
+        let schWeeks = [], schCurrent = '', schDataUrl = '', schVz = 1, schSizeSet = false;
+        function setSize(big) { $('schBox').classList.toggle('big', big); $('schSize').textContent = big ? 'Vista intera' : 'Vista grande'; }
         function schSeenKey() { return 'hr_sch_seen_' + (session ? session.name : ''); }
         function schGetSeen() { try { return JSON.parse(lsGet(schSeenKey()) || '{}') || {}; } catch (e) { return {}; } }
         function schMarkSeen(week) {
@@ -659,6 +664,7 @@
                 if (d && d.ok && d.data) {
                     schCurrent = week; schDataUrl = d.data;
                     $('schImg').src = d.data;
+                    if (!schSizeSet) { schSizeSet = true; setSize(window.innerWidth < 700); }
                     $('schBox').hidden = false; $('schHint').hidden = false;
                     setMsg($('schMsg'), '', '');
                     if (activeTab === 'schedule') schMarkSeen(week);
@@ -679,7 +685,8 @@
             const img = $('vImg'); if (schVz === 0) schVz = img.clientWidth / (window.innerWidth || 1) || 1;
             schVz = Math.max(.5, Math.min(4, schVz * f)); img.style.width = Math.round(schVz * (window.innerWidth || 800)) + 'px';
         }
-        $('schBox').addEventListener('click', openViewer);
+        $('schSize').addEventListener('click', () => setSize(!$('schBox').classList.contains('big')));
+        $('schBox').addEventListener('click', e => { if (!$('schBox').classList.contains('big')) openViewer(); });
         $('schZoom').addEventListener('click', openViewer);
         $('vClose').addEventListener('click', () => { $('schViewer').hidden = true; });
         $('vZin').addEventListener('click', () => viewerZoom(1.4));
