@@ -491,6 +491,8 @@
         #schTable td.sch-tot { font-weight: 900; min-width: 64px; background: #f7f7f7; }
         #schTable td.sch-conf { outline: 3px solid #ff6600; outline-offset: -3px; }
         #schTable td.sch-conf.soft { outline-color: #ffc107; }
+        #schTable .sch-sum td { background: #fff3c4; font-weight: 900; border-top: 2px solid #000; }
+        #schTable .sch-sum td.sch-name { background: #ffe58a; }
         #schTable .sch-cov td { font-weight: 900; color: #fff; padding: 6px; }
         #schTable .sch-cov td.ok { background: #009600; }
         #schTable .sch-cov td.ko { background: #d00000; }
@@ -1818,9 +1820,16 @@
                     { v: '16:00/20:00', color: '#FFFFFF', label: '' },
                     { v: 'FERIE', color: '#FFD966', label: '' },
                     { v: 'MALATTIA', color: '#F4B183', label: '' },
-                    { v: 'PERMESSO', color: '#FFE699', label: '' }
+                    { v: 'PERMESSO', color: '#FFE699', label: '' },
+                    { v: 'GIORNO LIBERO', color: '#C6E0B4', label: '' }
                 ]
             };
+        }
+        // gli orari "di sistema" usati da Verifica permessi devono esistere sempre nella legenda
+        function schFixLegend() {
+            [['FERIE', '#FFD966'], ['MALATTIA', '#F4B183'], ['PERMESSO', '#FFE699'], ['GIORNO LIBERO', '#C6E0B4']].forEach(x => {
+                if (!schCfg.legend.some(l => l.v === x[0])) schCfg.legend.push({ v: x[0], color: x[1], label: '' });
+            });
         }
         function schParse(v) {
             const m = /^(\d{1,2}):(\d{2})\/(\d{1,2}):(\d{2})$/.exec(String(v || '').trim());
@@ -1852,16 +1861,73 @@
             const p = schCfg.afterStart;
             return schAllStaff().filter(st => String(schData.rows[st.label][d][1] || '').indexOf(p) === 0).length;
         }
-        function schAbs(emp, iso) {
-            if (!emp) return null;
-            return requests.find(r => r.name === emp && r.status !== 'Rifiutato' && r.startDate <= iso && r.endDate >= iso) || null;
+        // Collega il nome usato nelle richieste (es. "ROSATO DOMENICO") alla riga della tabella (es. "DOMENICO R.")
+        function schLabelMap() {
+            const staff = schAllStaff(), map = {};
+            const byEmp = {}; staff.forEach(st => { if (st.emp) byEmp[st.emp] = st.label; });
+            const tok = x => String(x).toUpperCase().split(/\s+/).filter(Boolean);
+            const names = new Set(requests.map(r => r.name)); employees.forEach(e => names.add(e.name));
+            names.forEach(name => {
+                if (byEmp[name]) { map[name] = byEmp[name]; return; }
+                // riga senza "= NOME NEL SISTEMA": provo a riconoscerla dal nome breve
+                const nt = tok(name); let best = null, bestN = 0, tie = false;
+                staff.filter(st => !st.emp).forEach(st => {
+                    const lt = tok(st.label);
+                    const ok = lt.length && lt.every(t => nt.some(n => n === t || (t.endsWith('.') && t.length > 1 && n.indexOf(t.slice(0, -1)) === 0)));
+                    if (!ok) return;
+                    if (lt.length > bestN) { best = st.label; bestN = lt.length; tie = false; } else if (lt.length === bestN) tie = true;
+                });
+                if (best && !tie) map[name] = best;
+            });
+            return map;
+        }
+        function schDayReqs(map, label, iso) {
+            return requests.filter(r => map[r.name] === label && r.status !== 'Rifiutato' && r.startDate <= iso && r.endDate >= iso);
+        }
+        // richiesta in conflitto con l'orario: la persona lavora mentre ha ferie/malattia/giorno libero,
+        // oppure lavora proprio nella mezza giornata chiesta (mattina o pomeriggio)
+        function schConflict(map, label, d) {
+            const row = schData.rows[label][d];
+            for (const r of schDayReqs(map, label, schIso(d))) {
+                const work = (r.type === 'Permesso' && r.slot) ? schParse(row[r.slot === 'Mattina' ? 0 : 1]) > 0 : (schParse(row[0]) > 0 || schParse(row[1]) > 0);
+                if (work) return r;
+            }
+            return null;
         }
         function schWeekPermits(excludeSick) {
-            const a = schIso(0), b = schIso(6);
-            const byEmp = {}; schAllStaff().forEach(st => { if (st.emp) byEmp[st.emp] = st.label; });
+            const a = schIso(0), b = schIso(6), map = schLabelMap();
             return requests.filter(r => r.status !== 'Rifiutato' && r.startDate <= b && r.endDate >= a && (!excludeSick || r.type !== 'Malattia'))
-                .map(r => ({ label: byEmp[r.name] || r.name, type: typeFull(r), from: r.startDate, to: r.endDate, status: r.status }))
+                .map(r => ({ label: map[r.name] || r.name, type: typeFull(r), from: r.startDate, to: r.endDate, status: r.status }))
                 .sort((x, y) => x.label < y.label ? -1 : 1);
+        }
+        // "Verifica permessi": mette da solo nelle celle le richieste APPROVATE della settimana
+        function schVerifyApply() {
+            const a = schIso(0), b = schIso(6), map = schLabelMap();
+            const inWeek = requests.filter(r => r.status !== 'Rifiutato' && r.startDate <= b && r.endDate >= a);
+            if (!inWeek.length) { schFlag = false; drawSchedule(); toast('Nessuna corrispondenza trovata.'); return; }
+            const FILL = { 'Ferie': 'FERIE', 'Malattia': 'MALATTIA', 'Giorno Libero': 'GIORNO LIBERO' };
+            let changed = 0; const skipped = [];
+            inWeek.filter(r => r.status === 'Approvato').forEach(r => {
+                const label = map[r.name];
+                if (!label) { skipped.push(r.name + ': non trovato nella tabella'); return; }
+                for (let d = 0; d < 7; d++) {
+                    const iso = schIso(d); if (iso < r.startDate || iso > r.endDate) continue;
+                    const cell = schData.rows[label][d]; let want;
+                    if (FILL[r.type]) want = [FILL[r.type], FILL[r.type]];
+                    else if (r.type === 'Permesso' && r.slot === 'Mattina') want = ['PERMESSO', cell[1]];
+                    else if (r.type === 'Permesso' && r.slot === 'Pomeriggio') want = [cell[0], 'PERMESSO'];
+                    else { skipped.push(label + ' ' + schDmy(schDate(d)) + ': mezza giornata senza mattina/pomeriggio'); continue; }
+                    if (cell[0] !== want[0] || cell[1] !== want[1]) { schData.rows[label][d] = want; changed++; }
+                }
+            });
+            const pending = inWeek.filter(r => r.status === 'In attesa').length;
+            schFlag = true; if (changed) schDirty = true;
+            drawSchedule();
+            let m = changed ? 'Richieste approvate inserite nell\'orario (' + changed + (changed === 1 ? ' giorno aggiornato' : ' giorni aggiornati') + '). Controlla e premi Salva.'
+                            : 'Le richieste approvate sono già tutte nell\'orario.';
+            if (pending) m += ' ' + pending + (pending === 1 ? ' richiesta è ancora in attesa (non inserita).' : ' richieste sono ancora in attesa (non inserite).');
+            if (skipped.length) m += ' Da inserire a mano: ' + skipped.join('; ') + '.';
+            toast(m, 9000);
         }
 
         /* ---------- rete ---------- */
@@ -1902,6 +1968,7 @@
                 let cfg = null;
                 try { cfg = d.config ? JSON.parse(d.config) : null; } catch (e) {}
                 schCfg = (cfg && cfg.sections && cfg.legend) ? cfg : schDefaultCfg();
+                schFixLegend();
                 schWeeks = d.weeks || [];
                 const saved = lsGet('sch_start');
                 schStart = /^\d{4}-\d{2}-\d{2}$/.test(saved || '') ? saved : isoOf(schMonday(new Date()));
@@ -1975,7 +2042,8 @@
                 h += '<th colspan="3" class="dsep ' + (isHoliday(iso) ? 'hol' : '') + '">' + schDayName(i) + '<small>' + schDmy(schDate(i)) + (isHoliday(iso) ? ' · FESTIVO' : '') + '</small></th>';
             }
             h += '<th class="dsep">TOTALE ORE</th></tr></thead><tbody>';
-            const conflicts = [];
+            const conflicts = [], lmap = schLabelMap(), dayTot = [0, 0, 0, 0, 0, 0, 0];
+            let grand = 0;
             schCfg.sections.forEach(sec => {
                 h += '<tr class="sch-sec"><td class="sch-name" colspan="1">' + esc(sec.name) + '</td><td colspan="22"></td></tr>';
                 sec.staff.forEach(stf => {
@@ -1983,23 +2051,26 @@
                     let tot = 0;
                     h += '<tr><td class="sch-name' + (schFlag && permLabels.has(stf.label) ? ' flag' : '') + '">' + esc(stf.label) + '</td>';
                     for (let d = 0; d < 7; d++) {
-                        const abs = schAbs(stf.emp, schIso(d));
-                        const working = row[d].some(v => v !== REST && v !== 'FERIE' && v !== 'MALATTIA' && v !== 'PERMESSO' && schParse(v) > 0);
+                        const abs = schConflict(lmap, stf.label, d);
                         let cls = '', ttl = '';
-                        if (abs && working) {
+                        if (abs) {
                             cls = ' sch-conf' + (abs.status === 'In attesa' ? ' soft' : '');
                             ttl = typeFull(abs) + ' (' + abs.status + ')';
                             conflicts.push({ who: stf.label, day: schDayName(d) + ' ' + schDmy(schDate(d)), what: ttl });
                         }
-                        const hrs = schHours(stf.label, d); tot += hrs;
+                        const hrs = schHours(stf.label, d); tot += hrs; dayTot[d] += hrs;
                         for (let s = 0; s < 2; s++) {
-                            h += '<td class="' + (cls + (s === 0 ? ' dsep' : '')).trim() + '" title="' + esc(ttl) + '"><select data-l="' + esc(stf.label) + '" data-d="' + d + '" data-s="' + s + '" style="background:' + schColor(row[d][s]) + '">' + schOpts(row[d][s]) + '</select></td>';
+                            h += '<td class="' + (cls + (s === 0 ? ' dsep' : '')).trim() + '" title="' + esc(ttl) + '"><select data-l="' + esc(stf.label) + '" data-d="' + d + '" data-s="' + s + '" style="background:' + schColor(row[d][s]) + (schLabel(row[d][s]).length > 11 ? ';font-size:0.64rem' : '') + '">' + schOpts(row[d][s]) + '</select></td>';
                         }
                         h += '<td class="sch-h">' + fmtH(hrs) + '</td>';
                     }
+                    grand += tot;
                     h += '<td class="sch-tot dsep">' + fmtH(tot) + '</td></tr>';
                 });
             });
+            h += '<tr class="sch-sum"><td class="sch-name">TOTALE ORE</td>';
+            for (let d = 0; d < 7; d++) h += '<td colspan="2" class="dsep"></td><td class="sch-h">' + fmtH(dayTot[d]) + '</td>';
+            h += '<td class="sch-tot dsep">' + fmtH(grand) + '</td></tr>';
             h += '<tr class="sch-cov"><td class="sch-name">CONTROLLO (≥' + schCfg.minPeople + ' alle ' + esc(schCfg.afterStart) + ')</td>';
             const lacking = [];
             for (let d = 0; d < 7; d++) {
@@ -2056,12 +2127,7 @@
             }
             if (a === 'today') return schGoto(isoOf(schMonday(new Date())));
             if (a === 'copy') return schCopy();
-            if (a === 'verify') {
-                if (!schWeekPermits(false).length) { schFlag = false; drawSchedule(); toast('Nessuna corrispondenza trovata.'); return; }
-                schFlag = !schFlag; drawSchedule();
-                toast(schFlag ? 'Nomi con permessi/assenze in questa settimana evidenziati in rosso.' : 'Evidenziazione tolta.');
-                return;
-            }
+            if (a === 'verify') return schVerifyApply();
             if (a === 'addperm') return schAddPerm();
             if (a === 'delperm') { schData.permits.splice(+b.dataset.k, 1); schDirty = true; drawSchedule(); return; }
             if (a === 'settings') return schSettings();
@@ -2232,6 +2298,7 @@
             $('modalBody').onclick = null;
             if (!r) return;
             schCfg = { minPeople: r.min, afterStart: r.aft || '15:00', sections: parseStaff(r.txt), legend: r.legend };
+            schFixLegend();
             schEnsure(); drawSchedule();
             const json = JSON.stringify(schCfg);
             const ok = await schPostVerified({ op: 'schedcfg', data: json }, async () => {
@@ -2306,6 +2373,7 @@
             }
             let H = M + headH + thH + 44;
             schCfg.sections.forEach(s => { H += secH + s.staff.length * rowH; });
+            if (opt.hours !== false) H += rowH;
             if (opt.coverage) H += covH;
             if (lines.length) H += 16 + 34 + lines.length * lineH + 8;
             const cv = document.createElement('canvas');
@@ -2345,7 +2413,8 @@
             }
             if (hrs) { box(M + nameW + dayW * 7, y, totW, thH, '#ffd23f'); txt('TOTALE ORE', M + nameW + dayW * 7, y, totW, thH, { size: 13 }); }
             y += thH;
-            const tTop = M + headH, secY = [], rowY = [];
+            const tTop = M + headH, secY = [], rowY = [], dayTot = [0, 0, 0, 0, 0, 0, 0];
+            let grand = 0;
             schCfg.sections.forEach(sec => {
                 secY.push(y);
                 box(M, y, W - M * 2, secH, '#0f9ed5'); txt(sec.name, M, y, W - M * 2, secH, { size: 15, color: '#fff', align: 'left' });
@@ -2354,7 +2423,7 @@
                     const row = schData.rows[st.label]; let tot = 0; rowY.push(y);
                     box(M, y, nameW, rowH, '#f0f0f0'); txt(st.label, M, y, nameW, rowH, { size: 15, align: 'left' });
                     for (let d = 0; d < 7; d++) {
-                        const dx = M + nameW + d * dayW, hh = schHours(st.label, d); tot += hh;
+                        const dx = M + nameW + d * dayW, hh = schHours(st.label, d); tot += hh; dayTot[d] += hh;
                         for (let s = 0; s < 2; s++) {
                             const v = row[d][s];
                             box(dx + s * slotW, y, slotW, rowH, schColor(v)); txt(schLabel(v), dx + s * slotW, y, slotW, rowH, { size: 13 });
@@ -2362,9 +2431,23 @@
                         if (hrs) { box(dx + slotW * 2, y, oreW, rowH, '#fff'); txt(fmtH(hh), dx + slotW * 2, y, oreW, rowH, { size: 14 }); }
                     }
                     if (hrs) { box(M + nameW + dayW * 7, y, totW, rowH, '#f7f7f7'); txt(fmtH(tot), M + nameW + dayW * 7, y, totW, rowH, { size: 16 }); }
+                    grand += tot;
                     y += rowH;
                 });
             });
+            let sumY = null;
+            if (hrs) {
+                sumY = y;
+                box(M, y, nameW, rowH, '#ffe58a'); txt('TOTALE ORE', M, y, nameW, rowH, { size: 15, align: 'left' });
+                for (let d = 0; d < 7; d++) {
+                    const dx = M + nameW + d * dayW;
+                    box(dx, y, slotW * 2, rowH, '#fff3c4');
+                    box(dx + slotW * 2, y, oreW, rowH, '#fff3c4'); txt(fmtH(dayTot[d]), dx + slotW * 2, y, oreW, rowH, { size: 14 });
+                }
+                box(M + nameW + dayW * 7, y, totW, rowH, '#ffe58a'); txt(fmtH(grand), M + nameW + dayW * 7, y, totW, rowH, { size: 16 });
+                y += rowH;
+            }
+            const covY = opt.coverage ? y : null;
             if (opt.coverage) {
                 box(M, y, nameW, covH, '#e8e8e8'); txt('CONTROLLO', M, y, nameW, covH, { size: 14, align: 'left' });
                 for (let d = 0; d < 7; d++) {
@@ -2385,6 +2468,8 @@
                 ln(M, tTop, xR, tTop, 3); ln(M, tTop + thH, xR, tTop + thH, 3); ln(M, tBot, xR, tBot, 3);
                 secY.forEach(yy => ln(M, yy, xR, yy, 2.5));
                 rowY.forEach(yy => ln(M, yy, xR, yy, 2));
+                if (sumY !== null) ln(M, sumY, xR, sumY, 3);
+                if (covY !== null) ln(M, covY, xR, covY, 3);
             }
             if (lines.length) {
                 y += 16;
@@ -2436,10 +2521,9 @@
         async function schPublish() {
             if (schLoading) return;
             schEnsure();
-            const conflicts = []; schAllStaff().forEach(st => { for (let d = 0; d < 7; d++) {
-                const abs = schAbs(st.emp, schIso(d));
-                const row = schData.rows[st.label][d];
-                if (abs && row.some(v => schParse(v) > 0)) conflicts.push(st.label + ' · ' + schDayName(d) + ' ' + schDmy(schDate(d)) + ' (' + typeFull(abs) + ', ' + abs.status + ')');
+            const conflicts = [], pmap = schLabelMap(); schAllStaff().forEach(st => { for (let d = 0; d < 7; d++) {
+                const abs = schConflict(pmap, st.label, d);
+                if (abs) conflicts.push(st.label + ' · ' + schDayName(d) + ' ' + schDmy(schDate(d)) + ' (' + typeFull(abs) + ', ' + abs.status + ')');
             } });
             const lacking = []; for (let d = 0; d < 7; d++) if (schCover(d) < schCfg.minPeople) lacking.push(schDayName(d) + ' ' + schDmy(schDate(d)));
             let warn = '';
@@ -2448,7 +2532,7 @@
             const modal = $('modal'); modal.classList.add('wide');
             const body = () => '<p>' + (schPub.published ? '<b>Sostituirà</b> l\'orario già pubblicato per questa settimana.' : 'Controlla l\'anteprima: i dipendenti vedranno <b>esattamente questa immagine</b>.') + '</p>' + warn +
                 '<img class="sch-prev" id="pvImg" alt="Anteprima orario">' +
-                '<label class="sch-opt"><input type="checkbox" id="pvHrs" checked><span>Mostra le ore di ogni dipendente (ore del giorno e totale settimanale)<small>Se la spegni, nell\'immagine restano solo gli orari.</small></span></label>' +
+                '<label class="sch-opt"><input type="checkbox" id="pvHrs" checked><span>Mostra le ore (ore del giorno, totale settimanale e riga TOTALE ORE)<small>Se la spegni, nell\'immagine restano solo gli orari.</small></span></label>' +
                 '<label class="sch-opt"><input type="checkbox" id="pvCov"><span>Mostra nell\'immagine la riga di controllo copertura (OK / MANCANO PERSONE)<small>Di solito serve solo a te: lasciala spenta.</small></span></label>' +
                 '<label class="sch-opt"><input type="checkbox" id="pvPer"><span>Mostra nell\'immagine i permessi/assenze della settimana<small>Le malattie non vengono mai mostrate.</small></span></label>' +
                 '<label class="sch-opt"><input type="checkbox" id="pvMail"><span>Invia una email di avviso ai dipendenti<small>Solo a chi ha un indirizzo email nella scheda Dipendenti.</small></span></label>';
