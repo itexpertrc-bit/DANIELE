@@ -507,6 +507,27 @@
         @media (max-width: 800px) { #schTable { font-size: 0.72rem; min-width: 1380px; } #schTable select { min-width: 78px; font-size: 0.72rem; padding: 4px 0; } #schTable .sch-name, #schTable .sch-corner { min-width: 96px; padding: 4px; } }
         body.sch-wide .container { max-width: none !important; margin-left: 0; margin-right: 0; padding-left: 10px; padding-right: 10px; }
         body.sch-wide #schCard { padding: 14px; }
+        /* ===== Dipendenti + Messaggi ===== */
+        .emp-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-items: start; }
+        @media (min-width: 1200px) { .emp-grid { grid-template-columns: minmax(0, 1fr) 420px; } .chat-card { position: sticky; top: 12px; } }
+        body.emp-wide .container { max-width: 1600px !important; }
+        .chat-list { display: flex; flex-direction: column; gap: 10px; max-height: 46vh; min-height: 120px; overflow-y: auto; padding: 10px; background: #f4f6fa; border: 1px solid var(--border); border-radius: 10px; -webkit-overflow-scrolling: touch; }
+        .chat-empty { color: #666; font-weight: 700; text-align: center; padding: 18px 6px; }
+        .bubble { align-self: flex-end; max-width: 92%; background: #fff4ec; border: 1px solid var(--unieuro-orange); border-radius: 14px 4px 14px 14px; padding: 9px 12px; }
+        .bubble-meta { font-size: 0.72rem; font-weight: 800; color: #556; margin-bottom: 4px; display: flex; gap: 8px; align-items: center; justify-content: space-between; }
+        .bubble-meta .tag { background: var(--unieuro-blue); color: #fff; border-radius: 8px; padding: 0 7px; white-space: nowrap; display: inline-block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; vertical-align: bottom; }
+        .bubble-meta > span { min-width: 0; }
+        .bubble-meta button { border: 0; background: none; color: #c00000; font-weight: 900; cursor: pointer; font-size: 0.78rem; padding: 0 2px; font-family: inherit; }
+        .bubble-text { white-space: pre-wrap; overflow-wrap: anywhere; font-weight: 600; font-size: 0.92rem; line-height: 1.35; }
+        .chat-compose { margin-top: 14px; }
+        .chat-compose label { display: block; font-weight: 800; font-size: 0.85rem; margin: 8px 0 4px; }
+        .chat-compose select, .chat-compose textarea { width: 100%; margin: 0; }
+        .chat-compose select { padding: 10px; border: 2px solid var(--border); border-radius: 8px; font-family: inherit; font-weight: 700; font-size: 0.95rem; background: #fff; }
+        .chat-compose textarea { padding: 10px; border: 2px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.95rem; resize: vertical; }
+        .chat-send { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+        .chat-send .chat-mail { display: flex; align-items: center; gap: 6px; margin: 0; cursor: pointer; flex: 1 1 auto; }
+        .chat-send .chat-mail input { width: 18px; height: 18px; margin: 0; }
+        .chat-len { font-size: 0.78rem; font-weight: 700; color: #666; }
         .sch-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-top: 14px; font-size: 0.9rem; }
         .sch-box h3 { font-size: 1rem; color: var(--unieuro-blue-dark); margin-bottom: 8px; }
         .sch-box ul { margin: 0; padding-left: 18px; }
@@ -778,6 +799,7 @@
 
             <!-- ============ DIPENDENTI ============ -->
             <section class="tab-panel" id="tab-employees">
+                <div class="emp-grid">
                 <div class="card">
                     <h2>Gestione dipendenti <span class="count" id="empCount">0</span></h2>
                     <p class="hint-left">Ogni dipendente accede con il proprio <b>PIN</b>. L'<b>email</b> serve per avvisarlo quando approvi o rifiuti una richiesta.</p>
@@ -792,6 +814,25 @@
                         </table>
                     </div>
                 </div>
+
+                <!-- MESSAGGI AI DIPENDENTI -->
+                <div class="card chat-card">
+                    <h2>Messaggi ai dipendenti <span class="count" id="msgCount">0</span></h2>
+                    <p class="hint-left">Scrivi un messaggio e premi <b>Pubblica</b>: compare subito nell'app dei dipendenti, nella colonna "Messaggi".</p>
+                    <div class="chat-list" id="msgList"><div class="chat-empty">Carico i messaggi…</div></div>
+                    <div class="chat-compose">
+                        <label for="msgTo">Destinatario</label>
+                        <select id="msgTo"><option value="ALL">Tutti i dipendenti</option></select>
+                        <label for="msgText">Messaggio</label>
+                        <textarea id="msgText" rows="4" maxlength="1000" placeholder="Scrivi qui il messaggio…"></textarea>
+                        <div class="chat-send">
+                            <label class="chat-mail"><input type="checkbox" id="msgMail" checked> Invia anche per email</label>
+                            <span class="chat-len" id="msgLen">0/1000</span>
+                            <button type="button" class="btn btn-small" id="msgSend">Pubblica</button>
+                        </div>
+                    </div>
+                </div>
+                </div><!-- /emp-grid -->
             </section>
         </div>
     </div>
@@ -1063,7 +1104,7 @@
         }
 
         function logoutAdmin() {
-            adminPassword = ''; requests = []; employees = []; selected = new Set();
+            adminPassword = ''; requests = []; employees = []; selected = new Set(); messages = []; msgPass = '';
             $('admin-login').style.display = 'block';
             $('admin-dashboard').style.display = 'none';
             $('adminPass').value = '';
@@ -1098,6 +1139,7 @@
         function showTab(tab) {
             activeTab = tab;
             document.body.classList.toggle('sch-wide', tab === 'schedule');
+            document.body.classList.toggle('emp-wide', tab === 'employees');
             document.querySelectorAll('.admin-tabs-wrap .tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
             document.querySelectorAll('#admin-dashboard .tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + tab));
             renderActiveTab();
@@ -1729,6 +1771,7 @@
         /* ================= DIPENDENTI ================= */
         function randomPin() { return String(Math.floor(1000 + Math.random() * 9000)); }
         function renderEmployees() {
+            renderMsgs();
             const show = $('showPins').checked;
             $('empCount').textContent = employees.length;
             $('empBody').innerHTML = employees.length ? employees.map(e => `<tr>
@@ -1792,6 +1835,57 @@
                     else alert('Eliminazione non riuscita: ' + ((d && d.error) || 'errore'));
                 } catch (err) { alert('Eliminazione non riuscita: connessione al server assente.'); }
             }
+        });
+
+        /* ================= MESSAGGI AI DIPENDENTI ================= */
+        let messages = [], msgPass = '', msgBusy = false;
+        function renderMsgs() {
+            // elenco destinatari
+            const sel = $('msgTo'), cur = sel.value;
+            sel.innerHTML = '<option value="ALL">Tutti i dipendenti</option>' + employees.filter(e => e.active).map(e => `<option value="${esc(e.name)}">Solo ${esc(e.name)}</option>`).join('');
+            sel.value = [...sel.options].some(o => o.value === cur) ? cur : 'ALL';
+            if (msgPass !== adminPassword) { msgPass = adminPassword; loadMsgs(); return; }
+            $('msgCount').textContent = messages.length;
+            const box = $('msgList');
+            box.innerHTML = messages.length ? messages.map(m => `<div class="bubble">
+                <div class="bubble-meta"><span>${esc(m.at)} &middot; <span class="tag">${m.to === 'ALL' ? 'a tutti' : 'a ' + esc(m.to)}</span></span><button type="button" data-msgdel="${esc(m.id)}" title="Elimina il messaggio">Elimina</button></div>
+                <div class="bubble-text">${esc(m.text)}</div></div>`).join('') : '<div class="chat-empty">Nessun messaggio pubblicato.</div>';
+            box.scrollTop = box.scrollHeight;
+        }
+        async function loadMsgs() {
+            try {
+                const d = await jsonp({ action: 'msglist', password: adminPassword }, 20000);
+                if (d && d.ok) { messages = d.messages || []; renderMsgs(); }
+                else { msgPass = ''; $('msgList').innerHTML = '<div class="chat-empty">Messaggi non disponibili: aggiorna Code.gs e crea la nuova versione.</div>'; msgPass = adminPassword; }
+            } catch (err) { $('msgList').innerHTML = '<div class="chat-empty">Impossibile caricare i messaggi.</div>'; }
+        }
+        $('msgText').addEventListener('input', () => { $('msgLen').textContent = $('msgText').value.length + '/1000'; });
+        $('msgSend').addEventListener('click', async () => {
+            if (msgBusy) return;
+            const text = $('msgText').value.trim(), to = $('msgTo').value, mail = $('msgMail').checked;
+            if (!text) { toast('Scrivi il messaggio prima di pubblicare.'); return; }
+            if (!confirm('Pubblicare il messaggio ' + (to === 'ALL' ? 'a TUTTI i dipendenti' : 'solo a ' + to) + (mail ? ', con email di avviso' : '') + '?')) return;
+            const btn = $('msgSend'); msgBusy = true; btn.disabled = true; btn.textContent = 'Pubblico…';
+            const id = String(Date.now());
+            try {
+                const ok = await schPostVerified({ op: 'msgsend', id, to, text, notify: mail ? '1' : '0' }, async () => {
+                    const d = await jsonp({ action: 'msglist', password: adminPassword }, 15000);
+                    if (d && d.ok && (d.messages || []).some(m => m.id === id)) { messages = d.messages; return true; }
+                    return false;
+                });
+                if (ok) { $('msgText').value = ''; $('msgLen').textContent = '0/1000'; renderMsgs(); toast('Messaggio pubblicato' + (mail ? ' e email inviate a chi ha un indirizzo.' : '.'), 6000); }
+                else toast('Pubblicazione non confermata: controlla la connessione e riprova.', 8000);
+            } catch (err) { toast('Pubblicazione non riuscita.', 6000); }
+            msgBusy = false; btn.disabled = false; btn.textContent = 'Pubblica';
+        });
+        $('msgList').addEventListener('click', async e => {
+            const b = e.target.closest('[data-msgdel]'); if (!b) return;
+            if (!confirm('Eliminare questo messaggio? Sparirà anche dall\'app dei dipendenti.')) return;
+            try {
+                const d = await jsonp({ action: 'msgdel', id: b.dataset.msgdel, password: adminPassword }, 20000);
+                if (d && d.ok) { messages = messages.filter(m => m.id !== b.dataset.msgdel); renderMsgs(); toast('Messaggio eliminato.'); }
+                else toast('Eliminazione non riuscita.');
+            } catch (err) { toast('Eliminazione non riuscita.'); }
         });
 
         /* ================= ORARIO ================= */
