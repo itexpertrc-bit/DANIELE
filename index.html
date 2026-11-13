@@ -266,10 +266,11 @@
         /* ===== Messaggi (a destra su schermi larghi, sotto su telefono) ===== */
         .app-grid { display: block; }
         .msg-card { margin-top: 20px; }
+        .side-col { min-width: 0; }
         .msg-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 14px; }
         .msg-head h2 { margin: 0; border: 0; padding: 0; }
         .msg-head .btn { width: auto; }
-        .chat-list { display: flex; flex-direction: column; gap: 10px; max-height: 62vh; overflow-y: auto; padding: 4px 2px; -webkit-overflow-scrolling: touch; }
+        .chat-list { display: flex; flex-direction: column; gap: 10px; max-height: 46vh; overflow-y: auto; padding: 4px 2px; -webkit-overflow-scrolling: touch; }
         .chat-empty { color: #666; font-weight: 700; text-align: center; padding: 18px 6px; }
         .bubble { align-self: flex-start; max-width: 94%; background: #eef3fb; border: 1px solid #c9d6ee; border-radius: 4px 14px 14px 14px; padding: 10px 12px; }
         .bubble.new { background: #fff4ec; border-color: var(--unieuro-orange); }
@@ -280,9 +281,18 @@
         @media (min-width: 1000px) {
             body.logged .container { max-width: 1280px; }
             body.logged:not(.sch-wide) .app-grid { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 20px; align-items: start; }
-            body.logged:not(.sch-wide) .msg-card { margin-top: 0; position: sticky; top: 16px; }
+            body.logged:not(.sch-wide) .side-col { display: flex; flex-direction: column; gap: 20px; }
+            body.logged:not(.sch-wide) .msg-card { margin-top: 0; }
             body.logged:not(.sch-wide) #msgBanner { display: none; }
         }
+        .proc-list { display: flex; flex-direction: column; gap: 8px; max-height: 46vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .proc-item { display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); border-radius: 10px; padding: 9px 10px; background: #f8fafc; }
+        .proc-ico { flex: none; width: 34px; height: 40px; border-radius: 5px; background: #d93025; color: #fff; font-weight: 900; font-size: 0.66rem; display: flex; align-items: center; justify-content: center; letter-spacing: .5px; }
+        .proc-txt { flex: 1 1 auto; min-width: 0; }
+        .proc-txt b { display: block; overflow-wrap: anywhere; font-size: 0.95rem; }
+        .proc-txt span { font-size: 0.74rem; font-weight: 700; color: #667; }
+        .proc-act { display: flex; gap: 6px; flex: none; flex-direction: column; }
+        .proc-act .btn { margin: 0; padding: 6px 10px; font-size: 0.78rem; width: auto; text-decoration: none; text-align: center; display: block; }
         .sch-top { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px; }
         .sch-top select { width: auto; flex: 1 1 220px; margin: 0; }
         .sch-img-box { border: 3px solid #000; border-radius: 10px; overflow: hidden; background: #fff; cursor: zoom-in; }
@@ -441,6 +451,7 @@
             </div>
             </div><!-- /app-main -->
 
+            <div class="side-col">
             <!-- MESSAGGI -->
             <aside class="card msg-card" id="msgCard">
                 <div class="msg-head">
@@ -449,6 +460,16 @@
                 </div>
                 <div class="chat-list" id="msgList"><div class="chat-empty">Nessun messaggio.</div></div>
             </aside>
+
+            <!-- PROCEDURE -->
+            <aside class="card msg-card" id="procCard">
+                <div class="msg-head">
+                    <h2>Procedure</h2>
+                    <button type="button" class="btn btn-small btn-tool" id="refreshProc">Aggiorna</button>
+                </div>
+                <div class="proc-list" id="procList"><div class="chat-empty">Nessuna procedura.</div></div>
+            </aside>
+            </div><!-- /side-col -->
             </div><!-- /app-grid -->
         </div>
     </div>
@@ -466,7 +487,7 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwz5dcqXDcpd6g4BnaddW6HbmCZkiUPtolIe0bHxwChy5bScdxd4fp0CwR9tngocJh_/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzWeOstgp6Rf0sOnu8sC09gObTRGWbPD6McyAWCTLq3kBOaWWcnk0w9TrEgtH1BQmx_/exec";
 
         // Chiamata verso Google Script: prima via JSONP (tag script), se non va via fetch (piano B)
         function jsonpOnce(params, timeoutMs) {
@@ -631,10 +652,11 @@
             loadMine(false);
             loadSchedule(true);
             loadMsgs(false);
+            loadProcs(false);
         }
 
         function logout(message) {
-            session = null; myReqs = []; schWeeks = []; schCurrent = ''; schDataUrl = ''; msgs = [];
+            session = null; myReqs = []; schWeeks = []; schCurrent = ''; schDataUrl = ''; msgs = []; procs = []; renderProcs();
             document.body.classList.remove('logged'); $('msgBanner').hidden = true; renderMsgs();
             lsSet('hr_cred', null); ssSet('hr_cred_s', null);
             $('appView').style.display = 'none';
@@ -741,8 +763,31 @@
         }
         $('refreshMsg').addEventListener('click', () => loadMsgs(true));
         $('msgBannerBtn').addEventListener('click', () => { $('msgCard').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
-        document.addEventListener('visibilitychange', () => { if (!document.hidden && session && Date.now() - msgLast > 30000) loadMsgs(false); });
+        document.addEventListener('visibilitychange', () => { if (!document.hidden && session && Date.now() - msgLast > 30000) { loadMsgs(false); loadProcs(false); } });
         setInterval(() => { if (!document.hidden && session && Date.now() - msgLast > 180000) loadMsgs(false); }, 60000);
+
+        /* ---------- Procedure (PDF) ---------- */
+        let procs = [];
+        function fmtKb(kb) { const n = Number(kb) || 0; return n >= 1024 ? (Math.round(n / 102.4) / 10).toString().replace('.', ',') + ' MB' : n + ' KB'; }
+        function renderProcs() {
+            $('procList').innerHTML = procs.length ? procs.map(p => {
+                const id = encodeURIComponent(p.fileId);
+                return `<div class="proc-item"><div class="proc-ico">PDF</div>
+                    <div class="proc-txt"><b>${esc(p.title)}</b><span>${esc(p.at)} &middot; ${fmtKb(p.kb)}</span></div>
+                    <div class="proc-act"><a class="btn btn-tool" href="https://drive.google.com/file/d/${id}/view" target="_blank" rel="noopener">Apri</a>
+                        <a class="btn btn-del" href="https://drive.google.com/uc?export=download&id=${id}" target="_blank" rel="noopener">Scarica</a></div></div>`;
+            }).join('') : '<div class="chat-empty">Nessuna procedura.</div>';
+        }
+        async function loadProcs(manual) {
+            if (!session) return;
+            const btn = $('refreshProc'); if (manual) { btn.disabled = true; btn.textContent = 'Aggiorno...'; }
+            try {
+                const d = await jsonp({ action: 'procs', name: session.name, pin: session.pin }, 20000);
+                if (d && d.ok) { procs = d.procedures || []; renderProcs(); }
+            } catch (err) { if (manual) toast('Impossibile caricare le procedure. Riprova.'); }
+            if (manual) { btn.disabled = false; btn.textContent = 'Aggiorna'; }
+        }
+        $('refreshProc').addEventListener('click', () => loadProcs(true));
 
         /* ---------- Orario ---------- */
         let schWeeks = [], schCurrent = '', schDataUrl = '', schVz = 1, schSizeSet = false;
